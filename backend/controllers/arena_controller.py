@@ -1,5 +1,8 @@
-"""Controller — Arena (classe ligada ao recurso /api/arenas)."""
-from flask import Blueprint, jsonify, request
+"""Controller — Arena (classe ligada ao recurso /api/arenas).
+
+As rotas que apontam para esta classe ficam em `routes.py`.
+"""
+from flask import jsonify, request
 
 from services.arena_service import (
     AgendaArenaService,
@@ -75,12 +78,3 @@ class ArenaController:
             return jsonify({"erro": str(e)}), 404
         except ValueError as e:
             return jsonify({"erro": str(e)}), 400
-
-
-arena_bp = Blueprint("api_arenas", __name__)
-arena_bp.add_url_rule("", view_func=ArenaController.listar, methods=["GET"], endpoint="listar")
-arena_bp.add_url_rule("", view_func=ArenaController.criar, methods=["POST"], endpoint="criar")
-arena_bp.add_url_rule("/<int:arena_id>/agenda", view_func=ArenaController.agenda, methods=["GET"], endpoint="agenda")
-arena_bp.add_url_rule("/<int:arena_id>", view_func=ArenaController.buscar, methods=["GET"], endpoint="buscar")
-arena_bp.add_url_rule("/<int:arena_id>", view_func=ArenaController.atualizar, methods=["PUT"], endpoint="atualizar")
-arena_bp.add_url_rule("/<int:arena_id>", view_func=ArenaController.deletar, methods=["DELETE"], endpoint="deletar")

@@ -53,34 +53,9 @@ def create_app():
     # Registra as procedures na tabela `procedures` do banco
     registrar_procedures()
 
-    # Controllers (classes) expostos por Blueprints
-    from controllers.usuario_controller import usuario_bp
-    from controllers.arena_controller import arena_bp
-    from controllers.quadra_controller import quadra_bp
-    from controllers.reserva_controller import reserva_bp
-    from controllers.relatorio_controller import relatorio_bp
-
-    app.register_blueprint(usuario_bp, url_prefix="/api/usuarios")
-    app.register_blueprint(arena_bp, url_prefix="/api/arenas")
-    app.register_blueprint(quadra_bp, url_prefix="/api/quadras")
-    app.register_blueprint(reserva_bp, url_prefix="/api/reservas")
-    app.register_blueprint(relatorio_bp, url_prefix="/api/relatorios")
-
-    # ===== Páginas do front-end (apenas entrega dos arquivos estáticos) =====
-    PAGINAS = {
-        "/": "index.html",
-        "/usuarios": "usuarios.html",
-        "/arenas": "arenas.html",
-        "/quadras": "quadras.html",
-        "/reservas": "reservas.html",
-        "/relatorios": "relatorios.html",
-    }
-    for caminho, arquivo in PAGINAS.items():
-        app.add_url_rule(
-            caminho,
-            endpoint=f"pagina_{arquivo}",
-            view_func=(lambda arquivo=arquivo: app.send_static_file(arquivo)),
-        )
+    # Rotas: URLs → métodos das Controllers (ver routes.py)
+    from routes import registrar_rotas
+    registrar_rotas(app)
 
     return app
 

@@ -2,8 +2,9 @@
 
 Recebe a requisição HTTP, interpreta os dados, chama o Service
 correspondente e devolve a resposta da API. Sem regra de negócio aqui.
+As rotas que apontam para esta classe ficam em `routes.py`.
 """
-from flask import Blueprint, jsonify, request
+from flask import jsonify, request
 
 from services.usuario_service import (
     AtualizarUsuarioService,
@@ -72,12 +73,3 @@ class UsuarioController:
             return jsonify({"erro": str(e)}), 404
         except ValueError as e:
             return jsonify({"erro": str(e)}), 400
-
-
-usuario_bp = Blueprint("api_usuarios", __name__)
-usuario_bp.add_url_rule("", view_func=UsuarioController.listar, methods=["GET"], endpoint="listar")
-usuario_bp.add_url_rule("", view_func=UsuarioController.criar, methods=["POST"], endpoint="criar")
-usuario_bp.add_url_rule("/busca", view_func=UsuarioController.pesquisar, methods=["GET"], endpoint="pesquisar")
-usuario_bp.add_url_rule("/<int:usuario_id>", view_func=UsuarioController.buscar, methods=["GET"], endpoint="buscar")
-usuario_bp.add_url_rule("/<int:usuario_id>", view_func=UsuarioController.atualizar, methods=["PUT"], endpoint="atualizar")
-usuario_bp.add_url_rule("/<int:usuario_id>", view_func=UsuarioController.deletar, methods=["DELETE"], endpoint="deletar")

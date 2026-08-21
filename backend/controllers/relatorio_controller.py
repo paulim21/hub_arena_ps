@@ -1,5 +1,8 @@
-"""Controller — Relatórios (classe ligada ao recurso /api/relatorios)."""
-from flask import Blueprint, jsonify, request
+"""Controller — Relatórios (classe ligada ao recurso /api/relatorios).
+
+As rotas que apontam para esta classe ficam em `routes.py`.
+"""
+from flask import jsonify, request
 
 from services.relatorio_service import (
     OcupacaoQuadrasService,
@@ -45,11 +48,3 @@ class RelatorioController:
             return jsonify(RankingAtletasService.executar(request.args.get("limite", 10))), 200
         except ValueError as e:
             return jsonify({"erro": str(e)}), 400
-
-
-relatorio_bp = Blueprint("api_relatorios", __name__)
-relatorio_bp.add_url_rule("/resumo", view_func=RelatorioController.resumo, methods=["GET"], endpoint="resumo")
-relatorio_bp.add_url_rule("/reservas-recentes", view_func=RelatorioController.reservas_recentes, methods=["GET"], endpoint="reservas_recentes")
-relatorio_bp.add_url_rule("/receita-arenas", view_func=RelatorioController.receita_arenas, methods=["GET"], endpoint="receita_arenas")
-relatorio_bp.add_url_rule("/ocupacao-quadras", view_func=RelatorioController.ocupacao_quadras, methods=["GET"], endpoint="ocupacao_quadras")
-relatorio_bp.add_url_rule("/ranking-atletas", view_func=RelatorioController.ranking_atletas, methods=["GET"], endpoint="ranking_atletas")

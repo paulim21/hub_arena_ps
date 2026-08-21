@@ -58,14 +58,15 @@ Service     (backend/services/ — uma CLASSE por caso de uso, método executar(
 
 ```
 backend/
-    app.py                  ← Application Factory + registro dos Blueprints
-    extensions.py           ← objeto db (Flask-SQLAlchemy)
-    database.py             ← registro das procedures no banco
     controllers/            ← UsuarioController, ArenaController, QuadraController,
                               ReservaController, RelatorioController (classes)
     services/               ← um Service (classe) por caso de uso
     models/                 ← Usuario, Arena, Quadra, Reserva, ReservaJogador (db.Model)
     repositories/           ← procedures.sql + procedure_runner + repositories
+    routes.py               ← mapa de rotas: URLs → métodos das Controllers
+    extensions.py           ← objeto db (Flask-SQLAlchemy)
+    app.py                  ← Application Factory
+    database.py             ← registro das procedures no banco
 frontend/
     index.html, usuarios.html, arenas.html, quadras.html, reservas.html, relatorios.html
     css/estilo.css          ← tema dark premium (glassmorphism)

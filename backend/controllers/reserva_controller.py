@@ -1,5 +1,8 @@
-"""Controller — Reserva (classe ligada ao recurso /api/reservas)."""
-from flask import Blueprint, jsonify, request
+"""Controller — Reserva (classe ligada ao recurso /api/reservas).
+
+As rotas que apontam para esta classe ficam em `routes.py`.
+"""
+from flask import jsonify, request
 
 from services.reserva_service import (
     AtualizarStatusReservaService,
@@ -58,11 +61,3 @@ class ReservaController:
             return jsonify({"mensagem": "Reserva deletada com sucesso."}), 200
         except LookupError as e:
             return jsonify({"erro": str(e)}), 404
-
-
-reserva_bp = Blueprint("api_reservas", __name__)
-reserva_bp.add_url_rule("", view_func=ReservaController.listar, methods=["GET"], endpoint="listar")
-reserva_bp.add_url_rule("", view_func=ReservaController.criar, methods=["POST"], endpoint="criar")
-reserva_bp.add_url_rule("/<int:reserva_id>", view_func=ReservaController.buscar, methods=["GET"], endpoint="buscar")
-reserva_bp.add_url_rule("/<int:reserva_id>", view_func=ReservaController.atualizar, methods=["PUT"], endpoint="atualizar")
-reserva_bp.add_url_rule("/<int:reserva_id>", view_func=ReservaController.deletar, methods=["DELETE"], endpoint="deletar")

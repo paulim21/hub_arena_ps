@@ -1,5 +1,8 @@
-"""Controller — Quadra (classe ligada ao recurso /api/quadras)."""
-from flask import Blueprint, jsonify, request
+"""Controller — Quadra (classe ligada ao recurso /api/quadras).
+
+As rotas que apontam para esta classe ficam em `routes.py`.
+"""
+from flask import jsonify, request
 
 from services.quadra_service import (
     AtualizarQuadraService,
@@ -73,12 +76,3 @@ class QuadraController:
             return jsonify({"erro": str(e)}), 404
         except ValueError as e:
             return jsonify({"erro": str(e)}), 400
-
-
-quadra_bp = Blueprint("api_quadras", __name__)
-quadra_bp.add_url_rule("", view_func=QuadraController.listar, methods=["GET"], endpoint="listar")
-quadra_bp.add_url_rule("", view_func=QuadraController.criar, methods=["POST"], endpoint="criar")
-quadra_bp.add_url_rule("/disponiveis", view_func=QuadraController.disponiveis, methods=["GET"], endpoint="disponiveis")
-quadra_bp.add_url_rule("/<int:quadra_id>", view_func=QuadraController.buscar, methods=["GET"], endpoint="buscar")
-quadra_bp.add_url_rule("/<int:quadra_id>", view_func=QuadraController.atualizar, methods=["PUT"], endpoint="atualizar")
-quadra_bp.add_url_rule("/<int:quadra_id>", view_func=QuadraController.deletar, methods=["DELETE"], endpoint="deletar")
