@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Arena — Visão geral</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a class="logo" href="/"><span class="bola"></span>HUB<span>ARENA</span></a>
+      <nav>
+        <a href="/" class="ativo">Visão geral</a>
+        <a href="/usuarios">Usuários</a>
+        <a href="/arenas">Arenas</a>
+        <a href="/quadras">Quadras</a>
+        <a href="/reservas">Reservas</a>
+        <a href="/relatorios">Relatórios</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="titulo-pagina">
+      <div>
+        <h1>Comando total da <em>sua arena</em></h1>
+        <p class="subtitulo">
+          Usuários, arenas, quadras e reservas em um só lugar —
+          com anti-overbooking e faturamento calculado em tempo real.
+        </p>
+      </div>
+    </div>
+
+    <div class="cartoes" id="cartoes"></div>
+    <div id="conteudo-extra"></div>
+  </main>
+
+  <footer>HUB ARENA · Flask + SQLite3 + API REST · feito para quem vive o jogo</footer>
+
+  <script src="/js/base.js"></script>
+  <script>
+    // Dashboard: GET /api/relatorios/resumo + /api/relatorios/reservas-recentes
+    async function carregar() {
+      try {
+        var resumo = await HubUI.api('/api/relatorios/resumo');
+        var cartoes = [
+          { rotulo: 'Usuários', valor: resumo.total_usuarios, cor: '#FF6B2C', detalhe: 'atletas, donos e professores' },
+          { rotulo: 'Arenas',   valor: resumo.total_arenas,   cor: '#7C5CFF', detalhe: 'parceiras na plataforma' },
+          { rotulo: 'Quadras',  valor: resumo.total_quadras,  cor: '#FFB56B', detalhe: 'prontas para jogar' },
+          { rotulo: 'Reservas', valor: resumo.total_reservas, cor: '#2DD4A7', detalhe: 'horários agendados' }
+        ];
+        document.getElementById('cartoes').innerHTML = cartoes.map(function (c) {
+          return '<div class="cartao" style="--cor-cartao: ' + c.cor + ';">' +
+                   '<div class="rotulo">' + c.rotulo + '</div>' +
+                   '<div class="numero" data-valor="' + c.valor + '">' + c.valor + '</div>' +
+                   '<div class="detalhe">' + c.detalhe + '</div>' +
+                 '</div>';
+        }).join('') +
+          '<div class="cartao" style="--cor-cartao: #2DD4A7;">' +
+            '<div class="rotulo">Receita</div>' +
+            '<div class="numero" data-valor="' + resumo.receita_total + '" data-prefixo="R$ " data-decimais="2">' +
+              HubUI.moeda(resumo.receita_total) +
+            '</div>' +
+            '<div class="detalhe">total movimentado em reservas</div>' +
+          '</div>';
+
+        var extra = document.getElementById('conteudo-extra');
+        if (resumo.total_usuarios === 0) {
+          extra.innerHTML =
+            '<div class="aviso">' +
+              '<strong>👋 Bem-vindo ao Hub Arena!</strong><br>' +
+              'Comece cadastrando os primeiros usuários — depois crie arenas, quadras e reservas.' +
+              '<br><a class="botao-link" href="/usuarios">Cadastrar primeiro usuário →</a>' +
+            '</div>';
+        } else {
+          var recentes = await HubUI.api('/api/relatorios/reservas-recentes?limite=6');
+          if (recentes.length) {
+            extra.innerHTML =
+              '<div class="painel-vidro">' +
+                '<h2>⚡ Atividade recente</h2>' +
+                '<table>' +
+                  '<tr><th>#</th><th>Quadra</th><th>Arena</th><th>Atleta</th><th>Início</th><th>Valor</th><th>Status</th></tr>' +
+                  recentes.map(function (r) {
+                    return '<tr>' +
+                      '<td><span class="id-pill">' + r.reserva_id + '</span></td>' +
+                      '<td><strong>' + HubUI.esc(r.nome_quadra) + '</strong> <span style="color:#8B93A7; font-size:12px;">· ' + HubUI.esc(r.tipo_esporte) + '</span></td>' +
+                      '<td>' + HubUI.esc(r.nome_arena) + '</td>' +
+                      '<td>' + HubUI.esc(r.nome_usuario || '—') + '</td>' +
+                      '<td class="mono">' + HubUI.dataHora(r.data_hora_inicio) + '</td>' +
+                      '<td><strong>' + HubUI.moeda(r.valor_total) + '</strong></td>' +
+                      '<td><span class="selo ' + HubUI.esc(r.status) + '">' + HubUI.esc(r.status) + '</span></td>' +
+                    '</tr>';
+                  }).join('') +
+                '</table>' +
+              '</div>';
+          }
+        }
+        HubUI.melhorar();
+      } catch (e) {
+        HubUI.erroTopo(e.message);
+      }
+    }
+    carregar();
+  </script>
+</body>
+</html>

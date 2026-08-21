@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Arena — Reservas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a class="logo" href="/"><span class="bola"></span>HUB<span>ARENA</span></a>
+      <nav>
+        <a href="/">Visão geral</a>
+        <a href="/usuarios">Usuários</a>
+        <a href="/arenas">Arenas</a>
+        <a href="/quadras">Quadras</a>
+        <a href="/reservas" class="ativo">Reservas</a>
+        <a href="/relatorios">Relatórios</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="titulo-pagina">
+      <div>
+        <h1>Agenda de <em>reservas</em></h1>
+        <p class="subtitulo">
+          O valor é calculado automaticamente (horas × preço da quadra)
+          e o sistema bloqueia horários em conflito — zero overbooking.
+        </p>
+      </div>
+    </div>
+
+    <div class="painel-vidro" id="lista"></div>
+    <div id="area-form"></div>
+  </main>
+
+  <footer>HUB ARENA · Flask + SQLite3 + API REST · feito para quem vive o jogo</footer>
+
+  <script src="/js/base.js"></script>
+  <script>
+    // Listagem: GET /api/reservas?detalhes=1 (JOIN triplo + jogadores via procedures)
+    async function carregarLista() {
+      var lista = document.getElementById('lista');
+      try {
+        var reservas = await HubUI.api('/api/reservas?detalhes=1');
+        if (!reservas.length) {
+          lista.innerHTML = '<p class="vazio"><span class="icone">📅</span>Nenhuma reserva agendada ainda.</p>';
+          return;
+        }
+        lista.innerHTML = '<table>' +
+          '<tr><th>#</th><th>Quadra</th><th>Jogadores</th><th>Início</th><th>Fim</th><th>Valor</th><th>Status</th><th></th></tr>' +
+          reservas.map(function (r) {
+            return '<tr>' +
+              '<td><span class="id-pill">' + r.reserva_id + '</span></td>' +
+              '<td><strong>' + HubUI.esc(r.nome_quadra) + '</strong>' +
+                '<div style="color:#5A6175; font-size:12px;">' + HubUI.esc(r.nome_arena) + ' · ' + HubUI.esc(r.tipo_esporte) + '</div></td>' +
+              '<td>' + HubUI.esc(r.nome_usuario) + '</td>' +
+              '<td class="mono">' + HubUI.dataHora(r.data_hora_inicio) + '</td>' +
+              '<td class="mono">' + HubUI.dataHora(r.data_hora_fim) + '</td>' +
+              '<td><strong>' + HubUI.moeda(r.valor_total) + '</strong></td>' +
+              '<td><span class="selo ' + HubUI.esc(r.status) + '">' + HubUI.esc(r.status) + '</span></td>' +
+              '<td><div class="acoes">' +
+                (r.status === 'pendente'
+                  ? '<button class="sucesso" data-confirmar-id="' + r.reserva_id + '">Confirmar</button>'
+                  : '') +
+                '<button class="perigo" data-id="' + r.reserva_id + '">Cancelar</button>' +
+              '</div></td>' +
+            '</tr>';
+          }).join('') +
+        '</table>';
+
+        // Confirmar: PUT /api/reservas/<id> com {"status": "confirmada"}
+        lista.querySelectorAll('button.sucesso').forEach(function (btn) {
+          btn.addEventListener('click', async function () {
+            try {
+              await HubUI.api('/api/reservas/' + btn.dataset.confirmarId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'confirmada' })
+              });
+              carregarLista();
+            } catch (e) {
+              HubUI.erroTopo(e.message);
+            }
+          });
+        });
+
+        // Cancelar: modal → DELETE /api/reservas/<id>
+        lista.querySelectorAll('button.perigo').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            HubUI.confirmar({
+              titulo: 'Cancelar reserva',
+              mensagem: 'Tem certeza que deseja cancelar esta reserva? O horário ficará livre para outros jogadores.',
+              botao: 'Sim, cancelar'
+            }, async function () {
+              try {
+                await HubUI.api('/api/reservas/' + btn.dataset.id, { method: 'DELETE' });
+                HubUI.erroTopo('');
+                carregarLista();
+              } catch (e) {
+                HubUI.erroTopo(e.message);
+              }
+            });
+          });
+        });
+      } catch (e) {
+        HubUI.erroTopo(e.message);
+      }
+    }
+
+    // Formulário: quadras (JOIN com arena) e usuários vêm da API
+    async function montarForm() {
+      var area = document.getElementById('area-form');
+      var quadras = await HubUI.api('/api/quadras?detalhes=1');
+      var usuarios = await HubUI.api('/api/usuarios');
+
+      if (!quadras.length || !usuarios.length) {
+        area.innerHTML =
+          '<div class="aviso">' +
+            '<strong>⚠️ Não é possível reservar ainda.</strong>' +
+            '<p style="margin-top: 6px;">Para agendar uma reserva é preciso ter ao menos ' +
+            '<strong>uma quadra</strong> e <strong>um usuário</strong> cadastrados.</p>' +
+            (!quadras.length
+              ? '<a class="botao-link" href="/quadras">Cadastrar uma quadra →</a>'
+              : '<a class="botao-link" href="/usuarios">Cadastrar um usuário →</a>') +
+          '</div>';
+        return;
+      }
+
+      area.innerHTML =
+        '<form class="painel" id="form-reserva">' +
+          '<h2>➕ Nova reserva</h2>' +
+          '<div class="erro-form" id="erro-form" style="display:none;"></div>' +
+          '<label>Quadra<select name="quadra_id" required>' +
+            '<option value="">Selecione a quadra…</option>' +
+            quadras.map(function (q) {
+              return '<option value="' + q.quadra_id + '">' + HubUI.esc(q.nome) + ' — ' +
+                HubUI.esc(q.nome_arena) + ' (' + HubUI.moeda(q.preco_hora) + '/h)</option>';
+            }).join('') +
+          '</select></label>' +
+          '<div class="label-fake">' +
+            '<span class="label-texto">Quem vai jogar</span>' +
+            '<div class="multi-sel" data-placeholder="Selecione os jogadores…">' +
+              usuarios.map(function (u) {
+                return '<label class="multi-sel-item">' +
+                  '<input type="checkbox" name="jogadores" value="' + u.usuario_id + '">' +
+                  '<span>' + HubUI.esc(u.nome) + '</span></label>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<label>Início<input name="data_hora_inicio" type="datetime-local" required></label>' +
+          '<label>Fim<input name="data_hora_fim" type="datetime-local" required></label>' +
+          '<label style="align-self: end; grid-column: 1 / -1;"><button type="submit">Reservar horário</button></label>' +
+        '</form>';
+
+      // Cadastro: POST /api/reservas com corpo JSON (lista de jogadores)
+      document.getElementById('form-reserva').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var erroForm = document.getElementById('erro-form');
+        erroForm.style.display = 'none';
+        var form = this;
+        var jogadores = Array.from(form.querySelectorAll('input[name="jogadores"]:checked'))
+                             .map(function (cb) { return cb.value; });
+        try {
+          await HubUI.api('/api/reservas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              quadra_id: form.elements.quadra_id.value,
+              jogadores: jogadores,
+              data_hora_inicio: form.elements.data_hora_inicio.value,
+              data_hora_fim: form.elements.data_hora_fim.value
+            })
+          });
+          form.reset();
+          form.querySelector('select').dispatchEvent(new Event('change'));
+          form.querySelectorAll('input[type="datetime-local"]').forEach(function (inp) {
+            inp.dispatchEvent(new Event('limpo'));
+          });
+          var ms = form.querySelector('.multi-sel');
+          if (ms && ms.sincronizar) ms.sincronizar();
+          location.reload();
+        } catch (erro) {
+          erroForm.textContent = '🚫 ' + erro.message;
+          erroForm.style.display = 'block';
+        }
+      });
+
+      HubUI.melhorar(area);
+    }
+
+    carregarLista();
+    montarForm().catch(function (e) { HubUI.erroTopo(e.message); });
+  </script>
+</body>
+</html>

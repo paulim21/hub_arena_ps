@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Arena — Quadras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a class="logo" href="/"><span class="bola"></span>HUB<span>ARENA</span></a>
+      <nav>
+        <a href="/">Visão geral</a>
+        <a href="/usuarios">Usuários</a>
+        <a href="/arenas">Arenas</a>
+        <a href="/quadras" class="ativo">Quadras</a>
+        <a href="/reservas">Reservas</a>
+        <a href="/relatorios">Relatórios</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="titulo-pagina">
+      <div>
+        <h1>Quadras em <em>jogo</em></h1>
+        <p class="subtitulo">Cada quadra pertence a uma arena e tem seu preço por hora — base do valor das reservas.</p>
+      </div>
+    </div>
+
+    <div class="filtros" id="filtros" style="display:none;"></div>
+    <div class="painel-vidro" id="lista"></div>
+    <div id="area-form"></div>
+  </main>
+
+  <footer>HUB ARENA · Flask + SQLite3 + API REST · feito para quem vive o jogo</footer>
+
+  <script src="/js/base.js"></script>
+  <script>
+    // Ícone por esporte de areia (apresentação)
+    var ICONES = { 'Futevôlei': '🦶', 'Beach Tennis': '🎾', 'Vôlei de Praia': '🏐', 'Frescobol': '🏖️' };
+    var ESPORTES = ['Futevôlei', 'Beach Tennis', 'Vôlei de Praia', 'Frescobol'];
+    var arenaFiltro = new URLSearchParams(location.search).get('arena_id') || '';
+
+    // Listagem: GET /api/quadras?detalhes=1 ou ?arena_id= (procedures com JOIN)
+    async function carregarLista() {
+      var lista = document.getElementById('lista');
+      try {
+        var url = arenaFiltro ? '/api/quadras?arena_id=' + arenaFiltro : '/api/quadras?detalhes=1';
+        var quadras = await HubUI.api(url);
+        if (!quadras.length) {
+          lista.innerHTML = '<p class="vazio"><span class="icone">🎾</span>Nenhuma quadra cadastrada' +
+            (arenaFiltro ? ' nessa arena' : '') + ' ainda.</p>';
+          return;
+        }
+        lista.innerHTML = '<table>' +
+          '<tr><th>ID</th><th>Quadra</th><th>Esporte</th><th>Arena</th><th>Preço/hora</th><th></th></tr>' +
+          quadras.map(function (q) {
+            return '<tr>' +
+              '<td><span class="id-pill">' + q.quadra_id + '</span></td>' +
+              '<td><strong>' + HubUI.esc(q.nome) + '</strong></td>' +
+              '<td>' + (ICONES[q.tipo_esporte] || '🏅') + ' ' + HubUI.esc(q.tipo_esporte) + '</td>' +
+              '<td>' + HubUI.esc(q.nome_arena) + ' <span style="color:#5A6175; font-size:12px;">· ' + HubUI.esc(q.cidade) + '</span></td>' +
+              '<td><strong>' + HubUI.moeda(q.preco_hora) + '</strong><span style="color:#5A6175; font-size:12px;">/h</span></td>' +
+              '<td><div class="acoes">' +
+                '<button class="perigo" data-id="' + q.quadra_id + '">Excluir</button>' +
+              '</div></td>' +
+            '</tr>';
+          }).join('') +
+        '</table>';
+
+        // Exclusão: modal → DELETE /api/quadras/<id>
+        lista.querySelectorAll('button.perigo').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            HubUI.confirmar({
+              titulo: 'Excluir quadra',
+              mensagem: 'Tem certeza que deseja excluir esta quadra? As reservas ligadas a ela também serão afetadas.',
+              botao: 'Sim, excluir'
+            }, async function () {
+              try {
+                await HubUI.api('/api/quadras/' + btn.dataset.id, { method: 'DELETE' });
+                HubUI.erroTopo('');
+                carregarLista();
+              } catch (e) {
+                HubUI.erroTopo(e.message);
+              }
+            });
+          });
+        });
+      } catch (e) {
+        HubUI.erroTopo(e.message);
+      }
+    }
+
+    // Filtro por arena + formulário (arenas vêm de GET /api/arenas)
+    async function montarFiltroEForm() {
+      var arenas = await HubUI.api('/api/arenas');
+      var area = document.getElementById('area-form');
+
+      if (arenas.length) {
+        var filtros = document.getElementById('filtros');
+        filtros.style.display = '';
+        filtros.innerHTML =
+          '<a href="/quadras" class="' + (!arenaFiltro ? 'ativo' : '') + '">Todas as arenas</a>' +
+          arenas.map(function (a) {
+            return '<a href="/quadras?arena_id=' + a.arena_id + '" class="' +
+              (arenaFiltro === String(a.arena_id) ? 'ativo' : '') + '">' + HubUI.esc(a.nome) + '</a>';
+          }).join('');
+      }
+
+      if (!arenas.length) {
+        area.innerHTML =
+          '<div class="aviso">' +
+            '<strong>⚠️ Não é possível cadastrar quadras ainda.</strong>' +
+            '<p style="margin-top: 6px;">Toda quadra pertence a uma arena, e nenhuma arena foi cadastrada até agora.</p>' +
+            '<a class="botao-link" href="/arenas">Cadastrar uma arena agora →</a>' +
+          '</div>';
+        return;
+      }
+
+      area.innerHTML =
+        '<form class="painel" id="form-quadra">' +
+          '<h2>➕ Cadastrar quadra</h2>' +
+          '<div class="erro-form" id="erro-form" style="display:none;"></div>' +
+          '<label>Arena<select name="arena_id" required>' +
+            '<option value="">Selecione a arena…</option>' +
+            arenas.map(function (a) { return '<option value="' + a.arena_id + '">' + HubUI.esc(a.nome) + '</option>'; }).join('') +
+          '</select></label>' +
+          '<label>Nome da quadra<input name="nome" placeholder="Ex: Quadra Central" required></label>' +
+          '<label>Esporte<select name="tipo_esporte" required>' +
+            '<option value="">Selecione o esporte…</option>' +
+            ESPORTES.map(function (e) { return '<option value="' + e + '">' + (ICONES[e] || '🏅') + ' ' + e + '</option>'; }).join('') +
+          '</select></label>' +
+          '<label>Preço por hora (R$)<input name="preco_hora" type="number" step="0.01" min="0" placeholder="120.00" required></label>' +
+          '<label style="align-self: end; grid-column: 1 / -1;"><button type="submit">Cadastrar quadra</button></label>' +
+        '</form>';
+
+      // Cadastro: POST /api/quadras com corpo JSON
+      document.getElementById('form-quadra').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var erroForm = document.getElementById('erro-form');
+        erroForm.style.display = 'none';
+        var dados = Object.fromEntries(new FormData(this));
+        try {
+          await HubUI.api('/api/quadras', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+          });
+          this.reset();
+          this.querySelectorAll('select').forEach(function (s) { s.dispatchEvent(new Event('change')); });
+          carregarLista();
+        } catch (erro) {
+          erroForm.textContent = '🚫 ' + erro.message;
+          erroForm.style.display = 'block';
+        }
+      });
+
+      HubUI.melhorar(area);
+    }
+
+    carregarLista();
+    montarFiltroEForm().catch(function (e) { HubUI.erroTopo(e.message); });
+  </script>
+</body>
+</html>

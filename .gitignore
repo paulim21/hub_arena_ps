@@ -1,0 +1,7 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+hub_arena.db
+hub_arena.db-shm
+hub_arena.db-wal

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Arena — Relatórios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a class="logo" href="/"><span class="bola"></span>HUB<span>ARENA</span></a>
+      <nav>
+        <a href="/">Visão geral</a>
+        <a href="/usuarios">Usuários</a>
+        <a href="/arenas">Arenas</a>
+        <a href="/quadras">Quadras</a>
+        <a href="/reservas">Reservas</a>
+        <a href="/relatorios" class="ativo">Relatórios</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="titulo-pagina">
+      <div>
+        <h1>Relatórios e <em>consultas avançadas</em></h1>
+        <p class="subtitulo">
+          Todas as consultas desta tela chamam as rotas da API (/api/...),
+          que executam procedures armazenadas no banco pela camada Repository.
+        </p>
+      </div>
+    </div>
+
+    <!-- Receita por arena (JOIN + GROUP BY + ORDER BY) -->
+    <form class="painel" id="form-receita" onsubmit="return false;">
+      <h2>💰 Receita por arena</h2>
+      <label>Início do período
+        <input type="datetime-local" id="receita-inicio">
+      </label>
+      <label>Fim do período
+        <input type="datetime-local" id="receita-fim">
+      </label>
+      <label style="align-self: end;">
+        <span style="visibility:hidden;">enviar</span>
+        <button type="button" onclick="carregarReceita()">Gerar relatório</button>
+      </label>
+    </form>
+    <div class="painel-vidro" id="painel-receita">
+      <p class="vazio"><span class="icone">💰</span>Clique em “Gerar relatório” para consultar a receita por arena.</p>
+    </div>
+
+    <!-- Disponibilidade de quadras (NOT EXISTS anti-overbooking) -->
+    <form class="painel" id="form-disponiveis" onsubmit="return false;">
+      <h2>🔎 Quadras disponíveis no período</h2>
+      <label>Início
+        <input type="datetime-local" id="disp-inicio">
+      </label>
+      <label>Fim
+        <input type="datetime-local" id="disp-fim">
+      </label>
+      <label style="align-self: end;">
+        <span style="visibility:hidden;">enviar</span>
+        <button type="button" onclick="carregarDisponiveis()">Buscar quadras livres</button>
+      </label>
+    </form>
+    <div class="painel-vidro" id="painel-disponiveis">
+      <p class="vazio"><span class="icone">🏖️</span>Informe um período para ver as quadras livres.</p>
+    </div>
+
+    <!-- Agenda da arena (WHERE + JOIN + ORDER BY) -->
+    <form class="painel" id="form-agenda" onsubmit="return false;">
+      <h2>📅 Agenda da arena</h2>
+      <label>Arena
+        <select id="agenda-arena">
+          <option value="">Selecione…</option>
+        </select>
+      </label>
+      <label>Início (opcional)
+        <input type="datetime-local" id="agenda-inicio">
+      </label>
+      <label>Fim (opcional)
+        <input type="datetime-local" id="agenda-fim">
+      </label>
+      <label style="align-self: end;">
+        <span style="visibility:hidden;">enviar</span>
+        <button type="button" onclick="carregarAgenda()">Ver agenda</button>
+      </label>
+    </form>
+    <div class="painel-vidro" id="painel-agenda">
+      <p class="vazio"><span class="icone">📅</span>Escolha uma arena para ver a agenda.</p>
+    </div>
+
+    <!-- Ocupação das quadras + Ranking de atletas (carregam ao abrir) -->
+    <div class="painel-vidro" id="painel-ocupacao">
+      <h2>📊 Ocupação das quadras</h2>
+      <p class="vazio">Carregando…</p>
+    </div>
+
+    <div class="painel-vidro" id="painel-ranking">
+      <h2>🏆 Ranking de atletas</h2>
+      <p class="vazio">Carregando…</p>
+    </div>
+  </main>
+
+  <footer>HUB ARENA · Flask + SQLite3 + API REST · feito para quem vive o jogo</footer>
+
+  <script src="/js/base.js"></script>
+  <script>
+    function tabela(colunas, linhasHtml) {
+      return '<table><tr>' + colunas.map(function (c) { return '<th>' + c + '</th>'; }).join('') + '</tr>' + linhasHtml + '</table>';
+    }
+    function vazio(painel, icone, msg) {
+      painel.insertAdjacentHTML('beforeend', '<p class="vazio"><span class="icone">' + icone + '</span>' + HubUI.esc(msg) + '</p>');
+    }
+    function limpar(painel, titulo) {
+      painel.innerHTML = titulo ? '<h2>' + titulo + '</h2>' : '';
+    }
+    async function chamarApi(url, painel, titulo) {
+      limpar(painel, titulo);
+      try {
+        return await HubUI.api(url);
+      } catch (e) {
+        vazio(painel, '🚫', e.message);
+        return null;
+      }
+    }
+
+    // 💰 Receita por arena → GET /api/relatorios/receita-arenas
+    async function carregarReceita() {
+      var painel = document.getElementById('painel-receita');
+      var p = new URLSearchParams();
+      var inicio = document.getElementById('receita-inicio').value;
+      var fim = document.getElementById('receita-fim').value;
+      if (inicio) p.set('inicio', inicio);
+      if (fim) p.set('fim', fim);
+      var dados = await chamarApi('/api/relatorios/receita-arenas?' + p, painel, '💰 Receita por arena');
+      if (!dados) return;
+      if (!dados.length) return vazio(painel, '💰', 'Nenhuma arena cadastrada.');
+      painel.insertAdjacentHTML('beforeend', tabela(
+        ['Arena', 'Cidade', 'Reservas', 'Receita', 'Ticket médio'],
+        dados.map(function (l) {
+          return '<tr><td><strong>' + HubUI.esc(l.nome_arena) + '</strong></td><td>' + HubUI.esc(l.cidade) +
+                 '</td><td>' + l.total_reservas + '</td><td><strong>' + HubUI.moeda(l.receita) +
+                 '</strong></td><td>' + HubUI.moeda(l.ticket_medio) + '</td></tr>';
+        }).join('')
+      ));
+    }
+
+    // 🔎 Quadras disponíveis → GET /api/quadras/disponiveis
+    async function carregarDisponiveis() {
+      var painel = document.getElementById('painel-disponiveis');
+      var inicio = document.getElementById('disp-inicio').value;
+      var fim = document.getElementById('disp-fim').value;
+      var p = new URLSearchParams({ inicio: inicio, fim: fim });
+      var dados = await chamarApi('/api/quadras/disponiveis?' + p, painel, '🔎 Quadras disponíveis');
+      if (!dados) return;
+      if (!dados.length) return vazio(painel, '😞', 'Nenhuma quadra livre nesse período.');
+      painel.insertAdjacentHTML('beforeend', tabela(
+        ['Quadra', 'Esporte', 'Arena', 'Cidade', 'Preço/hora'],
+        dados.map(function (l) {
+          return '<tr><td><strong>' + HubUI.esc(l.nome_quadra) + '</strong></td><td>' + HubUI.esc(l.tipo_esporte) +
+                 '</td><td>' + HubUI.esc(l.nome_arena) + '</td><td>' + HubUI.esc(l.cidade) +
+                 '</td><td>' + HubUI.moeda(l.preco_hora) + '</td></tr>';
+        }).join('')
+      ));
+    }
+
+    // 📅 Agenda da arena → GET /api/arenas/<id>/agenda
+    async function carregarAgenda() {
+      var painel = document.getElementById('painel-agenda');
+      var arenaId = document.getElementById('agenda-arena').value;
+      if (!arenaId) { limpar(painel, '📅 Agenda da arena'); return vazio(painel, '📅', 'Selecione uma arena.'); }
+      var p = new URLSearchParams();
+      var inicio = document.getElementById('agenda-inicio').value;
+      var fim = document.getElementById('agenda-fim').value;
+      if (inicio) p.set('inicio', inicio);
+      if (fim) p.set('fim', fim);
+      var dados = await chamarApi('/api/arenas/' + arenaId + '/agenda?' + p, painel, '📅 Agenda da arena');
+      if (!dados) return;
+      if (!dados.length) return vazio(painel, '🗓️', 'Nenhuma reserva para essa arena no período.');
+      painel.insertAdjacentHTML('beforeend', tabela(
+        ['#', 'Quadra', 'Jogadores', 'Início', 'Fim', 'Valor', 'Status'],
+        dados.map(function (l) {
+          return '<tr><td><span class="id-pill">' + l.reserva_id + '</span></td><td><strong>' + HubUI.esc(l.nome_quadra) +
+                 '</strong></td><td>' + HubUI.esc(l.jogadores || '—') +
+                 '</td><td class="mono">' + HubUI.dataHora(l.data_hora_inicio) +
+                 '</td><td class="mono">' + HubUI.dataHora(l.data_hora_fim) +
+                 '</td><td><strong>' + HubUI.moeda(l.valor_total) + '</strong></td><td><span class="selo ' +
+                 HubUI.esc(l.status) + '">' + HubUI.esc(l.status) + '</span></td></tr>';
+        }).join('')
+      ));
+    }
+
+    // 📊 Ocupação → GET /api/relatorios/ocupacao-quadras
+    async function carregarOcupacao() {
+      var painel = document.getElementById('painel-ocupacao');
+      var dados = await chamarApi('/api/relatorios/ocupacao-quadras', painel, '📊 Ocupação das quadras');
+      if (!dados) return;
+      if (!dados.length) return vazio(painel, '📊', 'Nenhuma quadra cadastrada ainda.');
+      painel.insertAdjacentHTML('beforeend', tabela(
+        ['Quadra', 'Esporte', 'Arena', 'Reservas', 'Horas reservadas', 'Receita'],
+        dados.map(function (l) {
+          return '<tr><td><strong>' + HubUI.esc(l.nome_quadra) + '</strong></td><td>' + HubUI.esc(l.tipo_esporte) +
+                 '</td><td>' + HubUI.esc(l.nome_arena) + '</td><td>' + l.total_reservas +
+                 '</td><td>' + l.horas_reservadas + 'h</td><td><strong>' + HubUI.moeda(l.receita) + '</strong></td></tr>';
+        }).join('')
+      ));
+    }
+
+    // 🏆 Ranking → GET /api/relatorios/ranking-atletas
+    async function carregarRanking() {
+      var painel = document.getElementById('painel-ranking');
+      var dados = await chamarApi('/api/relatorios/ranking-atletas?limite=10', painel, '🏆 Ranking de atletas');
+      if (!dados) return;
+      if (!dados.length) return vazio(painel, '🏆', 'Nenhum jogo registrado ainda.');
+      painel.insertAdjacentHTML('beforeend', tabela(
+        ['Posição', 'Atleta', 'Tipo', 'Jogos', 'Horas jogadas'],
+        dados.map(function (l, i) {
+          var medalha = ['🥇', '🥈', '🥉'][i] || (i + 1) + 'º';
+          return '<tr><td>' + medalha + '</td><td><strong>' + HubUI.esc(l.nome) + '</strong></td><td><span class="selo ' +
+                 HubUI.esc(l.tipo_usuario) + '">' + HubUI.esc(l.tipo_usuario) + '</span></td><td>' + l.total_jogos +
+                 '</td><td>' + l.horas_jogadas + 'h</td></tr>';
+        }).join('')
+      ));
+    }
+
+    // Preenche o select de arenas: GET /api/arenas
+    async function montarSelectArenas() {
+      var sel = document.getElementById('agenda-arena');
+      try {
+        var arenas = await HubUI.api('/api/arenas');
+        arenas.forEach(function (a) {
+          var opt = document.createElement('option');
+          opt.value = a.arena_id;
+          opt.textContent = a.nome + ' — ' + a.cidade;
+          sel.appendChild(opt);
+        });
+      } catch (e) { /* segue sem opções */ }
+      HubUI.melhorar();
+    }
+
+    carregarOcupacao();
+    carregarRanking();
+    montarSelectArenas();
+  </script>
+</body>
+</html>

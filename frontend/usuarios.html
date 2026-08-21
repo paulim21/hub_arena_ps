@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Arena — Usuários</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a class="logo" href="/"><span class="bola"></span>HUB<span>ARENA</span></a>
+      <nav>
+        <a href="/">Visão geral</a>
+        <a href="/usuarios" class="ativo">Usuários</a>
+        <a href="/arenas">Arenas</a>
+        <a href="/quadras">Quadras</a>
+        <a href="/reservas">Reservas</a>
+        <a href="/relatorios">Relatórios</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="titulo-pagina">
+      <div>
+        <h1>Usuários da <em>comunidade</em></h1>
+        <p class="subtitulo">Atletas que jogam, donos que administram e professores que ensinam.</p>
+      </div>
+    </div>
+
+    <!-- Filtro por tipo: links com querystring (?tipo=), lidos pelo JS -->
+    <div class="filtros" id="filtros">
+      <a href="/usuarios" data-tipo="">Todos</a>
+      <a href="/usuarios?tipo=atleta" data-tipo="atleta">Atleta</a>
+      <a href="/usuarios?tipo=dono" data-tipo="dono">Dono</a>
+      <a href="/usuarios?tipo=professor" data-tipo="professor">Professor</a>
+    </div>
+
+    <!-- Busca textual: GET /api/usuarios/busca?q= (procedure sp_busca_usuarios) -->
+    <form class="painel" id="form-busca" style="margin-top: 18px;">
+      <h2>🔎 Buscar usuário</h2>
+      <label>Nome ou e-mail
+        <input id="busca-termo" placeholder="Ex: ana ou @email.com">
+      </label>
+      <label style="align-self: end;">
+        <span style="visibility:hidden;">enviar</span>
+        <button type="submit">Buscar</button>
+      </label>
+    </form>
+
+    <div class="painel-vidro" id="lista"></div>
+
+    <!-- Formulário: envia JSON via fetch para POST /api/usuarios -->
+    <form class="painel" id="form-usuario">
+      <h2>➕ Cadastrar usuário</h2>
+      <div class="erro-form" id="erro-form" style="display:none;"></div>
+      <label>Nome completo
+        <input name="nome" placeholder="Ex: Ana Souza" required>
+      </label>
+      <label>E-mail
+        <input name="email" type="email" placeholder="ana@email.com" required>
+      </label>
+      <label>Senha
+        <input name="senha" type="password" placeholder="••••••••" required>
+      </label>
+      <label>Telefone
+        <input name="telefone" placeholder="(31) 99999-0000" required>
+      </label>
+      <label>Tipo de usuário
+        <select name="tipo_usuario" required>
+          <option value="">Selecione…</option>
+          <option value="atleta">🏃 Atleta</option>
+          <option value="dono">🏟️ Dono de arena</option>
+          <option value="professor">🎓 Professor</option>
+        </select>
+      </label>
+      <label style="align-self: end;">
+        <span style="visibility:hidden;">enviar</span>
+        <button type="submit">Cadastrar usuário</button>
+      </label>
+    </form>
+  </main>
+
+  <footer>HUB ARENA · Flask + SQLite3 + API REST · feito para quem vive o jogo</footer>
+
+  <script src="/js/base.js"></script>
+  <script>
+    var tipoFiltro = new URLSearchParams(location.search).get('tipo') || '';
+    document.querySelectorAll('#filtros a').forEach(function (a) {
+      a.classList.toggle('ativo', a.dataset.tipo === tipoFiltro);
+    });
+
+    function renderizarLista(usuarios, msgVazio) {
+      var lista = document.getElementById('lista');
+      if (!usuarios.length) {
+        lista.innerHTML = '<p class="vazio"><span class="icone">🏐</span>' + msgVazio + '</p>';
+        return;
+      }
+      lista.innerHTML = '<table>' +
+        '<tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Tipo</th><th></th></tr>' +
+        usuarios.map(function (u) {
+          return '<tr>' +
+            '<td><span class="id-pill">' + u.usuario_id + '</span></td>' +
+            '<td><strong>' + HubUI.esc(u.nome) + '</strong></td>' +
+            '<td>' + HubUI.esc(u.email) + '</td>' +
+            '<td class="mono">' + HubUI.esc(u.telefone) + '</td>' +
+            '<td><span class="selo ' + HubUI.esc(u.tipo_usuario) + '">' + HubUI.esc(u.tipo_usuario) + '</span></td>' +
+            '<td><div class="acoes">' +
+              '<button class="perigo" data-id="' + u.usuario_id + '">Excluir</button>' +
+            '</div></td>' +
+          '</tr>';
+        }).join('') +
+      '</table>';
+
+      // Exclusão: modal de confirmação → DELETE /api/usuarios/<id>
+      lista.querySelectorAll('button.perigo').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          HubUI.confirmar({
+            titulo: 'Excluir usuário',
+            mensagem: 'Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.',
+            botao: 'Sim, excluir'
+          }, async function () {
+            try {
+              await HubUI.api('/api/usuarios/' + btn.dataset.id, { method: 'DELETE' });
+              HubUI.erroTopo('');
+              carregarLista();
+            } catch (e) {
+              HubUI.erroTopo(e.message);
+            }
+          });
+        });
+      });
+    }
+
+    // Listagem: GET /api/usuarios (com filtro → procedure sp_usuarios_por_tipo)
+    async function carregarLista() {
+      try {
+        var usuarios = await HubUI.api('/api/usuarios' + (tipoFiltro ? '?tipo=' + tipoFiltro : ''));
+        renderizarLista(usuarios, 'Nenhum usuário encontrado' +
+          (tipoFiltro ? ' para o filtro "' + HubUI.esc(tipoFiltro) + '"' : '') + '.');
+      } catch (e) {
+        HubUI.erroTopo(e.message);
+      }
+    }
+
+    // Busca textual: GET /api/usuarios/busca?q= (procedure sp_busca_usuarios)
+    document.getElementById('form-busca').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var termo = document.getElementById('busca-termo').value.trim();
+      if (!termo) { carregarLista(); return; }
+      try {
+        var usuarios = await HubUI.api('/api/usuarios/busca?q=' + encodeURIComponent(termo));
+        renderizarLista(usuarios, 'Nenhum usuário encontrado para "' + HubUI.esc(termo) + '".');
+      } catch (erro) {
+        HubUI.erroTopo(erro.message);
+      }
+    });
+
+    // Cadastro: POST /api/usuarios com corpo JSON
+    document.getElementById('form-usuario').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var erroForm = document.getElementById('erro-form');
+      erroForm.style.display = 'none';
+      var dados = Object.fromEntries(new FormData(this));
+      try {
+        await HubUI.api('/api/usuarios', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dados)
+        });
+        this.reset();
+        this.querySelector('select').dispatchEvent(new Event('change'));
+        carregarLista();
+      } catch (erro) {
+        erroForm.textContent = '🚫 ' + erro.message;
+        erroForm.style.display = 'block';
+      }
+    });
+
+    carregarLista();
+    HubUI.melhorar();
+  </script>
+</body>
+</html>
