@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <title>ArenaHub</title>
+  <!--
+    O monograma AH sobre a faixa de areia. Este arquivo é servido solto
+    pelo navegador, fora do CSS, então traz as cores literalmente e o
+    próprio prefers-color-scheme — é a única exceção à regra de que
+    toda cor nasce no tokens.css.
+  -->
+  <style>
+    .papel { fill: #F4F1EB; }
+    .traco { fill: none; stroke: #1B2A4A; stroke-width: 2.4;
+             stroke-linecap: round; stroke-linejoin: round; }
+    .areia { fill: none; stroke: #EFD6B0; stroke-width: 2.4; stroke-linecap: round; }
+    @media (prefers-color-scheme: dark) {
+      .papel { fill: #101419; }
+      .traco { stroke: #9BB8E8; }
+      .areia { stroke: #00204A; }
+    }
+  </style>
+  <rect class="papel" width="32" height="32" rx="7"/>
+  <path class="traco" d="M5 23 10 8l5 15"/>
+  <path class="traco" d="M7.1 18.2h5.8"/>
+  <path class="traco" d="M20 8v15M27 8v15M20 15.2h7"/>
+  <path class="areia" d="M4.5 26.5c7 1.8 16 1.6 23-.2"/>
+</svg>

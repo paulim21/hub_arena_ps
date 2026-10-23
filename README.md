@@ -1,4 +1,4 @@
-# Hub Arena 🏟️
+# ArenaHub
 
 Plataforma Vertical SaaS de gestão de arenas de esportes de areia: usuários,
 arenas, quadras e reservas com **anti-overbooking**, **valor calculado
@@ -6,9 +6,10 @@ automaticamente** e **relatórios via procedures no banco**.
 
 - **Backend:** Flask (API REST) + Flask-SQLAlchemy + SQLite
 - **Frontend:** HTML + CSS + JavaScript puro (sem Jinja2 / render_template),
-  consumindo a API via `fetch`
+  consumindo a API via `fetch` — com sistema de design próprio, tema claro e
+  escuro e **43 ícones em traço** (nenhum emoji na interface)
 
-## ✅ Funcionalidades Implementadas
+## Funcionalidades Implementadas
 
 Todas disponíveis de ponta a ponta
 (**Tela → API Flask → Controller → Service → Model/Repository → Banco**):
@@ -34,7 +35,7 @@ Todas disponíveis de ponta a ponta
 19. **Busca de quadras disponíveis por período** (NOT EXISTS — procedure `sp_quadras_disponiveis`)
 20. **Agenda da arena por período** (procedure `sp_agenda_arena`)
 
-## 📐 Diagrama de classes
+## Diagrama de classes
 
 O diagrama de classes do domínio está na pasta [`docs/`](docs):
 
@@ -48,7 +49,7 @@ Ele representa as cinco Models de [`backend/models/`](backend/models) —
 `db.Model`, com `Arena ◆— Quadra` e `Reserva ◆— ReservaJogador` como
 composições e as demais ligações como agregações.
 
-## 🏛️ Arquitetura (padrão do material da disciplina)
+## Arquitetura (padrão do material da disciplina)
 
 ```
 Tela (frontend/ — HTML + JS puro, fetch nas rotas /api/...)
@@ -83,10 +84,16 @@ backend/
     database.py             ← registro das procedures no banco
 frontend/
     index.html, usuarios.html, arenas.html, quadras.html, reservas.html, relatorios.html
-    css/estilo.css          ← tema dark premium (glassmorphism)
-    js/base.js              ← wrapper do fetch, componentes de UI e modal
+    css/tokens.css          ← TODOS os valores da identidade (cor, texto, espaço)
+    css/estilo.css          ← só componentes, nenhuma cor literal
+    js/tema.js              ← tema e densidade, antes da primeira pintura
+    js/base.js              ← fetch, ícones, <dialog>, menus e formatos
+    img/icones.svg          ← os 43 ícones em traço (a fonte do sprite)
+    img/favicon.svg         ← o monograma AH
 docs/
     diagrama-classes.md     ← diagrama de classes do domínio (+ .svg)
+IDENTIDADE_VISUAL.md        ← o porquê das cores, com as tabelas de contraste
+.claude/skills/design/      ← a skill de design + o verificador da identidade
 ```
 
 > **Sobre as procedures no SQLite:** o SQLite é um banco embarcado e não possui
@@ -98,7 +105,39 @@ docs/
 > [`procedure_runner.py`](backend/repositories/procedure_runner.py) —
 > Controller e Service nunca executam SQL diretamente.
 
-## 🔌 Rotas da API
+## Identidade visual
+
+O front-end tem um sistema de design documentado e **verificado por máquina**:
+
+- [`IDENTIDADE_VISUAL.md`](IDENTIDADE_VISUAL.md) — o porquê de cada decisão e as
+  tabelas de contraste (WCAG 2.1), que são **contrato**.
+- [`frontend/css/tokens.css`](frontend/css/tokens.css) — todos os valores. Fora
+  dele não existe cor, tamanho, espaço, raio, borda ou duração literal.
+- [`.claude/skills/design/SKILL.md`](.claude/skills/design/SKILL.md) — como
+  trabalhar nele: o que já existe, o que não fazer, e as armadilhas conhecidas.
+
+A marca vem da logo: **navy escreve, a areia é chão**, sobre papel creme. Tema
+claro e escuro medidos separadamente, densidade confortável/compacta, foco
+visível de duas cores e 44px de área de toque no celular.
+
+**Nenhum emoji na interface.** Emoji muda de forma entre aparelhos, não aceita
+o peso do traço da marca e não herda cor — no lugar dele vão os 43 ícones de
+[`frontend/img/icones.svg`](frontend/img/icones.svg), em `viewBox 24` e
+`stroke-width 1.8`.
+
+Para conferir que nada saiu do contrato (224 verificações):
+
+```bash
+python .claude/skills/design/verificar-identidade.py
+```
+
+E, depois de mexer no sprite de ícones:
+
+```bash
+python .claude/skills/design/embutir-icones.py
+```
+
+## Rotas da API
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
@@ -119,18 +158,18 @@ docs/
 | GET | `/api/relatorios/ocupacao-quadras` | Ocupação por quadra |
 | GET | `/api/relatorios/ranking-atletas` | Ranking de atletas |
 
-## 🖥️ Telas do frontend
+## Telas do frontend
 
 | Página | O que faz |
 |--------|-----------|
-| `/` | Dashboard: contadores animados, receita total e atividade recente |
+| `/` | Visão geral: contadores animados, receita total e atividade recente |
 | `/usuarios` | Tabela + cadastro + filtro por tipo + **busca por nome/e-mail** + exclusão |
 | `/arenas` | Tabela com dono e nº de quadras + cadastro + exclusão |
 | `/quadras` | Tabela com arena + filtro por arena + cadastro + exclusão |
 | `/reservas` | Agenda com anti-overbooking, valor automático, confirmar/cancelar |
 | `/relatorios` | Receita por arena, ocupação, ranking, quadras disponíveis e agenda |
 
-## 🧠 Regras de negócio
+## Regras de negócio
 
 - **Arena precisa de dono**: só usuários do tipo `dono` podem ser responsáveis.
 - **Quadra pertence a uma arena**: validação de FK na API e fluxo guiado no painel.
@@ -141,7 +180,7 @@ docs/
 - **Exclusões protegidas**: FKs impedem excluir registros com vínculos, com
   mensagem amigável na tela.
 
-## 🚀 Como rodar
+## Como rodar
 
 ```bash
 python -m venv venv

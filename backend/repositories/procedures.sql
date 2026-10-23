@@ -1,5 +1,5 @@
 -- ============================================================
--- PROCEDURES DO HUB ARENA
+-- PROCEDURES DO ARENAHUB
 --
 -- O SQLite não possui CREATE PROCEDURE (é um banco embarcado).
 -- Por isso, cada procedure abaixo é armazenada NA TABELA `procedures`

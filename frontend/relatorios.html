@@ -3,133 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hub Arena — Relatórios</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <title>ArenaHub — Relatórios</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/estilo.css">
+  <script src="/js/tema.js"></script>
 </head>
 <body>
+  <!-- sprite:inicio --><svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-futevolei" viewBox="0 0 24 24">
+  <circle cx="15.5" cy="6.5" r="3.5"/>
+  <path d="M3 20.5h6.5a3 3 0 0 0 3-3V14"/>
+  <path d="M3 20.5V17a2 2 0 0 1 2-2h3"/>
+</symbol><symbol id="i-beach-tennis" viewBox="0 0 24 24">
+  <ellipse cx="11" cy="9" rx="6.5" ry="7.5"/>
+  <path d="M11 16.5V21"/>
+  <path d="M8.5 21h5"/>
+  <path d="M7 7.5h8M7 10.5h8M11 3v12"/>
+</symbol><symbol id="i-volei" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M12 3c-3.2 3.2-4.2 7.4-3 12"/>
+  <path d="M20.6 9.4c-4.4-1.2-8.6-.2-11.8 3"/>
+  <path d="M6.3 19.6c2.4-3.8 5.9-6 10.4-6.3"/>
+</symbol><symbol id="i-frescobol" viewBox="0 0 24 24">
+  <path d="M9 3.5a5 5 0 0 1 0 9.5 5 5 0 0 1 0-9.5Z"/>
+  <path d="M9 13v7.5"/>
+  <path d="M7 20.5h4"/>
+  <circle cx="18.5" cy="16.5" r="2.5"/>
+</symbol><symbol id="i-esporte" viewBox="0 0 24 24">
+  <circle cx="12" cy="9.5" r="6.5"/>
+  <path d="M12 3v13M5.5 9.5h13"/>
+  <path d="M8.5 15.5 7 21.5l5-2.4 5 2.4-1.5-6"/>
+</symbol><symbol id="i-arena" viewBox="0 0 24 24">
+  <path d="M3 9.5v8.5c0 1.4 4 2.5 9 2.5s9-1.1 9-2.5V9.5"/>
+  <ellipse cx="12" cy="7" rx="9" ry="3"/>
+  <path d="M7.5 10.5v8M16.5 10.5v8M12 10.5v9"/>
+</symbol><symbol id="i-quadra" viewBox="0 0 24 24">
+  <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
+  <path d="M12 5v14"/>
+  <path d="M2.5 12h3M18.5 12h3"/>
+  <circle cx="12" cy="12" r="2.5"/>
+</symbol><symbol id="i-local" viewBox="0 0 24 24">
+  <path d="M12 21.5s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/>
+  <circle cx="12" cy="10.5" r="2.8"/>
+</symbol><symbol id="i-agenda" viewBox="0 0 24 24">
+  <rect x="3" y="5" width="18" height="16" rx="2.5"/>
+  <path d="M3 10h18M8 3v4M16 3v4"/>
+</symbol><symbol id="i-agenda-mais" viewBox="0 0 24 24">
+  <path d="M21 11.5V7.5A2.5 2.5 0 0 0 18.5 5h-13A2.5 2.5 0 0 0 3 7.5v11A2.5 2.5 0 0 0 5.5 21h6"/>
+  <path d="M3 10h18M8 3v4M16 3v4"/>
+  <path d="M18 14.5v6M15 17.5h6"/>
+</symbol><symbol id="i-agenda-ok" viewBox="0 0 24 24">
+  <path d="M21 11.5V7.5A2.5 2.5 0 0 0 18.5 5h-13A2.5 2.5 0 0 0 3 7.5v11A2.5 2.5 0 0 0 5.5 21h6"/>
+  <path d="M3 10h18M8 3v4M16 3v4"/>
+  <path d="m14.5 17.5 2.5 2.5 4.5-4.5"/>
+</symbol><symbol id="i-relogio" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M12 6.5V12l3.5 2.5"/>
+</symbol><symbol id="i-dinheiro" viewBox="0 0 24 24">
+  <rect x="2.5" y="6" width="19" height="12" rx="2"/>
+  <circle cx="12" cy="12" r="2.8"/>
+  <path d="M6 10v4M18 10v4"/>
+</symbol><symbol id="i-grafico" viewBox="0 0 24 24">
+  <path d="M4 3v16.5A1.5 1.5 0 0 0 5.5 21H21"/>
+  <path d="M8 16.5v-4M12.5 16.5v-8M17 16.5v-5.5"/>
+</symbol><symbol id="i-trofeu" viewBox="0 0 24 24">
+  <path d="M7.5 3.5h9v6a4.5 4.5 0 0 1-9 0v-6Z"/>
+  <path d="M7.5 5.5H5A2 2 0 0 0 5 9.5h2.5M16.5 5.5H19a2 2 0 0 1 0 4h-2.5"/>
+  <path d="M12 14v3.5M8.5 20.5h7M9.5 17.5h5l1 3h-7l1-3Z"/>
+</symbol><symbol id="i-registro" viewBox="0 0 24 24">
+  <path d="M8 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/>
+  <rect x="8" y="2.5" width="8" height="4" rx="1.3"/>
+  <path d="M8.5 11.5h7M8.5 15.5h4.5"/>
+</symbol><symbol id="i-busca" viewBox="0 0 24 24">
+  <circle cx="10.5" cy="10.5" r="6.5"/>
+  <path d="m15.5 15.5 5 5"/>
+</symbol><symbol id="i-busca-vazia" viewBox="0 0 24 24">
+  <circle cx="10.5" cy="10.5" r="6.5"/>
+  <path d="m15.5 15.5 5 5"/>
+  <path d="M7.8 10.5h5.4"/>
+</symbol><symbol id="i-ok" viewBox="0 0 24 24">
+  <path d="m4.5 12.5 5 5 10-11"/>
+</symbol><symbol id="i-ok-circulo" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="m7.5 12.5 3 3 6-6.5"/>
+</symbol><symbol id="i-x" viewBox="0 0 24 24">
+  <path d="M6 6l12 12M18 6 6 18"/>
+</symbol><symbol id="i-x-circulo" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="m8.5 8.5 7 7M15.5 8.5l-7 7"/>
+</symbol><symbol id="i-alerta" viewBox="0 0 24 24">
+  <path d="M12 3.5 21.5 20H2.5L12 3.5Z"/>
+  <path d="M12 9.5v4.5M12 17.2v.3"/>
+</symbol><symbol id="i-proibido" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="m5.6 5.6 12.8 12.8"/>
+</symbol><symbol id="i-barrado" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M7.5 12h9"/>
+</symbol><symbol id="i-faisca" viewBox="0 0 24 24">
+  <path d="M13.5 2.5 4.5 13.5h6l-1 8 10-11.5h-6.5l.5-7.5Z"/>
+</symbol><symbol id="i-usuario" viewBox="0 0 24 24">
+  <circle cx="12" cy="8" r="4"/>
+  <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>
+</symbol><symbol id="i-usuario-mais" viewBox="0 0 24 24">
+  <circle cx="10" cy="8" r="4"/>
+  <path d="M2.5 20.5a7.5 7.5 0 0 1 15 0"/>
+  <path d="M19 6.5v6M16 9.5h6"/>
+</symbol><symbol id="i-atleta" viewBox="0 0 24 24">
+  <circle cx="14.5" cy="4.5" r="2.5"/>
+  <path d="M8 21.5 11 15l-2.5-2.5 1.5-4 3 2.5 3 1"/>
+  <path d="m11 15 3.5 2 1.5 4.5M9.5 8.5 6 9.5"/>
+</symbol><symbol id="i-escudo" viewBox="0 0 24 24">
+  <path d="M12 2.5 4.5 5.5v6c0 4.7 3.2 8.8 7.5 10 4.3-1.2 7.5-5.3 7.5-10v-6L12 2.5Z"/>
+</symbol><symbol id="i-formatura" viewBox="0 0 24 24">
+  <path d="M12 3.5 22 8.5l-10 5-10-5 10-5Z"/>
+  <path d="M6.5 11v5.5c0 1.4 2.5 2.5 5.5 2.5s5.5-1.1 5.5-2.5V11"/>
+  <path d="M21 9.5v5"/>
+</symbol><symbol id="i-oculto" viewBox="0 0 24 24">
+  <path d="M3 12s3.5-6.5 9-6.5S21 12 21 12s-3.5 6.5-9 6.5S3 12 3 12Z"/>
+  <circle cx="12" cy="12" r="2.8"/>
+  <path d="m4 20 16-16"/>
+</symbol><symbol id="i-mais" viewBox="0 0 24 24">
+  <path d="M12 5v14M5 12h14"/>
+</symbol><symbol id="i-lixeira" viewBox="0 0 24 24">
+  <path d="M3.5 6.5h17"/>
+  <path d="M8.5 6.5v-2a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/>
+  <path d="M18.5 6.5v13a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-13"/>
+  <path d="M10 11v6M14 11v6"/>
+</symbol><symbol id="i-seta" viewBox="0 0 24 24">
+  <path d="M4.5 12h15M13.5 6l6 6-6 6"/>
+</symbol><symbol id="i-sair" viewBox="0 0 24 24">
+  <path d="M15 4.5h2.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H15"/>
+  <path d="M10 8.5 6 12l4 3.5M6 12h9"/>
+</symbol><symbol id="i-entrada" viewBox="0 0 24 24">
+  <path d="M9 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H9"/>
+  <path d="m14 8.5 3.5 3.5-3.5 3.5M17.5 12h-9"/>
+</symbol><symbol id="i-saida" viewBox="0 0 24 24">
+  <path d="M15 4.5h2.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H15"/>
+  <path d="m10 8.5-3.5 3.5L10 15.5M6.5 12h9"/>
+</symbol><symbol id="i-sol" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="4.5"/>
+  <path d="M12 2.5v2.5M12 19v2.5M21.5 12H19M5 12H2.5M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8M18.7 18.7l-1.8-1.8M7.1 7.1 5.3 5.3"/>
+</symbol><symbol id="i-lua" viewBox="0 0 24 24">
+  <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/>
+</symbol><symbol id="i-arejado" viewBox="0 0 24 24">
+  <path d="M4 6.5h16M4 12h16M4 17.5h16"/>
+</symbol><symbol id="i-denso" viewBox="0 0 24 24">
+  <path d="M4 5.5h16M4 9.5h16M4 13.5h16M4 17.5h16"/>
+</symbol><symbol id="i-monograma" viewBox="0 0 24 24">
+  <path d="M2.5 18.5 7.5 4l5 14.5"/>
+  <path d="M4.6 13.5h5.8"/>
+  <path d="M16 4v14.5M21.5 4v14.5M16 11.5h5.5"/>
+  <path d="M2 21.2c6 1.6 15 1.4 20-.2"/>
+</symbol></svg><!-- sprite:fim -->
+
   <header>
     <div class="nav-inner">
-      <a class="logo" href="/"><span class="bola"></span>HUB<span>ARENA</span></a>
+      <a class="logo" href="/">
+        <svg class="ico-marca" aria-hidden="true" focusable="false"><use href="#i-monograma"></use></svg>
+        <span>Arena<em>Hub</em></span>
+      </a>
       <nav>
         <a href="/">Visão geral</a>
         <a href="/usuarios">Usuários</a>
         <a href="/arenas">Arenas</a>
         <a href="/quadras">Quadras</a>
         <a href="/reservas">Reservas</a>
-        <a href="/relatorios" class="ativo">Relatórios</a>
+        <a href="/relatorios" class="ativo" aria-current="page">Relatórios</a>
+        <span class="sessao-nav">
+          <button type="button" class="botao-tema"></button>
+          <button type="button" class="botao-densidade"></button>
+        </span>
       </nav>
     </div>
   </header>
 
   <main>
     <div class="titulo-pagina">
-      <div>
-        <h1>Relatórios e <em>consultas avançadas</em></h1>
-        <p class="subtitulo">
-          Todas as consultas desta tela chamam as rotas da API (/api/...),
-          que executam procedures armazenadas no banco pela camada Repository.
-        </p>
-      </div>
+      <h1>Relatórios e <em>consultas avançadas</em></h1>
+      <p class="subtitulo">
+        Cada consulta desta tela chama uma rota da API, que executa uma procedure
+        armazenada no banco pela camada Repository.
+      </p>
     </div>
 
-    <!-- Receita por arena (JOIN + GROUP BY + ORDER BY) -->
-    <form class="painel" id="form-receita" onsubmit="return false;">
-      <h2>💰 Receita por arena</h2>
-      <label>Início do período
-        <input type="datetime-local" id="receita-inicio">
-      </label>
-      <label>Fim do período
-        <input type="datetime-local" id="receita-fim">
-      </label>
-      <label style="align-self: end;">
-        <span style="visibility:hidden;">enviar</span>
-        <button type="button" onclick="carregarReceita()">Gerar relatório</button>
-      </label>
+    <!-- Receita por arena (JOIN + GROUP BY) -->
+    <form class="painel" id="form-receita">
+      <h2 id="h-receita">Receita por arena</h2>
+      <label><span class="rotulo">Início do período</span>
+        <input type="datetime-local" id="receita-inicio"></label>
+      <label><span class="rotulo">Fim do período</span>
+        <input type="datetime-local" id="receita-fim"></label>
+      <label><span class="invisivel rotulo">gerar</span>
+        <button type="submit">Gerar relatório</button></label>
     </form>
-    <div class="painel-vidro" id="painel-receita">
-      <p class="vazio"><span class="icone">💰</span>Clique em “Gerar relatório” para consultar a receita por arena.</p>
-    </div>
+    <div class="painel-vidro" id="painel-receita"></div>
 
-    <!-- Disponibilidade de quadras (NOT EXISTS anti-overbooking) -->
-    <form class="painel" id="form-disponiveis" onsubmit="return false;">
-      <h2>🔎 Quadras disponíveis no período</h2>
-      <label>Início
-        <input type="datetime-local" id="disp-inicio">
-      </label>
-      <label>Fim
-        <input type="datetime-local" id="disp-fim">
-      </label>
-      <label style="align-self: end;">
-        <span style="visibility:hidden;">enviar</span>
-        <button type="button" onclick="carregarDisponiveis()">Buscar quadras livres</button>
-      </label>
+    <!-- Disponibilidade (NOT EXISTS anti-overbooking) -->
+    <form class="painel" id="form-disponiveis">
+      <h2 id="h-disponiveis">Quadras disponíveis no período</h2>
+      <label><span class="rotulo">Início</span>
+        <input type="datetime-local" id="disp-inicio" required></label>
+      <label><span class="rotulo">Fim</span>
+        <input type="datetime-local" id="disp-fim" required></label>
+      <label><span class="invisivel rotulo">buscar</span>
+        <button type="submit">Buscar quadras livres</button></label>
     </form>
-    <div class="painel-vidro" id="painel-disponiveis">
-      <p class="vazio"><span class="icone">🏖️</span>Informe um período para ver as quadras livres.</p>
-    </div>
+    <div class="painel-vidro" id="painel-disponiveis"></div>
 
-    <!-- Agenda da arena (WHERE + JOIN + ORDER BY) -->
-    <form class="painel" id="form-agenda" onsubmit="return false;">
-      <h2>📅 Agenda da arena</h2>
-      <label>Arena
-        <select id="agenda-arena">
-          <option value="">Selecione…</option>
-        </select>
-      </label>
-      <label>Início (opcional)
+    <!-- Agenda da arena -->
+    <form class="painel" id="form-agenda">
+      <h2 id="h-agenda">Agenda da arena</h2>
+      <label><span class="rotulo">Arena</span>
+        <select id="agenda-arena"><option value="">Selecione…</option></select></label>
+      <label><span class="rotulo">Início</span>
         <input type="datetime-local" id="agenda-inicio">
-      </label>
-      <label>Fim (opcional)
+        <span class="ajuda">Opcional.</span></label>
+      <label><span class="rotulo">Fim</span>
         <input type="datetime-local" id="agenda-fim">
-      </label>
-      <label style="align-self: end;">
-        <span style="visibility:hidden;">enviar</span>
-        <button type="button" onclick="carregarAgenda()">Ver agenda</button>
-      </label>
+        <span class="ajuda">Opcional.</span></label>
+      <label><span class="invisivel rotulo">ver</span>
+        <button type="submit">Ver agenda</button></label>
     </form>
-    <div class="painel-vidro" id="painel-agenda">
-      <p class="vazio"><span class="icone">📅</span>Escolha uma arena para ver a agenda.</p>
-    </div>
+    <div class="painel-vidro" id="painel-agenda"></div>
 
-    <!-- Ocupação das quadras + Ranking de atletas (carregam ao abrir) -->
-    <div class="painel-vidro" id="painel-ocupacao">
-      <h2>📊 Ocupação das quadras</h2>
-      <p class="vazio">Carregando…</p>
-    </div>
-
-    <div class="painel-vidro" id="painel-ranking">
-      <h2>🏆 Ranking de atletas</h2>
-      <p class="vazio">Carregando…</p>
-    </div>
+    <!-- Carregam ao abrir a página -->
+    <div class="painel-vidro" id="painel-ocupacao"></div>
+    <div class="painel-vidro" id="painel-ranking"></div>
   </main>
 
-  <footer>HUB ARENA · Flask + SQLite3 + API REST · feito para quem vive o jogo</footer>
+  <footer>ArenaHub · Flask + SQLite · Controller, Service, Model e Repository</footer>
 
   <script src="/js/base.js"></script>
   <script>
-    function tabela(colunas, linhasHtml) {
-      return '<table><tr>' + colunas.map(function (c) { return '<th>' + c + '</th>'; }).join('') + '</tr>' + linhasHtml + '</table>';
+    // Cada painel declara o próprio título e ícone — uma fonte só
+    var PAINEIS = {
+      receita: { ico: 'i-dinheiro', titulo: 'Receita por arena' },
+      disponiveis: { ico: 'i-busca', titulo: 'Quadras disponíveis' },
+      agenda: { ico: 'i-agenda', titulo: 'Agenda da arena' },
+      ocupacao: { ico: 'i-grafico', titulo: 'Ocupação das quadras' },
+      ranking: { ico: 'i-trofeu', titulo: 'Ranking de atletas' }
+    };
+
+    function cabecalho(chave) {
+      var p = PAINEIS[chave];
+      return '<h2>' + HubUI.ico(p.ico) + p.titulo + '</h2>';
     }
+
+    function tabela(colunas, linhas) {
+      return '<table class="tabela-responsiva"><thead><tr>' +
+        colunas.map(function (c) { return '<th>' + c + '</th>'; }).join('') +
+        '</tr></thead><tbody>' + linhas + '</tbody></table>';
+    }
+
     function vazio(painel, icone, msg) {
-      painel.insertAdjacentHTML('beforeend', '<p class="vazio"><span class="icone">' + icone + '</span>' + HubUI.esc(msg) + '</p>');
+      painel.insertAdjacentHTML('beforeend',
+        '<p class="vazio">' + HubUI.ico(icone, 'ico-grande') + HubUI.esc(msg) + '</p>');
     }
-    function limpar(painel, titulo) {
-      painel.innerHTML = titulo ? '<h2>' + titulo + '</h2>' : '';
-    }
-    async function chamarApi(url, painel, titulo) {
-      limpar(painel, titulo);
+
+    async function chamarApi(url, chave) {
+      var painel = document.getElementById('painel-' + chave);
+      painel.innerHTML = cabecalho(chave);
       try {
         return await HubUI.api(url);
       } catch (e) {
-        vazio(painel, '🚫', e.message);
+        vazio(painel, 'i-proibido', e.message);
         return null;
       }
     }
 
-    // 💰 Receita por arena → GET /api/relatorios/receita-arenas
+    function celula(rotulo, conteudo) {
+      return '<td data-rotulo="' + rotulo + '">' + conteudo + '</td>';
+    }
+
+    // Receita por arena → GET /api/relatorios/receita-arenas
     async function carregarReceita() {
       var painel = document.getElementById('painel-receita');
       var p = new URLSearchParams();
@@ -137,98 +283,137 @@
       var fim = document.getElementById('receita-fim').value;
       if (inicio) p.set('inicio', inicio);
       if (fim) p.set('fim', fim);
-      var dados = await chamarApi('/api/relatorios/receita-arenas?' + p, painel, '💰 Receita por arena');
+
+      var dados = await chamarApi('/api/relatorios/receita-arenas?' + p, 'receita');
       if (!dados) return;
-      if (!dados.length) return vazio(painel, '💰', 'Nenhuma arena cadastrada.');
+      if (!dados.length) return vazio(painel, 'i-arena', 'Nenhuma arena cadastrada.');
       painel.insertAdjacentHTML('beforeend', tabela(
         ['Arena', 'Cidade', 'Reservas', 'Receita', 'Ticket médio'],
         dados.map(function (l) {
-          return '<tr><td><strong>' + HubUI.esc(l.nome_arena) + '</strong></td><td>' + HubUI.esc(l.cidade) +
-                 '</td><td>' + l.total_reservas + '</td><td><strong>' + HubUI.moeda(l.receita) +
-                 '</strong></td><td>' + HubUI.moeda(l.ticket_medio) + '</td></tr>';
+          return '<tr>' +
+            celula('Arena', '<span class="celula-titulo">' + HubUI.esc(l.nome_arena) + '</span>') +
+            celula('Cidade', HubUI.esc(l.cidade)) +
+            celula('Reservas', l.total_reservas) +
+            celula('Receita', '<span class="celula-titulo">' + HubUI.moeda(l.receita) + '</span>') +
+            celula('Ticket médio', HubUI.moeda(l.ticket_medio)) +
+          '</tr>';
         }).join('')
       ));
     }
 
-    // 🔎 Quadras disponíveis → GET /api/quadras/disponiveis
+    // Quadras disponíveis → GET /api/quadras/disponiveis
     async function carregarDisponiveis() {
       var painel = document.getElementById('painel-disponiveis');
-      var inicio = document.getElementById('disp-inicio').value;
-      var fim = document.getElementById('disp-fim').value;
-      var p = new URLSearchParams({ inicio: inicio, fim: fim });
-      var dados = await chamarApi('/api/quadras/disponiveis?' + p, painel, '🔎 Quadras disponíveis');
+      var p = new URLSearchParams({
+        inicio: document.getElementById('disp-inicio').value,
+        fim: document.getElementById('disp-fim').value
+      });
+      var dados = await chamarApi('/api/quadras/disponiveis?' + p, 'disponiveis');
       if (!dados) return;
-      if (!dados.length) return vazio(painel, '😞', 'Nenhuma quadra livre nesse período.');
+      if (!dados.length) {
+        return vazio(painel, 'i-busca-vazia', 'Nenhuma quadra livre nesse período.');
+      }
       painel.insertAdjacentHTML('beforeend', tabela(
         ['Quadra', 'Esporte', 'Arena', 'Cidade', 'Preço/hora'],
         dados.map(function (l) {
-          return '<tr><td><strong>' + HubUI.esc(l.nome_quadra) + '</strong></td><td>' + HubUI.esc(l.tipo_esporte) +
-                 '</td><td>' + HubUI.esc(l.nome_arena) + '</td><td>' + HubUI.esc(l.cidade) +
-                 '</td><td>' + HubUI.moeda(l.preco_hora) + '</td></tr>';
+          return '<tr>' +
+            celula('Quadra', '<span class="celula-titulo">' + HubUI.esc(l.nome_quadra) + '</span>') +
+            celula('Esporte', HubUI.esc(l.tipo_esporte)) +
+            celula('Arena', HubUI.esc(l.nome_arena)) +
+            celula('Cidade', HubUI.esc(l.cidade)) +
+            celula('Preço/hora', HubUI.moeda(l.preco_hora)) +
+          '</tr>';
         }).join('')
       ));
     }
 
-    // 📅 Agenda da arena → GET /api/arenas/<id>/agenda
+    // Agenda da arena → GET /api/arenas/<id>/agenda
     async function carregarAgenda() {
       var painel = document.getElementById('painel-agenda');
       var arenaId = document.getElementById('agenda-arena').value;
-      if (!arenaId) { limpar(painel, '📅 Agenda da arena'); return vazio(painel, '📅', 'Selecione uma arena.'); }
+      if (!arenaId) {
+        painel.innerHTML = cabecalho('agenda');
+        return vazio(painel, 'i-agenda', 'Selecione uma arena.');
+      }
       var p = new URLSearchParams();
       var inicio = document.getElementById('agenda-inicio').value;
       var fim = document.getElementById('agenda-fim').value;
       if (inicio) p.set('inicio', inicio);
       if (fim) p.set('fim', fim);
-      var dados = await chamarApi('/api/arenas/' + arenaId + '/agenda?' + p, painel, '📅 Agenda da arena');
+
+      var dados = await chamarApi('/api/arenas/' + arenaId + '/agenda?' + p, 'agenda');
       if (!dados) return;
-      if (!dados.length) return vazio(painel, '🗓️', 'Nenhuma reserva para essa arena no período.');
+      if (!dados.length) {
+        return vazio(painel, 'i-agenda', 'Nenhuma reserva para essa arena no período.');
+      }
       painel.insertAdjacentHTML('beforeend', tabela(
         ['#', 'Quadra', 'Jogadores', 'Início', 'Fim', 'Valor', 'Status'],
         dados.map(function (l) {
-          return '<tr><td><span class="id-pill">' + l.reserva_id + '</span></td><td><strong>' + HubUI.esc(l.nome_quadra) +
-                 '</strong></td><td>' + HubUI.esc(l.jogadores || '—') +
-                 '</td><td class="mono">' + HubUI.dataHora(l.data_hora_inicio) +
-                 '</td><td class="mono">' + HubUI.dataHora(l.data_hora_fim) +
-                 '</td><td><strong>' + HubUI.moeda(l.valor_total) + '</strong></td><td><span class="selo ' +
-                 HubUI.esc(l.status) + '">' + HubUI.esc(l.status) + '</span></td></tr>';
+          return '<tr>' +
+            celula('#', '<span class="id-pill">' + l.reserva_id + '</span>') +
+            celula('Quadra', '<span class="celula-titulo">' + HubUI.esc(l.nome_quadra) + '</span>') +
+            celula('Jogadores', HubUI.esc(l.jogadores || '—')) +
+            celula('Início', '<span class="mono">' + HubUI.dataHora(l.data_hora_inicio) + '</span>') +
+            celula('Fim', '<span class="mono">' + HubUI.dataHora(l.data_hora_fim) + '</span>') +
+            celula('Valor', '<span class="celula-titulo">' + HubUI.moeda(l.valor_total) + '</span>') +
+            celula('Status', '<span class="selo ' + HubUI.esc(l.status) + '">' +
+              HubUI.ico(l.status === 'confirmada' ? 'i-ok' : 'i-relogio') + HubUI.esc(l.status) + '</span>') +
+          '</tr>';
         }).join('')
       ));
     }
 
-    // 📊 Ocupação → GET /api/relatorios/ocupacao-quadras
+    // Ocupação → GET /api/relatorios/ocupacao-quadras
     async function carregarOcupacao() {
       var painel = document.getElementById('painel-ocupacao');
-      var dados = await chamarApi('/api/relatorios/ocupacao-quadras', painel, '📊 Ocupação das quadras');
+      var dados = await chamarApi('/api/relatorios/ocupacao-quadras', 'ocupacao');
       if (!dados) return;
-      if (!dados.length) return vazio(painel, '📊', 'Nenhuma quadra cadastrada ainda.');
+      if (!dados.length) return vazio(painel, 'i-quadra', 'Nenhuma quadra cadastrada ainda.');
+
+      // o arco mostra a quadra contra a mais ocupada — proporção, não enfeite
+      var topo = Math.max.apply(null, dados.map(function (l) { return l.horas_reservadas || 0; })) || 1;
       painel.insertAdjacentHTML('beforeend', tabela(
         ['Quadra', 'Esporte', 'Arena', 'Reservas', 'Horas reservadas', 'Receita'],
         dados.map(function (l) {
-          return '<tr><td><strong>' + HubUI.esc(l.nome_quadra) + '</strong></td><td>' + HubUI.esc(l.tipo_esporte) +
-                 '</td><td>' + HubUI.esc(l.nome_arena) + '</td><td>' + l.total_reservas +
-                 '</td><td>' + l.horas_reservadas + 'h</td><td><strong>' + HubUI.moeda(l.receita) + '</strong></td></tr>';
+          return '<tr>' +
+            celula('Quadra', '<span class="celula-titulo">' + HubUI.esc(l.nome_quadra) + '</span>') +
+            celula('Esporte', HubUI.esc(l.tipo_esporte)) +
+            celula('Arena', HubUI.esc(l.nome_arena)) +
+            celula('Reservas', l.total_reservas) +
+            celula('Horas reservadas',
+              HubUI.arco(l.horas_reservadas / topo, l.horas_reservadas + ' horas') +
+              ' <span class="mono">' + l.horas_reservadas + 'h</span>') +
+            celula('Receita', '<span class="celula-titulo">' + HubUI.moeda(l.receita) + '</span>') +
+          '</tr>';
         }).join('')
       ));
     }
 
-    // 🏆 Ranking → GET /api/relatorios/ranking-atletas
+    // Ranking → GET /api/relatorios/ranking-atletas
+    // Posição NÃO é estado: ela se diz com número e peso, nunca com cor.
     async function carregarRanking() {
       var painel = document.getElementById('painel-ranking');
-      var dados = await chamarApi('/api/relatorios/ranking-atletas?limite=10', painel, '🏆 Ranking de atletas');
+      var dados = await chamarApi('/api/relatorios/ranking-atletas?limite=10', 'ranking');
       if (!dados) return;
-      if (!dados.length) return vazio(painel, '🏆', 'Nenhum jogo registrado ainda.');
+      if (!dados.length) return vazio(painel, 'i-trofeu', 'Nenhum jogo registrado ainda.');
       painel.insertAdjacentHTML('beforeend', tabela(
         ['Posição', 'Atleta', 'Tipo', 'Jogos', 'Horas jogadas'],
         dados.map(function (l, i) {
-          var medalha = ['🥇', '🥈', '🥉'][i] || (i + 1) + 'º';
-          return '<tr><td>' + medalha + '</td><td><strong>' + HubUI.esc(l.nome) + '</strong></td><td><span class="selo ' +
-                 HubUI.esc(l.tipo_usuario) + '">' + HubUI.esc(l.tipo_usuario) + '</span></td><td>' + l.total_jogos +
-                 '</td><td>' + l.horas_jogadas + 'h</td></tr>';
+          var pos = i === 0
+            ? HubUI.ico('i-trofeu') + ' <span class="celula-titulo">1º</span>'
+            : '<span class="mono">' + (i + 1) + 'º</span>';
+          return '<tr>' +
+            celula('Posição', pos) +
+            celula('Atleta', '<span class="celula-titulo">' + HubUI.esc(l.nome) + '</span>') +
+            celula('Tipo', '<span class="selo">' + HubUI.esc(l.tipo_usuario) + '</span>') +
+            celula('Jogos', l.total_jogos) +
+            celula('Horas jogadas', '<span class="mono">' + l.horas_jogadas + 'h</span>') +
+          '</tr>';
         }).join('')
       ));
     }
 
-    // Preenche o select de arenas: GET /api/arenas
+    // Select de arenas: GET /api/arenas
     async function montarSelectArenas() {
       var sel = document.getElementById('agenda-arena');
       try {
@@ -239,9 +424,29 @@
           opt.textContent = a.nome + ' — ' + a.cidade;
           sel.appendChild(opt);
         });
-      } catch (e) { /* segue sem opções */ }
+      } catch (e) { /* segue sem opções; o erro aparece ao consultar */ }
       HubUI.melhorar();
     }
+
+    document.getElementById('form-receita').addEventListener('submit', function (e) {
+      e.preventDefault(); carregarReceita();
+    });
+    document.getElementById('form-disponiveis').addEventListener('submit', function (e) {
+      e.preventDefault(); carregarDisponiveis();
+    });
+    document.getElementById('form-agenda').addEventListener('submit', function (e) {
+      e.preventDefault(); carregarAgenda();
+    });
+
+    // Os três painéis que esperam um período mostram o que farão, em vez de ficar em branco
+    document.getElementById('painel-receita').innerHTML = cabecalho('receita');
+    vazio(document.getElementById('painel-receita'), 'i-dinheiro',
+          'Escolha um período (ou nenhum) e gere o relatório.');
+    document.getElementById('painel-disponiveis').innerHTML = cabecalho('disponiveis');
+    vazio(document.getElementById('painel-disponiveis'), 'i-busca',
+          'Informe um período para ver as quadras livres.');
+    document.getElementById('painel-agenda').innerHTML = cabecalho('agenda');
+    vazio(document.getElementById('painel-agenda'), 'i-agenda', 'Escolha uma arena para ver a agenda.');
 
     carregarOcupacao();
     carregarRanking();

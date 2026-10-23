@@ -3,36 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hub Arena — Usuários</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <title>ArenaHub — Usuários</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/estilo.css">
+  <script src="/js/tema.js"></script>
 </head>
 <body>
+  <!-- sprite:inicio --><svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-futevolei" viewBox="0 0 24 24">
+  <circle cx="15.5" cy="6.5" r="3.5"/>
+  <path d="M3 20.5h6.5a3 3 0 0 0 3-3V14"/>
+  <path d="M3 20.5V17a2 2 0 0 1 2-2h3"/>
+</symbol><symbol id="i-beach-tennis" viewBox="0 0 24 24">
+  <ellipse cx="11" cy="9" rx="6.5" ry="7.5"/>
+  <path d="M11 16.5V21"/>
+  <path d="M8.5 21h5"/>
+  <path d="M7 7.5h8M7 10.5h8M11 3v12"/>
+</symbol><symbol id="i-volei" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M12 3c-3.2 3.2-4.2 7.4-3 12"/>
+  <path d="M20.6 9.4c-4.4-1.2-8.6-.2-11.8 3"/>
+  <path d="M6.3 19.6c2.4-3.8 5.9-6 10.4-6.3"/>
+</symbol><symbol id="i-frescobol" viewBox="0 0 24 24">
+  <path d="M9 3.5a5 5 0 0 1 0 9.5 5 5 0 0 1 0-9.5Z"/>
+  <path d="M9 13v7.5"/>
+  <path d="M7 20.5h4"/>
+  <circle cx="18.5" cy="16.5" r="2.5"/>
+</symbol><symbol id="i-esporte" viewBox="0 0 24 24">
+  <circle cx="12" cy="9.5" r="6.5"/>
+  <path d="M12 3v13M5.5 9.5h13"/>
+  <path d="M8.5 15.5 7 21.5l5-2.4 5 2.4-1.5-6"/>
+</symbol><symbol id="i-arena" viewBox="0 0 24 24">
+  <path d="M3 9.5v8.5c0 1.4 4 2.5 9 2.5s9-1.1 9-2.5V9.5"/>
+  <ellipse cx="12" cy="7" rx="9" ry="3"/>
+  <path d="M7.5 10.5v8M16.5 10.5v8M12 10.5v9"/>
+</symbol><symbol id="i-quadra" viewBox="0 0 24 24">
+  <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
+  <path d="M12 5v14"/>
+  <path d="M2.5 12h3M18.5 12h3"/>
+  <circle cx="12" cy="12" r="2.5"/>
+</symbol><symbol id="i-local" viewBox="0 0 24 24">
+  <path d="M12 21.5s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/>
+  <circle cx="12" cy="10.5" r="2.8"/>
+</symbol><symbol id="i-agenda" viewBox="0 0 24 24">
+  <rect x="3" y="5" width="18" height="16" rx="2.5"/>
+  <path d="M3 10h18M8 3v4M16 3v4"/>
+</symbol><symbol id="i-agenda-mais" viewBox="0 0 24 24">
+  <path d="M21 11.5V7.5A2.5 2.5 0 0 0 18.5 5h-13A2.5 2.5 0 0 0 3 7.5v11A2.5 2.5 0 0 0 5.5 21h6"/>
+  <path d="M3 10h18M8 3v4M16 3v4"/>
+  <path d="M18 14.5v6M15 17.5h6"/>
+</symbol><symbol id="i-agenda-ok" viewBox="0 0 24 24">
+  <path d="M21 11.5V7.5A2.5 2.5 0 0 0 18.5 5h-13A2.5 2.5 0 0 0 3 7.5v11A2.5 2.5 0 0 0 5.5 21h6"/>
+  <path d="M3 10h18M8 3v4M16 3v4"/>
+  <path d="m14.5 17.5 2.5 2.5 4.5-4.5"/>
+</symbol><symbol id="i-relogio" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M12 6.5V12l3.5 2.5"/>
+</symbol><symbol id="i-dinheiro" viewBox="0 0 24 24">
+  <rect x="2.5" y="6" width="19" height="12" rx="2"/>
+  <circle cx="12" cy="12" r="2.8"/>
+  <path d="M6 10v4M18 10v4"/>
+</symbol><symbol id="i-grafico" viewBox="0 0 24 24">
+  <path d="M4 3v16.5A1.5 1.5 0 0 0 5.5 21H21"/>
+  <path d="M8 16.5v-4M12.5 16.5v-8M17 16.5v-5.5"/>
+</symbol><symbol id="i-trofeu" viewBox="0 0 24 24">
+  <path d="M7.5 3.5h9v6a4.5 4.5 0 0 1-9 0v-6Z"/>
+  <path d="M7.5 5.5H5A2 2 0 0 0 5 9.5h2.5M16.5 5.5H19a2 2 0 0 1 0 4h-2.5"/>
+  <path d="M12 14v3.5M8.5 20.5h7M9.5 17.5h5l1 3h-7l1-3Z"/>
+</symbol><symbol id="i-registro" viewBox="0 0 24 24">
+  <path d="M8 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/>
+  <rect x="8" y="2.5" width="8" height="4" rx="1.3"/>
+  <path d="M8.5 11.5h7M8.5 15.5h4.5"/>
+</symbol><symbol id="i-busca" viewBox="0 0 24 24">
+  <circle cx="10.5" cy="10.5" r="6.5"/>
+  <path d="m15.5 15.5 5 5"/>
+</symbol><symbol id="i-busca-vazia" viewBox="0 0 24 24">
+  <circle cx="10.5" cy="10.5" r="6.5"/>
+  <path d="m15.5 15.5 5 5"/>
+  <path d="M7.8 10.5h5.4"/>
+</symbol><symbol id="i-ok" viewBox="0 0 24 24">
+  <path d="m4.5 12.5 5 5 10-11"/>
+</symbol><symbol id="i-ok-circulo" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="m7.5 12.5 3 3 6-6.5"/>
+</symbol><symbol id="i-x" viewBox="0 0 24 24">
+  <path d="M6 6l12 12M18 6 6 18"/>
+</symbol><symbol id="i-x-circulo" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="m8.5 8.5 7 7M15.5 8.5l-7 7"/>
+</symbol><symbol id="i-alerta" viewBox="0 0 24 24">
+  <path d="M12 3.5 21.5 20H2.5L12 3.5Z"/>
+  <path d="M12 9.5v4.5M12 17.2v.3"/>
+</symbol><symbol id="i-proibido" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="m5.6 5.6 12.8 12.8"/>
+</symbol><symbol id="i-barrado" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M7.5 12h9"/>
+</symbol><symbol id="i-faisca" viewBox="0 0 24 24">
+  <path d="M13.5 2.5 4.5 13.5h6l-1 8 10-11.5h-6.5l.5-7.5Z"/>
+</symbol><symbol id="i-usuario" viewBox="0 0 24 24">
+  <circle cx="12" cy="8" r="4"/>
+  <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>
+</symbol><symbol id="i-usuario-mais" viewBox="0 0 24 24">
+  <circle cx="10" cy="8" r="4"/>
+  <path d="M2.5 20.5a7.5 7.5 0 0 1 15 0"/>
+  <path d="M19 6.5v6M16 9.5h6"/>
+</symbol><symbol id="i-atleta" viewBox="0 0 24 24">
+  <circle cx="14.5" cy="4.5" r="2.5"/>
+  <path d="M8 21.5 11 15l-2.5-2.5 1.5-4 3 2.5 3 1"/>
+  <path d="m11 15 3.5 2 1.5 4.5M9.5 8.5 6 9.5"/>
+</symbol><symbol id="i-escudo" viewBox="0 0 24 24">
+  <path d="M12 2.5 4.5 5.5v6c0 4.7 3.2 8.8 7.5 10 4.3-1.2 7.5-5.3 7.5-10v-6L12 2.5Z"/>
+</symbol><symbol id="i-formatura" viewBox="0 0 24 24">
+  <path d="M12 3.5 22 8.5l-10 5-10-5 10-5Z"/>
+  <path d="M6.5 11v5.5c0 1.4 2.5 2.5 5.5 2.5s5.5-1.1 5.5-2.5V11"/>
+  <path d="M21 9.5v5"/>
+</symbol><symbol id="i-oculto" viewBox="0 0 24 24">
+  <path d="M3 12s3.5-6.5 9-6.5S21 12 21 12s-3.5 6.5-9 6.5S3 12 3 12Z"/>
+  <circle cx="12" cy="12" r="2.8"/>
+  <path d="m4 20 16-16"/>
+</symbol><symbol id="i-mais" viewBox="0 0 24 24">
+  <path d="M12 5v14M5 12h14"/>
+</symbol><symbol id="i-lixeira" viewBox="0 0 24 24">
+  <path d="M3.5 6.5h17"/>
+  <path d="M8.5 6.5v-2a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/>
+  <path d="M18.5 6.5v13a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-13"/>
+  <path d="M10 11v6M14 11v6"/>
+</symbol><symbol id="i-seta" viewBox="0 0 24 24">
+  <path d="M4.5 12h15M13.5 6l6 6-6 6"/>
+</symbol><symbol id="i-sair" viewBox="0 0 24 24">
+  <path d="M15 4.5h2.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H15"/>
+  <path d="M10 8.5 6 12l4 3.5M6 12h9"/>
+</symbol><symbol id="i-entrada" viewBox="0 0 24 24">
+  <path d="M9 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H9"/>
+  <path d="m14 8.5 3.5 3.5-3.5 3.5M17.5 12h-9"/>
+</symbol><symbol id="i-saida" viewBox="0 0 24 24">
+  <path d="M15 4.5h2.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H15"/>
+  <path d="m10 8.5-3.5 3.5L10 15.5M6.5 12h9"/>
+</symbol><symbol id="i-sol" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="4.5"/>
+  <path d="M12 2.5v2.5M12 19v2.5M21.5 12H19M5 12H2.5M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8M18.7 18.7l-1.8-1.8M7.1 7.1 5.3 5.3"/>
+</symbol><symbol id="i-lua" viewBox="0 0 24 24">
+  <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/>
+</symbol><symbol id="i-arejado" viewBox="0 0 24 24">
+  <path d="M4 6.5h16M4 12h16M4 17.5h16"/>
+</symbol><symbol id="i-denso" viewBox="0 0 24 24">
+  <path d="M4 5.5h16M4 9.5h16M4 13.5h16M4 17.5h16"/>
+</symbol><symbol id="i-monograma" viewBox="0 0 24 24">
+  <path d="M2.5 18.5 7.5 4l5 14.5"/>
+  <path d="M4.6 13.5h5.8"/>
+  <path d="M16 4v14.5M21.5 4v14.5M16 11.5h5.5"/>
+  <path d="M2 21.2c6 1.6 15 1.4 20-.2"/>
+</symbol></svg><!-- sprite:fim -->
+
   <header>
     <div class="nav-inner">
-      <a class="logo" href="/"><span class="bola"></span>HUB<span>ARENA</span></a>
+      <a class="logo" href="/">
+        <svg class="ico-marca" aria-hidden="true" focusable="false"><use href="#i-monograma"></use></svg>
+        <span>Arena<em>Hub</em></span>
+      </a>
       <nav>
         <a href="/">Visão geral</a>
-        <a href="/usuarios" class="ativo">Usuários</a>
+        <a href="/usuarios" class="ativo" aria-current="page">Usuários</a>
         <a href="/arenas">Arenas</a>
         <a href="/quadras">Quadras</a>
         <a href="/reservas">Reservas</a>
         <a href="/relatorios">Relatórios</a>
+        <span class="sessao-nav">
+          <button type="button" class="botao-tema"></button>
+          <button type="button" class="botao-densidade"></button>
+        </span>
       </nav>
     </div>
   </header>
 
   <main>
     <div class="titulo-pagina">
-      <div>
-        <h1>Usuários da <em>comunidade</em></h1>
-        <p class="subtitulo">Atletas que jogam, donos que administram e professores que ensinam.</p>
-      </div>
+      <h1>Usuários da <em>comunidade</em></h1>
+      <p class="subtitulo">Atletas que jogam, donos que administram e professores que ensinam.</p>
     </div>
 
-    <!-- Filtro por tipo: links com querystring (?tipo=), lidos pelo JS -->
+    <!-- Filtro por tipo: ?tipo= lido pelo JS (procedure sp_usuarios_por_tipo) -->
     <div class="filtros" id="filtros">
       <a href="/usuarios" data-tipo="">Todos</a>
       <a href="/usuarios?tipo=atleta" data-tipo="atleta">Atleta</a>
@@ -41,54 +192,62 @@
     </div>
 
     <!-- Busca textual: GET /api/usuarios/busca?q= (procedure sp_busca_usuarios) -->
-    <form class="painel" id="form-busca" style="margin-top: 18px;">
-      <h2>🔎 Buscar usuário</h2>
-      <label>Nome ou e-mail
-        <input id="busca-termo" placeholder="Ex: ana ou @email.com">
+    <form class="painel" id="form-busca">
+      <h2 id="t-busca">Buscar usuário</h2>
+      <label>
+        <span class="rotulo">Nome ou e-mail</span>
+        <input id="busca-termo" placeholder="ana, ou @email.com">
       </label>
-      <label style="align-self: end;">
-        <span style="visibility:hidden;">enviar</span>
+      <label>
+        <span class="invisivel rotulo">buscar</span>
         <button type="submit">Buscar</button>
       </label>
     </form>
 
     <div class="painel-vidro" id="lista"></div>
 
-    <!-- Formulário: envia JSON via fetch para POST /api/usuarios -->
+    <!-- Cadastro: POST /api/usuarios -->
     <form class="painel" id="form-usuario">
-      <h2>➕ Cadastrar usuário</h2>
-      <div class="erro-form" id="erro-form" style="display:none;"></div>
-      <label>Nome completo
-        <input name="nome" placeholder="Ex: Ana Souza" required>
+      <h2>Cadastrar usuário</h2>
+      <div class="erro-form" id="erro-form" hidden></div>
+      <label>
+        <span class="rotulo">Nome completo</span>
+        <input name="nome" placeholder="Ana Souza" required>
       </label>
-      <label>E-mail
+      <label>
+        <span class="rotulo">E-mail</span>
         <input name="email" type="email" placeholder="ana@email.com" required>
       </label>
-      <label>Senha
-        <input name="senha" type="password" placeholder="••••••••" required>
+      <label>
+        <span class="rotulo">Senha</span>
+        <input name="senha" type="password" placeholder="pelo menos 6 caracteres" required>
       </label>
-      <label>Telefone
+      <label>
+        <span class="rotulo">Telefone</span>
         <input name="telefone" placeholder="(31) 99999-0000" required>
       </label>
-      <label>Tipo de usuário
+      <label>
+        <span class="rotulo">Tipo de usuário</span>
         <select name="tipo_usuario" required>
           <option value="">Selecione…</option>
-          <option value="atleta">🏃 Atleta</option>
-          <option value="dono">🏟️ Dono de arena</option>
-          <option value="professor">🎓 Professor</option>
+          <option value="atleta">Atleta</option>
+          <option value="dono">Dono de arena</option>
+          <option value="professor">Professor</option>
         </select>
       </label>
-      <label style="align-self: end;">
-        <span style="visibility:hidden;">enviar</span>
-        <button type="submit">Cadastrar usuário</button>
+      <label>
+        <span class="invisivel rotulo">cadastrar</span>
+        <button type="submit" class="principal">Cadastrar usuário</button>
       </label>
     </form>
   </main>
 
-  <footer>HUB ARENA · Flask + SQLite3 + API REST · feito para quem vive o jogo</footer>
+  <footer>ArenaHub · Flask + SQLite · Controller, Service, Model e Repository</footer>
 
   <script src="/js/base.js"></script>
   <script>
+    var ICONE_TIPO = { atleta: 'i-atleta', dono: 'i-escudo', professor: 'i-formatura' };
+
     var tipoFiltro = new URLSearchParams(location.search).get('tipo') || '';
     document.querySelectorAll('#filtros a').forEach(function (a) {
       a.classList.toggle('ativo', a.dataset.tipo === tipoFiltro);
@@ -97,87 +256,102 @@
     function renderizarLista(usuarios, msgVazio) {
       var lista = document.getElementById('lista');
       if (!usuarios.length) {
-        lista.innerHTML = '<p class="vazio"><span class="icone">🏐</span>' + msgVazio + '</p>';
+        lista.innerHTML = '<p class="vazio">' + HubUI.ico('i-busca-vazia', 'ico-grande') +
+                          HubUI.esc(msgVazio) + '</p>';
         return;
       }
-      lista.innerHTML = '<table>' +
-        '<tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Tipo</th><th></th></tr>' +
-        usuarios.map(function (u) {
-          return '<tr>' +
-            '<td><span class="id-pill">' + u.usuario_id + '</span></td>' +
-            '<td><strong>' + HubUI.esc(u.nome) + '</strong></td>' +
-            '<td>' + HubUI.esc(u.email) + '</td>' +
-            '<td class="mono">' + HubUI.esc(u.telefone) + '</td>' +
-            '<td><span class="selo ' + HubUI.esc(u.tipo_usuario) + '">' + HubUI.esc(u.tipo_usuario) + '</span></td>' +
-            '<td><div class="acoes">' +
-              '<button class="perigo" data-id="' + u.usuario_id + '">Excluir</button>' +
-            '</div></td>' +
-          '</tr>';
-        }).join('') +
-      '</table>';
+      lista.innerHTML =
+        '<table class="tabela-responsiva">' +
+          '<thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th>' +
+          '<th>Tipo</th><th><span class="so-leitor">Ações</span></th></tr></thead>' +
+          '<tbody>' + usuarios.map(function (u) {
+            return '<tr>' +
+              '<td data-rotulo="ID"><span class="id-pill">' + u.usuario_id + '</span></td>' +
+              '<td data-rotulo="Nome"><span class="celula-titulo">' + HubUI.esc(u.nome) + '</span></td>' +
+              '<td data-rotulo="E-mail">' + HubUI.esc(u.email) + '</td>' +
+              '<td data-rotulo="Telefone" class="mono">' + HubUI.telefone(u.telefone) + '</td>' +
+              '<td data-rotulo="Tipo"><span class="selo">' +
+                HubUI.ico(ICONE_TIPO[u.tipo_usuario] || 'i-usuario') + HubUI.esc(u.tipo_usuario) +
+              '</span></td>' +
+              '<td data-rotulo="Ações"><div class="acoes">' +
+                '<button class="perigo botao-menor" data-id="' + u.usuario_id + '">' +
+                  HubUI.ico('i-lixeira') + 'Excluir</button>' +
+              '</div></td>' +
+            '</tr>';
+          }).join('') + '</tbody>' +
+        '</table>';
 
-      // Exclusão: modal de confirmação → DELETE /api/usuarios/<id>
+      // Exclusão: confirmação em <dialog> → DELETE /api/usuarios/<id>
       lista.querySelectorAll('button.perigo').forEach(function (btn) {
         btn.addEventListener('click', function () {
           HubUI.confirmar({
             titulo: 'Excluir usuário',
-            mensagem: 'Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.',
-            botao: 'Sim, excluir'
+            mensagem: 'Esta ação não pode ser desfeita. Usuários com arenas ou reservas ' +
+                      'vinculadas são protegidos pelo banco.',
+            botao: 'Sim, excluir',
+            tom: 'perigo'
           }, async function () {
             try {
               await HubUI.api('/api/usuarios/' + btn.dataset.id, { method: 'DELETE' });
               HubUI.erroTopo('');
+              HubUI.toast('Usuário excluído.');
               carregarLista();
             } catch (e) {
-              HubUI.erroTopo(e.message);
+              HubUI.toast(e.message, 'erro');
             }
           });
         });
       });
     }
 
-    // Listagem: GET /api/usuarios (com filtro → procedure sp_usuarios_por_tipo)
+    // Listagem: GET /api/usuarios (com ?tipo= → procedure)
     async function carregarLista() {
       try {
         var usuarios = await HubUI.api('/api/usuarios' + (tipoFiltro ? '?tipo=' + tipoFiltro : ''));
         renderizarLista(usuarios, 'Nenhum usuário encontrado' +
-          (tipoFiltro ? ' para o filtro "' + HubUI.esc(tipoFiltro) + '"' : '') + '.');
+          (tipoFiltro ? ' para o filtro "' + tipoFiltro + '"' : '') + '.');
       } catch (e) {
         HubUI.erroTopo(e.message);
       }
     }
 
-    // Busca textual: GET /api/usuarios/busca?q= (procedure sp_busca_usuarios)
+    // Busca textual (LIKE, via procedure)
     document.getElementById('form-busca').addEventListener('submit', async function (e) {
       e.preventDefault();
       var termo = document.getElementById('busca-termo').value.trim();
       if (!termo) { carregarLista(); return; }
       try {
         var usuarios = await HubUI.api('/api/usuarios/busca?q=' + encodeURIComponent(termo));
-        renderizarLista(usuarios, 'Nenhum usuário encontrado para "' + HubUI.esc(termo) + '".');
+        renderizarLista(usuarios, 'Nenhum usuário encontrado para "' + termo + '".');
       } catch (erro) {
         HubUI.erroTopo(erro.message);
       }
     });
 
-    // Cadastro: POST /api/usuarios com corpo JSON
+    // Cadastro: POST /api/usuarios
     document.getElementById('form-usuario').addEventListener('submit', async function (e) {
       e.preventDefault();
+      var form = this;
       var erroForm = document.getElementById('erro-form');
-      erroForm.style.display = 'none';
-      var dados = Object.fromEntries(new FormData(this));
+      var botao = form.querySelector('button[type="submit"]');
+      erroForm.hidden = true;
+      HubUI.carregando(botao, true);
       try {
         await HubUI.api('/api/usuarios', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dados)
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
         });
-        this.reset();
-        this.querySelector('select').dispatchEvent(new Event('change'));
+        form.reset();
+        form.querySelector('select').dispatchEvent(new Event('change'));
+        HubUI.toast('Usuário cadastrado.');
         carregarLista();
       } catch (erro) {
-        erroForm.textContent = '🚫 ' + erro.message;
-        erroForm.style.display = 'block';
+        erroForm.innerHTML = HubUI.ico('i-alerta') + '<span></span>';
+        erroForm.querySelector('span').textContent = erro.message;
+        erroForm.hidden = false;
+      } finally {
+        HubUI.carregando(botao, false);
       }
     });
 

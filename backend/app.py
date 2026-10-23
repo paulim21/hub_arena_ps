@@ -1,5 +1,5 @@
 """
-HUB ARENA — API REST + Front-end estático
+ARENAHUB — API REST + Front-end estático
 Flask + SQLAlchemy + SQLite (sem Jinja2 / render_template)
 
 Arquitetura em camadas (padrão do material da disciplina):

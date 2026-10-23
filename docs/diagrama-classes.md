@@ -1,4 +1,4 @@
-# Diagrama de classes do domínio — Hub Arena
+# Diagrama de classes do domínio — ArenaHub
 
 Este diagrama representa as **Models** implementadas em
 [`backend/models/`](../backend/models) e seus relacionamentos. Ele é coerente
@@ -8,7 +8,7 @@ corresponde a uma chave estrangeira declarada nas Models.
 > **Imagem:** [`diagrama-classes.svg`](diagrama-classes.svg) — mesma versão em
 > arquivo de imagem, para usar em slides e no vídeo de demonstração.
 
-![Diagrama de classes do Hub Arena](diagrama-classes.svg)
+![Diagrama de classes do ArenaHub](diagrama-classes.svg)
 
 ---
 

@@ -1,6 +1,6 @@
-# 🎬 Roteiro do Vídeo — Hub Arena (máx. 5 minutos)
+# Roteiro do Vídeo — ArenaHub (máx. 5 minutos)
 
-## ✅ Antes de gravar (checklist)
+## Antes de gravar (checklist)
 
 - [ ] Servidor rodando: `venv\Scripts\activate` → `python backend/app.py`
 - [ ] Navegador aberto em `http://localhost:5000` (janela limpa, sem abas extras)
@@ -22,7 +22,7 @@
 **Mostrar:** VS Code com a árvore de pastas expandida (`backend/` e `frontend/`).
 
 **Falar:**
-> "Este é o Hub Arena, nossa plataforma de gestão de arenas de esportes de areia, feita em Flask com a arquitetura da disciplina. No backend temos as quatro camadas: **Controllers como classes**, uma por recurso…" *(clicar em `reserva_controller.py`, rolar mostrando a classe)* "…**Services com uma classe por caso de uso**…" *(clicar em `reserva_service.py`, mostrar `CriarReservaService`)* "…**Models herdando de db.Model** com o CRUD na própria model…" *(clicar em `reserva.py`, apontar `salvar`, `atualizar`, `deletar`)* "…e o **Repository**, que encapsula as consultas complexas por meio de **procedures armazenadas no banco**." *(clicar em `procedures.sql`, rolar rápido)*
+> "Este é o ArenaHub, nossa plataforma de gestão de arenas de esportes de areia, feita em Flask com a arquitetura da disciplina. No backend temos as quatro camadas: **Controllers como classes**, uma por recurso…" *(clicar em `reserva_controller.py`, rolar mostrando a classe)* "…**Services com uma classe por caso de uso**…" *(clicar em `reserva_service.py`, mostrar `CriarReservaService`)* "…**Models herdando de db.Model** com o CRUD na própria model…" *(clicar em `reserva.py`, apontar `salvar`, `atualizar`, `deletar`)* "…e o **Repository**, que encapsula as consultas complexas por meio de **procedures armazenadas no banco**." *(clicar em `procedures.sql`, rolar rápido)*
 >
 > "O frontend é HTML e JavaScript puro consumindo a API via fetch. Vamos ver tudo funcionando."
 
@@ -97,7 +97,7 @@
 
 ---
 
-## 🎯 Mapa rápido: funcionalidade → momento do vídeo
+## Mapa rápido: funcionalidade → momento do vídeo
 
 | # | Funcionalidade | Momento |
 |---|----------------|---------|

@@ -1,18 +1,29 @@
 /* =====================================================================
-   base.js — biblioteca compartilhada do front-end (HTML + JS puro)
+   base.js — a biblioteca compartilhada do front-end (HTML + JS puro).
 
    O painel não usa Jinja2: cada página chama as rotas /api/... via
-   fetch e monta o HTML no navegador. Aqui ficam:
-   - HubUI.api()           → wrapper do fetch (erros da API viram exceção)
-   - HubUI.melhorar()      → dropdowns, data/hora e multi-select premium
-   - HubUI.confirmar()     → modal de confirmação
-   - HubUI.animarNumeros() → contagem animada do dashboard
-   - HubUI.erroTopo(), esc(), moeda(), dataHora() → utilitários
+   fetch e monta o HTML no navegador.
+
+     HubUI.api()        → wrapper do fetch (erro da API vira exceção)
+     HubUI.ico()        → ícone em traço do sprite — NUNCA emoji
+     HubUI.arco()       → o arco de proporção (um por tela)
+     HubUI.melhorar()   → menu suspenso, data/hora e multi-seleção
+     HubUI.confirmar()  → <dialog> de confirmação
+     HubUI.informar()   → <dialog> de aviso (não existe alert() aqui)
+     HubUI.toast()      → aviso flutuante
+     HubUI.erroTopo()   → erro fixo no topo da página
+     HubUI.carregando() → desabilita o botão enquanto a chamada corre
+     esc, moeda, dataHora, telefone, cnpj, animarNumeros
+
+   Duas regras que moram no código, não no comentário:
+   - NENHUM estilo é escrito por JavaScript. Estado é classe ou
+     atributo; a CSP bloqueia element.style e falha calada.
+   - NENHUMA cor literal. Tudo vem de token, pelo CSS.
    ===================================================================== */
 window.HubUI = (function () {
   'use strict';
 
-  /* ===== Utilitários ===== */
+  /* ========================= utilitários ========================= */
 
   async function api(url, opcoes) {
     var resposta = await fetch(url, opcoes);
@@ -34,7 +45,56 @@ window.HubUI = (function () {
     });
   }
 
-  function dataHora(t) { return esc(String(t || '').replace('T', ' · ')); }
+  function dataHora(t) {
+    var texto = String(t || '');
+    if (!texto) return '—';
+    var partes = texto.split('T');
+    if (partes.length < 2) return esc(texto);
+    var d = partes[0].split('-');
+    return esc(d[2] + '/' + d[1] + '/' + d[0] + ' ' + partes[1].slice(0, 5));
+  }
+
+  function telefone(v) {
+    var n = String(v || '').replace(/\D/g, '');
+    if (n.length === 11) return '(' + n.slice(0, 2) + ') ' + n.slice(2, 7) + '-' + n.slice(7);
+    if (n.length === 10) return '(' + n.slice(0, 2) + ') ' + n.slice(2, 6) + '-' + n.slice(6);
+    return esc(v);
+  }
+
+  function cnpj(v) {
+    var n = String(v || '').replace(/\D/g, '');
+    if (n.length !== 14) return esc(v);
+    return n.slice(0, 2) + '.' + n.slice(2, 5) + '.' + n.slice(5, 8) +
+           '/' + n.slice(8, 12) + '-' + n.slice(12);
+  }
+
+  /* ========================= ícones =========================
+     Traço, do sprite embutido no HTML. O <use href> externo não
+     funciona no Chrome, por isso o sprite mora na própria página. */
+
+  function ico(nome, classe) {
+    return '<svg class="' + (classe || 'ico') + '" aria-hidden="true" focusable="false">' +
+           '<use href="#' + nome + '"></use></svg>';
+  }
+
+  /* O arco de proporção: o valor vai em ATRIBUTO DE APRESENTAÇÃO do
+     SVG (não em style), que é o que a CSP permite e o que a transição
+     do CSS consegue animar. */
+  function arco(fracao, rotulo) {
+    var r = 18;
+    var volta = 2 * Math.PI * r;
+    var cheio = Math.max(0, Math.min(1, Number(fracao) || 0));
+    return '<span class="arco-meta" role="img" aria-label="' + esc(rotulo || '') + '">' +
+             '<svg viewBox="0 0 44 44">' +
+               '<circle class="trilho" cx="22" cy="22" r="' + r + '"></circle>' +
+               '<circle class="arco" cx="22" cy="22" r="' + r + '" ' +
+                 'stroke-dasharray="' + volta.toFixed(2) + '" ' +
+                 'stroke-dashoffset="' + (volta * (1 - cheio)).toFixed(2) + '"></circle>' +
+             '</svg>' +
+           '</span>';
+  }
+
+  /* ========================= avisos ========================= */
 
   function erroTopo(msg) {
     var antigo = document.querySelector('.erro-topo');
@@ -42,42 +102,143 @@ window.HubUI = (function () {
     if (!msg) return;
     var div = document.createElement('div');
     div.className = 'erro-topo';
-    div.textContent = '🚫 ' + msg;
+    div.setAttribute('role', 'alert');
+    div.innerHTML = ico('i-alerta') + '<span></span>';
+    div.querySelector('span').textContent = msg;
     var main = document.querySelector('main');
     main.insertBefore(div, main.firstChild);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /* O que deu certo some em 4s; o que deu ERRADO só some no clique,
+     porque erro que desaparece sozinho é erro que ninguém leu. */
+  function toast(mensagem, tipo) {
+    var antigo = document.querySelector('.aviso-flutuante');
+    if (antigo) antigo.remove();
+
+    var caixa = document.createElement('div');
+    caixa.className = 'aviso-flutuante' + (tipo ? ' ' + tipo : '');
+    caixa.setAttribute('role', tipo === 'erro' ? 'alert' : 'status');
+    caixa.innerHTML = ico(tipo === 'erro' ? 'i-x-circulo' : 'i-ok-circulo') + '<span></span>';
+    caixa.querySelector('span').textContent = mensagem;
+
+    var fechar = document.createElement('button');
+    fechar.type = 'button';
+    fechar.className = 'botao-menor';
+    fechar.innerHTML = ico('i-x');
+    fechar.setAttribute('aria-label', 'Fechar aviso');
+    fechar.addEventListener('click', function () { caixa.remove(); });
+    caixa.appendChild(fechar);
+
+    document.body.appendChild(caixa);
+    if (tipo !== 'erro') setTimeout(function () { caixa.remove(); }, 4000);
+  }
+
+  function carregando(botao, ligado) {
+    if (!botao) return;
+    botao.disabled = !!ligado;
+    botao.setAttribute('aria-busy', ligado ? 'true' : 'false');
+  }
+
+  /* ========================= <dialog> =========================
+     Não existe alert() neste projeto. */
+
+  function montarDialogo() {
+    var dlg = document.createElement('dialog');
+    dlg.className = 'modal';
+    dlg.innerHTML =
+      '<div class="modal-icone"></div>' +
+      '<h3></h3><p></p>' +
+      '<div class="modal-acoes">' +
+        '<button type="button" class="modal-cancelar">Voltar</button>' +
+        '<button type="button" class="modal-confirmar principal"></button>' +
+      '</div>';
+    document.body.appendChild(dlg);
+    return dlg;
+  }
+
+  var dialogo = null;
+  var acaoPendente = null;
+
+  function garantirDialogo() {
+    if (dialogo) return dialogo;
+    dialogo = montarDialogo();
+    dialogo.querySelector('.modal-cancelar').addEventListener('click', function () {
+      acaoPendente = null;
+      dialogo.close();
+    });
+    dialogo.querySelector('.modal-confirmar').addEventListener('click', function () {
+      var acao = acaoPendente;
+      acaoPendente = null;
+      dialogo.close();
+      if (acao) acao();
+    });
+    return dialogo;
+  }
+
+  function abrirDialogo(opcoes, aoConfirmar) {
+    var dlg = garantirDialogo();
+    dlg.classList.toggle('perigo', opcoes.tom === 'perigo');
+    dlg.querySelector('.modal-icone').innerHTML =
+      ico(opcoes.icone || (opcoes.tom === 'perigo' ? 'i-alerta' : 'i-ok-circulo'), 'ico-grande');
+    dlg.querySelector('h3').textContent = opcoes.titulo || 'Tem certeza?';
+    dlg.querySelector('p').textContent = opcoes.mensagem || '';
+    dlg.querySelector('.modal-confirmar').textContent = opcoes.botao || 'Confirmar';
+    dlg.querySelector('.modal-cancelar').hidden = !aoConfirmar;
+    acaoPendente = aoConfirmar || null;
+    dlg.showModal();
+    dlg.querySelector(aoConfirmar ? '.modal-cancelar' : '.modal-confirmar').focus();
+  }
+
+  function confirmar(opcoes, aoConfirmar) {
+    abrirDialogo(opcoes, aoConfirmar);
+  }
+
+  function informar(opcoes) {
+    abrirDialogo({
+      titulo: opcoes.titulo, mensagem: opcoes.mensagem,
+      botao: opcoes.botao || 'Entendi', icone: opcoes.icone, tom: opcoes.tom
+    }, null);
+  }
+
+  /* ========================= números animados ========================= */
+
   function animarNumeros() {
+    var reduzido = window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.querySelectorAll('.numero[data-valor]').forEach(function (el) {
       if (el.dataset.animado) return;
       el.dataset.animado = '1';
       var alvo = parseFloat(el.dataset.valor) || 0;
       var prefixo = el.dataset.prefixo || '';
-      var decimais = el.dataset.decimais ? parseInt(el.dataset.decimais) : 0;
-      var inicio = null, duracao = 900;
+      var decimais = el.dataset.decimais ? parseInt(el.dataset.decimais, 10) : 0;
+
+      function escrever(v) {
+        el.textContent = prefixo + v.toLocaleString('pt-BR', {
+          minimumFractionDigits: decimais, maximumFractionDigits: decimais
+        });
+      }
+      if (reduzido) { escrever(alvo); return; }
+
+      var inicio = null, duracao = 720;  /* animação de DADO */
       function passo(ts) {
         if (!inicio) inicio = ts;
         var p = Math.min((ts - inicio) / duracao, 1);
-        var suave = 1 - Math.pow(1 - p, 3); // ease-out cúbico
-        el.textContent = prefixo + (alvo * suave).toLocaleString('pt-BR', {
-          minimumFractionDigits: decimais, maximumFractionDigits: decimais
-        });
+        escrever(alvo * (1 - Math.pow(1 - p, 3)));
         if (p < 1) requestAnimationFrame(passo);
       }
       requestAnimationFrame(passo);
     });
   }
 
-  /* ===== Dropdown premium (substitui os <select>) ===== */
-  var SETA = '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
-  var CHECK = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
-  var abertoAgora = null;
+  /* ========================= menu suspenso (.dd) ========================= */
+
+  var abertoDd = null, abertoDtp = null, abertoMs = null;
 
   function fecharDd(dd) {
     if (!dd) return;
     dd.classList.remove('aberto');
-    if (abertoAgora === dd) abertoAgora = null;
+    if (abertoDd === dd) abertoDd = null;
   }
 
   function melhorarSelect(sel) {
@@ -90,7 +251,7 @@ window.HubUI = (function () {
     gatilho.type = 'button';
     gatilho.className = 'dd-gatilho';
     gatilho.setAttribute('aria-haspopup', 'listbox');
-    gatilho.innerHTML = '<span class="dd-valor"></span><span class="dd-seta">' + SETA + '</span>';
+    gatilho.innerHTML = '<span class="dd-valor"></span><span class="dd-seta">' + ico('i-seta') + '</span>';
     dd.appendChild(gatilho);
 
     var painel = document.createElement('div');
@@ -105,9 +266,7 @@ window.HubUI = (function () {
       var el = document.createElement('div');
       el.className = 'dd-opcao' + (opt.value === '' ? ' placeholder' : '');
       el.setAttribute('role', 'option');
-      el.style.setProperty('--i', i);
-      el.dataset.valor = opt.value;
-      el.innerHTML = '<span></span><span class="dd-check">' + CHECK + '</span>';
+      el.innerHTML = '<span></span><span class="dd-check">' + ico('i-ok') + '</span>';
       el.firstChild.textContent = opt.textContent.replace(/\s+/g, ' ').trim();
       el.addEventListener('click', function () {
         escolher(i);
@@ -121,8 +280,7 @@ window.HubUI = (function () {
     function sincronizar() {
       var i = sel.selectedIndex;
       opcoes.forEach(function (el, j) { el.classList.toggle('selecionada', j === i); });
-      var texto = i >= 0 ? opcoes[i].firstChild.textContent : '';
-      valor.textContent = texto;
+      valor.textContent = i >= 0 ? opcoes[i].firstChild.textContent : '';
       valor.classList.toggle('dd-vazio', i < 0 || sel.options[i].value === '');
     }
 
@@ -141,11 +299,11 @@ window.HubUI = (function () {
 
     function alternar() {
       if (dd.classList.contains('aberto')) { fecharDd(dd); return; }
-      if (abertoAgora) fecharDd(abertoAgora);
+      if (abertoDd) fecharDd(abertoDd);
       var r = gatilho.getBoundingClientRect();
       dd.classList.toggle('acima', window.innerHeight - r.bottom < 300 && r.top > 300);
       dd.classList.add('aberto');
-      abertoAgora = dd;
+      abertoDd = dd;
       focar(Math.max(sel.selectedIndex, 0));
     }
 
@@ -156,8 +314,7 @@ window.HubUI = (function () {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();
         if (!aberto) { alternar(); return; }
-        var passo = e.key === 'ArrowDown' ? 1 : -1;
-        focar(Math.min(Math.max(focada + passo, 0), opcoes.length - 1));
+        focar(Math.min(Math.max(focada + (e.key === 'ArrowDown' ? 1 : -1), 0), opcoes.length - 1));
       } else if ((e.key === 'Enter' || e.key === ' ') && aberto) {
         e.preventDefault();
         if (focada >= 0) escolher(focada);
@@ -174,16 +331,14 @@ window.HubUI = (function () {
     sincronizar();
   }
 
-  /* ===== Seletor de data & hora premium (substitui os datetime-local) ===== */
-  var ICONE_CAL = '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
-  var SETA_ESQ = '<svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>';
-  var SETA_DIR = '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+  /* ========================= data e hora (.dtp) ========================= */
+
   var DIAS_SEMANA = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-  var abertoDtp = null;
 
   function pad(n) { return String(n).padStart(2, '0'); }
   function mesmoDia(a, b) {
-    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() &&
+           a.getDate() === b.getDate();
   }
   function fecharDtp(dtp) {
     if (!dtp) return;
@@ -196,11 +351,14 @@ window.HubUI = (function () {
     dtp.className = 'dd dtp';
     inp.parentNode.insertBefore(dtp, inp);
     dtp.appendChild(inp);
+    /* o campo real continua no DOM, reduzido a 1px pelo CSS — e NÃO
+       com hidden: um campo required escondido não é focável, e o
+       navegador recusa o envio com "not focusable" sem dizer onde. */
 
     var gatilho = document.createElement('button');
     gatilho.type = 'button';
     gatilho.className = 'dd-gatilho';
-    gatilho.innerHTML = '<span class="dd-valor"></span><span class="dd-seta">' + ICONE_CAL + '</span>';
+    gatilho.innerHTML = '<span class="dd-valor"></span><span class="dd-icone">' + ico('i-agenda') + '</span>';
     dtp.appendChild(gatilho);
 
     var painel = document.createElement('div');
@@ -208,11 +366,13 @@ window.HubUI = (function () {
     painel.innerHTML =
       '<div class="dtp-cal">' +
         '<div class="dtp-topo">' +
-          '<button type="button" class="dtp-nav" data-passo="-1" aria-label="Mês anterior">' + SETA_ESQ + '</button>' +
+          '<button type="button" class="dtp-nav anterior" aria-label="Mês anterior">' + ico('i-seta') + '</button>' +
           '<span class="dtp-mes"></span>' +
-          '<button type="button" class="dtp-nav" data-passo="1" aria-label="Próximo mês">' + SETA_DIR + '</button>' +
+          '<button type="button" class="dtp-nav proximo" aria-label="Próximo mês">' + ico('i-seta') + '</button>' +
         '</div>' +
-        '<div class="dtp-semana">' + DIAS_SEMANA.map(function (d) { return '<span>' + d + '</span>'; }).join('') + '</div>' +
+        '<div class="dtp-semana">' +
+          DIAS_SEMANA.map(function (d) { return '<span>' + d + '</span>'; }).join('') +
+        '</div>' +
         '<div class="dtp-grade"></div>' +
       '</div>' +
       '<div class="dtp-tempo">' +
@@ -237,7 +397,7 @@ window.HubUI = (function () {
     var sel = null, selH = 8, selM = 0;
 
     function lerValor() {
-      if (!inp.value) return;
+      if (!inp.value) { sel = null; return; }
       var d = new Date(inp.value);
       if (isNaN(d)) return;
       sel = d; selH = d.getHours(); selM = d.getMinutes();
@@ -254,8 +414,8 @@ window.HubUI = (function () {
 
     function atualizarGatilho() {
       if (sel) {
-        valor.textContent = pad(sel.getDate()) + '/' + pad(sel.getMonth() + 1) + '/' + sel.getFullYear() +
-                            '  ·  ' + pad(selH) + ':' + pad(selM);
+        valor.textContent = pad(sel.getDate()) + '/' + pad(sel.getMonth() + 1) + '/' +
+                            sel.getFullYear() + '  ·  ' + pad(selH) + ':' + pad(selM);
         valor.classList.remove('dd-vazio');
       } else {
         valor.textContent = 'Escolha data e hora…';
@@ -276,11 +436,11 @@ window.HubUI = (function () {
         if (d.getMonth() !== visto.getMonth()) cel.classList.add('fora');
         if (mesmoDia(d, hoje)) cel.classList.add('hoje');
         if (sel && mesmoDia(d, sel)) cel.classList.add('selecionado');
-        (function (d) {
+        (function (dia) {
           cel.addEventListener('click', function (e) {
             e.stopPropagation();
-            sel = d;
-            visto = new Date(d.getFullYear(), d.getMonth(), 1);
+            sel = dia;
+            visto = new Date(dia.getFullYear(), dia.getMonth(), 1);
             escrever();
             renderCal();
           });
@@ -300,9 +460,9 @@ window.HubUI = (function () {
     function renderTempo() {
       colH.innerHTML = ''; colM.innerHTML = '';
       for (var h = 0; h < 24; h++) {
-        (function (h) {
-          itemTempo(colH, pad(h), h === selH, function () {
-            selH = h;
+        (function (hora) {
+          itemTempo(colH, pad(hora), hora === selH, function () {
+            selH = hora;
             if (sel) escrever(); else atualizarGatilho();
             renderTempo();
           });
@@ -311,9 +471,9 @@ window.HubUI = (function () {
       var minutos = [];
       for (var m = 0; m < 60; m += 5) minutos.push(m);
       if (minutos.indexOf(selM) < 0) { minutos.push(selM); minutos.sort(function (a, b) { return a - b; }); }
-      minutos.forEach(function (m) {
-        itemTempo(colM, pad(m), m === selM, function () {
-          selM = m;
+      minutos.forEach(function (min) {
+        itemTempo(colM, pad(min), min === selM, function () {
+          selM = min;
           if (sel) escrever();
           renderTempo();
         });
@@ -339,12 +499,11 @@ window.HubUI = (function () {
     }
 
     gatilho.addEventListener('click', alternar);
-
-    painel.querySelectorAll('.dtp-nav').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        visto.setMonth(visto.getMonth() + parseInt(btn.dataset.passo));
-        renderCal();
-      });
+    painel.querySelector('.anterior').addEventListener('click', function () {
+      visto.setMonth(visto.getMonth() - 1); renderCal();
+    });
+    painel.querySelector('.proximo').addEventListener('click', function () {
+      visto.setMonth(visto.getMonth() + 1); renderCal();
     });
 
     painel.querySelectorAll('.dtp-botao').forEach(function (btn) {
@@ -358,7 +517,7 @@ window.HubUI = (function () {
           var n = new Date();
           selM = Math.ceil(n.getMinutes() / 5) * 5;
           selH = n.getHours();
-          if (selM === 60) { selM = 0; selH = (selH + 1) % 24; if (selH === 0) n.setDate(n.getDate() + 1); }
+          if (selM === 60) { selM = 0; selH = (selH + 1) % 24; }
           sel = n;
           visto = new Date(n.getFullYear(), n.getMonth(), 1);
           escrever(); renderCal(); renderTempo(); centralizar();
@@ -370,18 +529,18 @@ window.HubUI = (function () {
     });
 
     gatilho.addEventListener('keydown', function (e) {
-      if ((e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') && !dtp.classList.contains('aberto')) {
+      if ((e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') &&
+          !dtp.classList.contains('aberto')) {
         e.preventDefault(); alternar();
       } else if (e.key === 'Escape') { fecharDtp(dtp); }
     });
 
     inp.addEventListener('invalid', function () { gatilho.focus(); });
+    inp.addEventListener('reiniciado', function () { lerValor(); atualizarGatilho(); });
     lerValor(); atualizarGatilho();
   }
 
-  /* ===== Multi-select premium (checkboxes como dropdown com chips) ===== */
-  var X_ICO = '<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-  var abertoMs = null;
+  /* ========================= multi-seleção ========================= */
 
   function fecharMs(ms) {
     if (!ms) return;
@@ -396,25 +555,25 @@ window.HubUI = (function () {
     var gatilho = document.createElement('button');
     gatilho.type = 'button';
     gatilho.className = 'ms-gatilho';
-    gatilho.innerHTML = '<span class="ms-valor"></span><span class="dd-seta">' + SETA + '</span>';
+    gatilho.innerHTML = '<span class="ms-valor"></span><span class="dd-seta">' + ico('i-seta') + '</span>';
     ms.insertBefore(gatilho, ms.firstChild);
 
     var painel = document.createElement('div');
     painel.className = 'ms-painel';
-    painel.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); });
+    painel.addEventListener('click', function (e) { e.stopPropagation(); });
     ms.appendChild(painel);
 
     var valSpan = gatilho.querySelector('.ms-valor');
     var opcoes = [];
 
-    itens.forEach(function (item, i) {
+    itens.forEach(function (item) {
       var cb = item.querySelector('input[type="checkbox"]');
       var nome = item.querySelector('span').textContent.trim();
       var el = document.createElement('div');
       el.className = 'ms-opcao';
       el.setAttribute('role', 'option');
-      el.style.setProperty('--i', i);
-      el.innerHTML = '<span class="ms-caixa">' + CHECK + '</span><span>' + esc(nome) + '</span>';
+      el.innerHTML = '<span class="ms-caixa">' + ico('i-ok') + '</span><span></span>';
+      el.lastChild.textContent = nome;
       el.addEventListener('click', function (e) {
         e.stopPropagation();
         cb.checked = !cb.checked;
@@ -427,40 +586,44 @@ window.HubUI = (function () {
 
     function sincronizar() {
       valSpan.innerHTML = '';
-      var selecionados = opcoes.filter(function (o) { return o.cb.checked; });
-      if (selecionados.length === 0) {
+      var marcados = opcoes.filter(function (o) { return o.cb.checked; });
+      if (!marcados.length) {
         valSpan.textContent = placeholder;
         valSpan.classList.add('ms-vazio');
-      } else {
-        valSpan.classList.remove('ms-vazio');
-        selecionados.forEach(function (o) {
-          var chip = document.createElement('span');
-          chip.className = 'ms-chip';
-          chip.innerHTML = '<span>' + esc(o.nome) + '</span><span class="ms-x">' + X_ICO + '</span>';
-          chip.querySelector('.ms-x').addEventListener('click', function (e) {
-            e.stopPropagation();
-            o.cb.checked = false;
-            o.el.classList.remove('marcado');
-            sincronizar();
-          });
-          valSpan.appendChild(chip);
-        });
+        return;
       }
+      valSpan.classList.remove('ms-vazio');
+      marcados.forEach(function (o) {
+        var chip = document.createElement('span');
+        chip.className = 'ms-chip';
+        chip.innerHTML = '<span></span><span class="ms-x">' + ico('i-x') + '</span>';
+        chip.firstChild.textContent = o.nome;
+        chip.querySelector('.ms-x').addEventListener('click', function (e) {
+          e.stopPropagation();
+          o.cb.checked = false;
+          o.el.classList.remove('marcado');
+          sincronizar();
+        });
+        valSpan.appendChild(chip);
+      });
     }
 
-    function alternar() {
+    gatilho.addEventListener('click', function () {
       if (ms.classList.contains('aberto')) { fecharMs(ms); return; }
       if (abertoMs) fecharMs(abertoMs);
       ms.classList.add('aberto');
       abertoMs = ms;
-    }
+    });
 
-    gatilho.addEventListener('click', alternar);
-    ms.sincronizar = sincronizar;
+    ms.sincronizar = function () {
+      opcoes.forEach(function (o) { o.el.classList.toggle('marcado', o.cb.checked); });
+      sincronizar();
+    };
     sincronizar();
   }
 
-  /* ===== melhorar(raiz): aplica os componentes ao conteúdo renderizado ===== */
+  /* ========================= melhorar(raiz) ========================= */
+
   function melhorar(raiz) {
     raiz = raiz || document;
     raiz.querySelectorAll('select').forEach(function (sel) {
@@ -475,67 +638,54 @@ window.HubUI = (function () {
     animarNumeros();
   }
 
-  /* fechar dropdowns abertos ao clicar fora / Escape (registrado uma vez) */
+  /* fecha o que estiver aberto ao clicar fora, ou no Esc */
   document.addEventListener('click', function (e) {
-    if (abertoAgora && !abertoAgora.contains(e.target)) fecharDd(abertoAgora);
+    if (abertoDd && !abertoDd.contains(e.target)) fecharDd(abertoDd);
     if (abertoDtp && !abertoDtp.contains(e.target)) fecharDtp(abertoDtp);
     if (abertoMs && !abertoMs.contains(e.target)) fecharMs(abertoMs);
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { fecharDd(abertoAgora); fecharDtp(abertoDtp); fecharMs(abertoMs); }
+    if (e.key === 'Escape') { fecharDd(abertoDd); fecharDtp(abertoDtp); fecharMs(abertoMs); }
   });
 
-  /* ===== Modal de confirmação premium ===== */
-  var fundo = document.createElement('div');
-  fundo.className = 'modal-fundo';
-  fundo.innerHTML =
-    '<div class="modal-caixa" role="alertdialog" aria-modal="true">' +
-      '<div class="modal-icone">' +
-        '<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M10 11v6M14 11v6"/></svg>' +
-      '</div>' +
-      '<h3></h3>' +
-      '<p></p>' +
-      '<div class="modal-acoes">' +
-        '<button type="button" class="modal-cancelar">Voltar</button>' +
-        '<button type="button" class="modal-confirmar"></button>' +
-      '</div>' +
-    '</div>';
-  document.body.appendChild(fundo);
+  /* ========================= cabeçalho: tema e densidade ========================= */
 
-  var modalTitulo = fundo.querySelector('h3');
-  var modalMensagem = fundo.querySelector('p');
-  var btnCancelar = fundo.querySelector('.modal-cancelar');
-  var btnConfirmar = fundo.querySelector('.modal-confirmar');
-  var acaoPendente = null;
+  function ligarPreferencias() {
+    var btnTema = document.querySelector('.botao-tema');
+    var btnDens = document.querySelector('.botao-densidade');
 
-  function confirmar(opcoes, aoConfirmar) {
-    modalTitulo.textContent = opcoes.titulo || 'Tem certeza?';
-    modalMensagem.textContent = opcoes.mensagem || '';
-    btnConfirmar.textContent = opcoes.botao || 'Confirmar';
-    acaoPendente = aoConfirmar;
-    fundo.classList.add('aberto');
-    setTimeout(function () { btnCancelar.focus(); }, 60);
+    function pintarTema() {
+      if (!btnTema || !window.HubTema) return;
+      var escuro = window.HubTema.atual() === 'escuro';
+      btnTema.innerHTML = ico(escuro ? 'i-sol' : 'i-lua');
+      btnTema.setAttribute('aria-label', escuro ? 'Usar tema claro' : 'Usar tema escuro');
+      btnTema.setAttribute('title', btnTema.getAttribute('aria-label'));
+    }
+    function pintarDens() {
+      if (!btnDens || !window.HubTema) return;
+      var denso = window.HubTema.densidadeAtual() === 'compacto';
+      btnDens.innerHTML = ico(denso ? 'i-arejado' : 'i-denso');
+      btnDens.setAttribute('aria-label', denso ? 'Usar espaçamento arejado' : 'Usar espaçamento compacto');
+      btnDens.setAttribute('title', btnDens.getAttribute('aria-label'));
+    }
+
+    if (btnTema) btnTema.addEventListener('click', function () { window.HubTema.alternar(); pintarTema(); });
+    if (btnDens) btnDens.addEventListener('click', function () { window.HubTema.alternarDensidade(); pintarDens(); });
+    pintarTema(); pintarDens();
   }
 
-  function fecharModal() {
-    fundo.classList.remove('aberto');
-    acaoPendente = null;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ligarPreferencias);
+  } else {
+    ligarPreferencias();
   }
-
-  btnConfirmar.addEventListener('click', function () {
-    var acao = acaoPendente;
-    fecharModal();
-    if (acao) acao();
-  });
-  btnCancelar.addEventListener('click', fecharModal);
-  fundo.addEventListener('click', function (e) { if (e.target === fundo) fecharModal(); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && fundo.classList.contains('aberto')) fecharModal();
-  });
 
   return {
     api: api, esc: esc, moeda: moeda, dataHora: dataHora,
-    erroTopo: erroTopo, animarNumeros: animarNumeros,
-    melhorar: melhorar, confirmar: confirmar
+    telefone: telefone, cnpj: cnpj,
+    ico: ico, arco: arco,
+    erroTopo: erroTopo, toast: toast, carregando: carregando,
+    confirmar: confirmar, informar: informar,
+    melhorar: melhorar, animarNumeros: animarNumeros
   };
 })();

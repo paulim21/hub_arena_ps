@@ -1,0 +1,218 @@
+/* =====================================================================
+   tokens.css — TODOS os valores da identidade ArenaHub nascem aqui.
+
+   Nenhuma cor, tamanho, espaço, raio, borda ou duração literal existe
+   fora deste arquivo. O porquê de cada decisão mora no
+   IDENTIDADE_VISUAL.md, na raiz do projeto; o contraste anotado em cada
+   comentário é CONTRATO — o verificador remede e recusa divergência.
+
+   A ordem dos três blocos de tema é fixa:
+     1. :root                                  — o claro, completo
+     2. @media (prefers-color-scheme: dark)    — o aparelho decide
+        protegido por :root:not([data-tema="claro"])
+     3. :root[data-tema="escuro"]              — o botão vence
+   Os dois blocos escuros são gêmeos: mesmo conjunto, mesmos valores.
+   ===================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- A marca ----------
+     Navy escreve, areia é chão. São duas cores mais o fundo, e vêm
+     direto da logo: o monograma em navy sobre a faixa de areia. */
+
+  --fundo: #F4F1EB;                   /* o papel: o creme da logo */
+  --superficie: #FFFFFF;              /* cartão, tabela, painel */
+  --superficie-2: #EDE8DF;            /* recua: cabeçalho de tabela, trilho */
+  --superficie-3: #FFFFFF;            /* avança: menu, modal — separa pela elevação */
+
+  --tinta: #1F1B16;                   /* texto principal — 15,19:1 no fundo, 17,12:1 na superfície, 14,03:1 na superfície-2 */
+  --tinta-fraca: #5C564C;             /* apoio, legenda, rótulo — 6,44:1 no fundo, 7,27:1 na superfície */
+
+  --linha: #E6E0D4;                   /* SÓ separa — divisória, borda de cartão */
+  --linha-forte: #7A7265;             /* DELIMITA — tudo que o dedo toca: 4,21:1 no fundo, 4,75:1 na superfície */
+
+  --marca: #1B2A4A;                   /* a marca escrevendo — 12,62:1 no fundo, 14,22:1 na superfície */
+  --marca-fundo: #EFD6B0;             /* a areia, como chão: deliberadamente 1,25:1 no fundo — nunca texto */
+  --marca-traco: rgba(27, 42, 74, .08);   /* véu: linha sob o cursor, trilho */
+  --seletivo: rgba(27, 42, 74, .22);      /* fundo do texto selecionado */
+
+  --foco: #1B2A4A;                    /* o anel de foco, por dentro */
+  --foco-halo: #FFFFFF;               /* o anel de foco, por fora — nunca um sem o outro */
+
+  --sucesso: #3F6B1F;                 /* estado positivo, e só — 6,30:1 na superfície */
+  --erro: #A8371F;                    /* estado negativo, e só — 6,50:1 na superfície */
+
+  --acao: #1B2A4A;                    /* o preenchimento do botão principal */
+  --acao-tinta: #FFFFFF;              /* o texto por cima dele — 14,22:1 sobre a --acao */
+  --acao-hover: #101B33;              /* no claro escurece */
+
+  --veu: rgba(31, 27, 22, .46);       /* véu do modal */
+
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(31, 27, 22, .06), 0 1px 1px rgba(31, 27, 22, .04);
+  --elev-2: 0 2px 6px rgba(31, 27, 22, .08), 0 1px 2px rgba(31, 27, 22, .06);
+  --elev-3: 0 8px 20px rgba(31, 27, 22, .12), 0 2px 6px rgba(31, 27, 22, .08);
+  --elev-4: 0 20px 48px rgba(31, 27, 22, .20), 0 4px 12px rgba(31, 27, 22, .10);
+
+  /* ---------- Texto: sete degraus, e nenhum a mais ----------
+     Os quatro primeiros são fixos de propósito: rótulo de 12px não
+     encolhe, e campo abaixo de 16px faz o iPhone dar zoom ao focar.
+     Os três grandes são fluidos — por isso não existe remendo de
+     tamanho no @media de celular. */
+
+  --fonte: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fonte-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --t-rotulo: 12px;
+  --t-apoio: 14px;
+  --t-corpo: 16px;
+  --t-titulo: 20px;
+  --t-destaque: clamp(22px, 1.2vw + 18px, 26px);
+  --t-pagina: clamp(26px, 2.4vw + 18px, 34px);
+  --t-numero: clamp(34px, 3.4vw + 22px, 46px);
+
+  /* ---------- Espaço: grade de 4px ---------- */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-5: 24px;
+  --e-6: 32px;
+  --e-7: 48px;
+  --e-8: 64px;
+
+  /* ---------- Raio e borda ----------
+     --b é 1,5px, nunca 1px: é o peso do traço do monograma. */
+  --r-campo: 8px;
+  --r-botao: 10px;
+  --r-cartao: 14px;
+  --r-interno: 8px;
+  --r-modal: 20px;
+  --r-selo: 999px;
+  --b: 1.5px;
+  --b-grosso: 3px;
+
+  /* ---------- Movimento ----------
+     Duração e curva são tokens separados porque são decisões separadas.
+     Nada de interface passa de 400ms; só animação de DADO chega aos
+     720ms, porque ali o movimento é a informação. */
+  --d-instante: 80ms;
+  --d-rapido: 160ms;
+  --d-medio: 240ms;
+  --d-calmo: 360ms;
+  --d-dado: 720ms;
+  --d-saida: .72;                     /* multiplicador, não duração */
+
+  --c-padrao: cubic-bezier(.2, 0, .2, 1);
+  --c-entra: cubic-bezier(0, 0, .2, 1);
+  --c-sai: cubic-bezier(.4, 0, 1, 1);
+  --c-enfase: cubic-bezier(.2, 0, 0, 1);
+  --c-mola: cubic-bezier(.2, .9, .3, 1.1);
+  --c-mola-forte: cubic-bezier(.2, 1.2, .3, 1.2);
+
+  /* os quatro nomes antigos, montados a partir dos de cima */
+  --mov-cor: var(--d-rapido) var(--c-padrao);
+  --mov-abre: var(--d-medio) var(--c-entra);
+  --mov-fecha: var(--d-rapido) var(--c-sai);
+  --mov-modal: var(--d-calmo) var(--c-mola);
+
+  /* ---------- Densidade: dimensão de primeira classe ----------
+     Não é multiplicador: .75 sobre a grade de 4px produziria 9px e
+     30px, medidas que não existem aqui. Os dois modos TROCAM valores. */
+  --densidade: 1;
+  --altura-controle: 40px;
+  --altura-linha-tabela: 52px;
+  --pad-celula-y: var(--e-3);
+  --pad-celula-x: var(--e-4);
+}
+
+:root[data-densidade="compacto"] {
+  --densidade: .75;
+  --altura-controle: 32px;
+  --altura-linha-tabela: 40px;
+  --pad-celula-y: var(--e-2);
+  --pad-celula-x: var(--e-3);
+}
+
+/* =====================================================================
+   2. O aparelho decide — protegido para o botão poder vencer
+   ===================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    color-scheme: dark;
+
+    --fundo: #101419;
+    --superficie: #191E26;
+    --superficie-2: #141920;
+    --superficie-3: #1F262F;
+
+    --tinta: #EDE7DD;                 /* texto principal — 15,03:1 no fundo, 13,61:1 na superfície, 14,35:1 na superfície-2 */
+    --tinta-fraca: #A8A294;           /* apoio, legenda, rótulo — 7,27:1 no fundo, 6,58:1 na superfície */
+
+    --linha: #262D37;
+    --linha-forte: #7E8794;           /* o que o dedo toca — 5,09:1 no fundo, 4,61:1 na superfície */
+
+    --marca: #9BB8E8;                 /* no escuro a marca CLAREIA — 9,17:1 no fundo, 8,30:1 na superfície */
+    --marca-fundo: #00204A;           /* o navy profundo como chão: 1,15:1 no fundo — nunca texto */
+    --marca-traco: rgba(155, 184, 232, .08);
+    --seletivo: rgba(155, 184, 232, .26);
+
+    --foco: #9BB8E8;
+    --foco-halo: #101419;
+
+    --sucesso: #9CC46B;               /* estado positivo — 8,38:1 na superfície */
+    --erro: #E08A72;                  /* estado negativo — 6,41:1 na superfície */
+
+    --acao: #9BB8E8;
+    --acao-tinta: #101419;            /* 9,17:1 sobre a --acao */
+    --acao-hover: #D6E2F5;            /* no escuro CLAREIA, não escurece */
+
+    --veu: rgba(5, 9, 12, .66);
+
+    --elev-1: 0 1px 2px rgba(0, 0, 0, .40), 0 1px 1px rgba(0, 0, 0, .30);
+    --elev-2: 0 2px 6px rgba(0, 0, 0, .46), 0 1px 2px rgba(0, 0, 0, .34);
+    --elev-3: 0 8px 20px rgba(0, 0, 0, .54), 0 2px 6px rgba(0, 0, 0, .40);
+    --elev-4: 0 20px 48px rgba(0, 0, 0, .64), 0 4px 12px rgba(0, 0, 0, .46);
+  }
+}
+
+/* =====================================================================
+   3. O botão vence também no sentido contrário — gêmeo do bloco acima
+   ===================================================================== */
+:root[data-tema="escuro"] {
+  color-scheme: dark;
+
+  --fundo: #101419;
+  --superficie: #191E26;
+  --superficie-2: #141920;
+  --superficie-3: #1F262F;
+
+  --tinta: #EDE7DD;
+  --tinta-fraca: #A8A294;
+
+  --linha: #262D37;
+  --linha-forte: #7E8794;
+
+  --marca: #9BB8E8;
+  --marca-fundo: #00204A;
+  --marca-traco: rgba(155, 184, 232, .08);
+  --seletivo: rgba(155, 184, 232, .26);
+
+  --foco: #9BB8E8;
+  --foco-halo: #101419;
+
+  --sucesso: #9CC46B;
+  --erro: #E08A72;
+
+  --acao: #9BB8E8;
+  --acao-tinta: #101419;
+  --acao-hover: #D6E2F5;
+
+  --veu: rgba(5, 9, 12, .66);
+
+  --elev-1: 0 1px 2px rgba(0, 0, 0, .40), 0 1px 1px rgba(0, 0, 0, .30);
+  --elev-2: 0 2px 6px rgba(0, 0, 0, .46), 0 1px 2px rgba(0, 0, 0, .34);
+  --elev-3: 0 8px 20px rgba(0, 0, 0, .54), 0 2px 6px rgba(0, 0, 0, .40);
+  --elev-4: 0 20px 48px rgba(0, 0, 0, .64), 0 4px 12px rgba(0, 0, 0, .46);
+}
