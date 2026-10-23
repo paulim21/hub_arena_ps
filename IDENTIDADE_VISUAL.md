@@ -155,6 +155,11 @@ dependência de rede que a identidade não precisa.
 
 **Espaço: grade de 4px**, de `--e-1` (4px) a `--e-8` (64px).
 
+**Espera.** A tela mostra o **formato** do que está chegando — um esqueleto
+com a mesma estrutura da tabela real — em vez de ficar em branco. E a barra de
+progresso do topo só acende depois de 120ms: resposta rápida não vira
+lampejo.
+
 **Movimento:** nada de interface passa de 400ms. Só animação de **dado** chega
 aos 720ms, porque ali o movimento é a informação. Quem pede
 `prefers-reduced-motion: reduce` recebe menos movimento — e o arco girando

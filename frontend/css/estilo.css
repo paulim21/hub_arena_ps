@@ -252,7 +252,7 @@ button.sucesso { color: var(--sucesso); border-color: var(--sucesso); }
   font-size: var(--t-rotulo);
 }
 
-.botao-tema, .botao-densidade {
+.botao-tema, .botao-densidade, .botao-busca {
   min-height: var(--altura-controle);
   width: var(--altura-controle);
   padding: 0;
@@ -881,4 +881,171 @@ tbody tr:hover td { background: var(--marca-traco); }
     animation-iteration-count: 1;
     transition-duration: 1ms;
   }
+}
+
+/* =====================================================================
+   A camada de acabamento (frontend/js/interface.js)
+   ===================================================================== */
+
+/* ---------------- esqueleto: o desenho do que está chegando ----------------
+   As larguras são CLASSES, não style: a CSP bloqueia estilo escrito por
+   JavaScript, e falha calada. E a pulsação é de OPACIDADE, não um
+   gradiente correndo: gradiente é uma cor que não se compromete, e saiu
+   da identidade. */
+
+.esqueleto { display: grid; gap: var(--e-3); }
+.esqueleto.cartoes {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--e-4);
+}
+
+.esq-linha {
+  display: flex;
+  align-items: center;
+  gap: var(--e-4);
+  min-height: var(--altura-linha-tabela);
+  padding: 0 var(--pad-celula-x);
+  border-bottom: var(--b) solid var(--linha);
+}
+.esqueleto.tabela .esq-linha.cabecalho {
+  min-height: var(--altura-controle);
+  background: var(--superficie-2);
+}
+.esqueleto.texto .esq-linha { border-bottom: 0; min-height: auto; padding: 0; }
+
+.esq-cartao {
+  display: grid;
+  gap: var(--e-3);
+  padding: var(--e-5);
+  border: var(--b) solid var(--linha);
+  border-radius: var(--r-cartao);
+}
+
+.esq-barra {
+  display: block;
+  height: 12px;
+  border-radius: var(--r-selo);
+  background: var(--superficie-2);
+  animation: pulso-esqueleto var(--d-dado) var(--c-padrao) infinite alternate;
+}
+.esq-barra.p { width: 14%; min-width: 48px; }
+.esq-barra.m { width: 28%; }
+.esq-barra.g { width: 44%; }
+.esq-barra.numero { width: 56%; height: 30px; }
+.esq-cartao .esq-barra.p { width: 42%; }
+.esq-cartao .esq-barra.m { width: 72%; }
+
+@keyframes pulso-esqueleto {
+  from { opacity: 1; }
+  to { opacity: .45; }
+}
+
+/* ---------------- a barra de progresso do topo ----------------
+   O estado é `data-estado`, nunca style. A largura de cada estado é
+   uma promessa: ela avança enquanto espera e só fecha no fim. */
+
+.barra-progresso {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  height: var(--b-grosso);
+  width: 0;
+  background: var(--marca);
+  border-radius: 0 var(--r-selo) var(--r-selo) 0;
+  opacity: 0;
+  transition: width var(--d-calmo) var(--c-sai), opacity var(--d-rapido) var(--c-padrao);
+}
+.barra-progresso[data-estado="iniciando"] { width: 12%; opacity: 1; }
+.barra-progresso[data-estado="andando"] {
+  width: 76%;
+  opacity: 1;
+  transition: width 2.4s var(--c-sai), opacity var(--d-rapido) var(--c-padrao);
+}
+.barra-progresso[data-estado="fim"] {
+  width: 100%;
+  opacity: 0;
+  transition: width var(--d-rapido) var(--c-entra), opacity var(--d-medio) var(--c-sai);
+}
+
+/* ---------------- a paleta do Ctrl+K ---------------- */
+
+.paleta {
+  max-width: 560px;
+  width: calc(100% - var(--e-6));
+  padding: 0;
+  overflow: hidden;
+}
+.paleta-campo {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  padding: var(--e-4) var(--e-5);
+  border-bottom: var(--b) solid var(--linha);
+  color: var(--tinta-fraca);
+}
+.paleta-entrada {
+  flex: 1;
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tinta);
+  font-size: var(--t-corpo);
+}
+.paleta-entrada:focus-visible { outline: 0; box-shadow: none; }
+.paleta-entrada::-webkit-search-cancel-button { display: none; }
+.paleta-campo kbd {
+  padding: var(--e-1) var(--e-2);
+  border: var(--b) solid var(--linha-forte);
+  border-radius: var(--r-interno);
+  color: var(--tinta-fraca);
+  font-family: var(--fonte-mono);
+  font-size: var(--t-rotulo);
+}
+
+.paleta-lista { max-height: 50vh; overflow-y: auto; padding: var(--e-2); }
+.paleta-grupo { display: grid; gap: var(--e-1); padding: var(--e-2) 0; }
+.paleta-grupo > .rotulo { padding: 0 var(--e-3); }
+
+.paleta-item {
+  display: flex;
+  align-items: center;
+  /* a base do button centraliza o conteúdo; item de lista alinha à
+     esquerda, senão o nome dança conforme o tamanho da palavra */
+  justify-content: flex-start;
+  gap: var(--e-3);
+  width: 100%;
+  justify-self: stretch;
+  min-height: var(--altura-controle);
+  padding: 0 var(--e-3);
+  border: 0;
+  border-radius: var(--r-interno);
+  background: transparent;
+  color: var(--tinta);
+  font-size: var(--t-apoio);
+  font-weight: 400;
+  text-align: left;
+}
+.paleta-item .ico { color: var(--tinta-fraca); }
+.paleta-item.focado { background: var(--marca-traco); }
+.paleta-item.focado .ico { color: var(--marca); }
+.paleta-item mark {
+  background: var(--marca-fundo);
+  color: var(--tinta);
+  border-radius: var(--r-interno);
+}
+.paleta-aqui {
+  margin-left: auto;
+  padding: 0 var(--e-2);
+  border: var(--b) solid var(--linha);
+  border-radius: var(--r-selo);
+  color: var(--tinta-fraca);
+  font-size: var(--t-rotulo);
+}
+.paleta .vazio { padding: var(--e-6) var(--e-5); }
+
+@media (max-width: 720px) {
+  .paleta-item { min-height: 44px; }
+  .paleta-campo kbd { display: none; }
 }

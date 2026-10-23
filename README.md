@@ -88,6 +88,7 @@ frontend/
     css/estilo.css          ← só componentes, nenhuma cor literal
     js/tema.js              ← tema e densidade, antes da primeira pintura
     js/base.js              ← fetch, ícones, <dialog>, menus e formatos
+    js/interface.js         ← esqueleto, barra de progresso e paleta do Ctrl+K
     img/icones.svg          ← os 43 ícones em traço (a fonte do sprite)
     img/favicon.svg         ← o monograma AH
 docs/
@@ -119,6 +120,11 @@ O front-end tem um sistema de design documentado e **verificado por máquina**:
 A marca vem da logo: **navy escreve, a areia é chão**, sobre papel creme. Tema
 claro e escuro medidos separadamente, densidade confortável/compacta, foco
 visível de duas cores e 44px de área de toque no celular.
+
+A tela nunca fica em branco esperando o servidor: cada painel mostra um
+**esqueleto** com a estrutura do que vem, e uma barra de progresso acende no
+topo depois de 120ms. **Ctrl+K** abre uma paleta de navegação montada a partir
+do próprio menu da página.
 
 **Nenhum emoji na interface.** Emoji muda de forma entre aparelhos, não aceita
 o peso do traço da marca e não herda cor — no lugar dele vão os 43 ícones de

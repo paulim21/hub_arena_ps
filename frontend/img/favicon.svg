@@ -11,15 +11,22 @@
     .traco { fill: none; stroke: #1B2A4A; stroke-width: 2.4;
              stroke-linecap: round; stroke-linejoin: round; }
     .areia { fill: none; stroke: #EFD6B0; stroke-width: 2.4; stroke-linecap: round; }
+    .rede { stroke-width: 1.2; }
     @media (prefers-color-scheme: dark) {
       .papel { fill: #101419; }
       .traco { stroke: #9BB8E8; }
-      .areia { stroke: #00204A; }
+      /* Aqui a areia continua AREIA, e não o --marca-fundo do escuro:
+         num ícone de 32px aquele navy profundo sobre o fundo escuro
+         apaga a faixa. O favicon é asset solto, não precisa espelhar o
+         token — precisa ser visto. */
+      .areia { stroke: #EFD6B0; }
     }
   </style>
   <rect class="papel" width="32" height="32" rx="7"/>
-  <path class="traco" d="M5 23 10 8l5 15"/>
-  <path class="traco" d="M7.1 18.2h5.8"/>
-  <path class="traco" d="M20 8v15M27 8v15M20 15.2h7"/>
-  <path class="areia" d="M4.5 26.5c7 1.8 16 1.6 23-.2"/>
+  <path class="traco" d="M4.5 23.5 9.5 8l5 15.5"/>
+  <path class="traco" d="M6.7 18.5h5.6"/>
+  <path class="traco" d="M19.5 8v15.5M27 8v15.5"/>
+  <path class="traco rede" d="M19.5 12.8h7.5v5h-7.5z"/>
+  <path class="traco rede" d="M23.2 12.8v5M19.5 15.3h7.5"/>
+  <path class="areia" d="M4 26.8c7.2 1.9 16.4 1.7 23.6-.3"/>
 </svg>

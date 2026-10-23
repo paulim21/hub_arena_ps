@@ -182,7 +182,27 @@ no celular, com `data-rotulo` em cada `td`) · `.lista` + `.item`
 `.vazio-util` (com `<strong>`) · `.modal` (`<dialog>`, véu no `::backdrop`) ·
 `.aviso-flutuante`
 
-### Espera e resposta
+### Espera e resposta — a camada de acabamento (`frontend/js/interface.js`)
+- `HubUI.esqueleto(forma, quantas)` e `HubUI.esperando(id, forma, quantas)` —
+  o **desenho** do que está chegando, no lugar exato. A tela nunca fica em
+  branco esperando o servidor, e nada pula quando o dado chega, porque o
+  esqueleto tem a mesma estrutura da coisa real. As formas são `tabela`
+  (o padrão), `cartoes`, `lista` e `texto`. O `aria-busy` se desliga sozinho
+  quando o conteúdo entra — quem escreve `lista.innerHTML = tabela` não ia
+  lembrar de desmarcar, e o leitor de tela ficaria anunciando a região como
+  ocupada para sempre.
+- A **barra de progresso do topo** acende sozinha em toda chamada à API, com
+  120ms de atraso para resposta rápida não virar lampejo. Ela conta as
+  chamadas em voo, porque a página dispara várias em paralelo e a barra tem
+  que esperar a última. O estado vai em `data-estado`, nunca em style.
+- `HubUI.abrirBusca()` — a paleta do **Ctrl+K**, montada **a cada abertura** a
+  partir do próprio menu da página: ela nunca oferece um lugar que a página
+  não oferece. Leva também o que a página **faz** (tema, densidade), em
+  grupos, com os três últimos escolhidos no topo e o trecho casado realçado —
+  e a busca ignora acento, então "relatorios" acha "Relatórios". Toda ação
+  dali **aciona um botão que já existe no cabeçalho**: a paleta é caminho de
+  teclado, nunca uma porta que só ela abre. É por isso que o item de tema se
+  renomeia sozinho depois do clique — ele relê o `aria-label` do botão.
 - `HubUI.toast(mensagem, tipo)` — o que deu certo some em 4s; **o que deu
   errado só some no clique**, porque erro que desaparece sozinho é erro que
   ninguém leu.
@@ -200,10 +220,13 @@ que são `<dialog>` com véu no `::backdrop`.
 De `frontend/js/tema.js`: `HubTema.atual`, `alternar`, `densidadeAtual`,
 `alternarDensidade`.
 
-**Ainda NÃO existem** — e o documento não promete o que não foi construído:
-`HubUI.esqueleto`/`esperando` (esqueleto de carregamento), `HubUI.abrirBusca`
-(a paleta do Ctrl+K), a barra de progresso do topo e o `painel.css`. Se um
-deles for construído, entra aqui **e** no `IDENTIDADE_VISUAL.md`.
+De `frontend/js/interface.js`: `esqueleto`, `esperando`, `abrirBusca`. Ele
+carrega **depois** do `base.js` e **antes** do script da página, porque
+envolve o `HubUI.api` para acender a barra.
+
+**Ainda NÃO existe** — e o documento não promete o que não foi construído:
+o `painel.css`. Se for construído, entra aqui **e** no
+`IDENTIDADE_VISUAL.md`.
 
 ### Ícones — 43, em traço, nunca emoji
 `.ico` (20px), `.ico-grande` (32px), `.ico-marca` (28px). Via
@@ -370,6 +393,7 @@ Eles compartilham a estrutura e os números que importam, não os valores.
 | `frontend/css/estilo.css` | só componentes — **nenhuma cor literal** |
 | `frontend/js/tema.js` | tema e densidade, no `<head>` sem `defer` |
 | `frontend/js/base.js` | `api`, `<dialog>`, formatos, `ico`, `arco`, `melhorar` |
+| `frontend/js/interface.js` | esqueleto, barra de progresso e a paleta do Ctrl+K |
 | `frontend/img/icones.svg` | os 43 ícones em traço (a fonte) |
 | `frontend/img/favicon.svg` | o monograma. É o **único** arquivo com cor literal fora do `tokens.css`, porque é servido solto, fora do CSS |
 | `.claude/skills/design/embutir-icones.py` | copia o sprite para dentro dos HTML |

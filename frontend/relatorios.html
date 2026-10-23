@@ -150,10 +150,17 @@
 </symbol><symbol id="i-denso" viewBox="0 0 24 24">
   <path d="M4 5.5h16M4 9.5h16M4 13.5h16M4 17.5h16"/>
 </symbol><symbol id="i-monograma" viewBox="0 0 24 24">
-  <path d="M2.5 18.5 7.5 4l5 14.5"/>
-  <path d="M4.6 13.5h5.8"/>
-  <path d="M16 4v14.5M21.5 4v14.5M16 11.5h5.5"/>
-  <path d="M2 21.2c6 1.6 15 1.4 20-.2"/>
+  <!-- o A -->
+  <path d="M2 18.8 6.8 4.2l4.8 14.6"/>
+  <path d="M4.2 14.1h5.2"/>
+  <!-- os postes do H, com a rede entre eles: a quadra de areia -->
+  <path d="M14.8 4.2v14.6M21.8 4.2v14.6"/>
+  <path d="M14.8 8.6h7v4.6h-7z" stroke-width="1.1"/>
+  <path d="M18.3 8.6v4.6M14.8 10.9h7" stroke-width="1.1"/>
+  <!-- a bola, pousada na areia -->
+  <circle cx="19.6" cy="16.4" r="1" stroke-width="1.2"/>
+  <!-- a faixa de areia -->
+  <path d="M1.6 21.3c6.2 1.7 15.2 1.5 20.6-.3"/>
 </symbol></svg><!-- sprite:fim -->
 
   <header>
@@ -163,13 +170,14 @@
         <span>Arena<em>Hub</em></span>
       </a>
       <nav>
-        <a href="/">Visão geral</a>
-        <a href="/usuarios">Usuários</a>
-        <a href="/arenas">Arenas</a>
-        <a href="/quadras">Quadras</a>
-        <a href="/reservas">Reservas</a>
-        <a href="/relatorios" class="ativo" aria-current="page">Relatórios</a>
+        <a href="/" data-ico="i-grafico">Visão geral</a>
+        <a href="/usuarios" data-ico="i-usuario">Usuários</a>
+        <a href="/arenas" data-ico="i-arena">Arenas</a>
+        <a href="/quadras" data-ico="i-quadra">Quadras</a>
+        <a href="/reservas" data-ico="i-agenda">Reservas</a>
+        <a href="/relatorios" data-ico="i-registro" class="ativo" aria-current="page">Relatórios</a>
         <span class="sessao-nav">
+          <button type="button" class="botao-busca"></button>
           <button type="button" class="botao-tema"></button>
           <button type="button" class="botao-densidade"></button>
         </span>
@@ -234,6 +242,7 @@
   <footer>ArenaHub · Flask + SQLite · Controller, Service, Model e Repository</footer>
 
   <script src="/js/base.js"></script>
+  <script src="/js/interface.js"></script>
   <script>
     // Cada painel declara o próprio título e ícone — uma fonte só
     var PAINEIS = {
@@ -262,10 +271,15 @@
 
     async function chamarApi(url, chave) {
       var painel = document.getElementById('painel-' + chave);
-      painel.innerHTML = cabecalho(chave);
+      // o esqueleto segura o lugar enquanto a procedure roda, e sai antes
+      // de quem chamou acrescentar a tabela
+      painel.innerHTML = cabecalho(chave) + HubUI.esqueleto('tabela', 3);
       try {
-        return await HubUI.api(url);
+        var dados = await HubUI.api(url);
+        painel.innerHTML = cabecalho(chave);
+        return dados;
       } catch (e) {
+        painel.innerHTML = cabecalho(chave);
         vazio(painel, 'i-proibido', e.message);
         return null;
       }

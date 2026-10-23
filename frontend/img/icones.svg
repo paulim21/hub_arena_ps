@@ -213,9 +213,16 @@
 
 <!-- ===== A marca ===== -->
 <symbol id="i-monograma" viewBox="0 0 24 24">
-  <path d="M2.5 18.5 7.5 4l5 14.5"/>
-  <path d="M4.6 13.5h5.8"/>
-  <path d="M16 4v14.5M21.5 4v14.5M16 11.5h5.5"/>
-  <path d="M2 21.2c6 1.6 15 1.4 20-.2"/>
+  <!-- o A -->
+  <path d="M2 18.8 6.8 4.2l4.8 14.6"/>
+  <path d="M4.2 14.1h5.2"/>
+  <!-- os postes do H, com a rede entre eles: a quadra de areia -->
+  <path d="M14.8 4.2v14.6M21.8 4.2v14.6"/>
+  <path d="M14.8 8.6h7v4.6h-7z" stroke-width="1.1"/>
+  <path d="M18.3 8.6v4.6M14.8 10.9h7" stroke-width="1.1"/>
+  <!-- a bola, pousada na areia -->
+  <circle cx="19.6" cy="16.4" r="1" stroke-width="1.2"/>
+  <!-- a faixa de areia -->
+  <path d="M1.6 21.3c6.2 1.7 15.2 1.5 20.6-.3"/>
 </symbol>
 </svg>
