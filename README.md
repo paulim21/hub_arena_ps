@@ -34,6 +34,20 @@ Todas disponíveis de ponta a ponta
 19. **Busca de quadras disponíveis por período** (NOT EXISTS — procedure `sp_quadras_disponiveis`)
 20. **Agenda da arena por período** (procedure `sp_agenda_arena`)
 
+## 📐 Diagrama de classes
+
+O diagrama de classes do domínio está na pasta [`docs/`](docs):
+
+| Arquivo | O que é |
+|---------|---------|
+| [`docs/diagrama-classes.md`](docs/diagrama-classes.md) | Diagrama + explicação da **herança**, **composição**, **agregação** e da relação **N:N**, com a tabela de FKs correspondente no banco |
+| [`docs/diagrama-classes.svg`](docs/diagrama-classes.svg) | Mesma versão em imagem (para slides e para o vídeo) |
+
+Ele representa as cinco Models de [`backend/models/`](backend/models) —
+`Usuario`, `Arena`, `Quadra`, `Reserva` e `ReservaJogador` — todas herdando de
+`db.Model`, com `Arena ◆— Quadra` e `Reserva ◆— ReservaJogador` como
+composições e as demais ligações como agregações.
+
 ## 🏛️ Arquitetura (padrão do material da disciplina)
 
 ```
@@ -71,6 +85,8 @@ frontend/
     index.html, usuarios.html, arenas.html, quadras.html, reservas.html, relatorios.html
     css/estilo.css          ← tema dark premium (glassmorphism)
     js/base.js              ← wrapper do fetch, componentes de UI e modal
+docs/
+    diagrama-classes.md     ← diagrama de classes do domínio (+ .svg)
 ```
 
 > **Sobre as procedures no SQLite:** o SQLite é um banco embarcado e não possui

@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1380 1215"
+     width="1380" height="1215" font-family="Sora, 'Segoe UI', system-ui, sans-serif">
+  <title>Hub Arena — Diagrama de classes do domínio (Models)</title>
+  <defs>
+    <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#1B2030" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+  <rect width="1380" height="1215" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="22" font-weight="800" fill="#1B2030">
+    Hub Arena · Diagrama de classes do domínio
+  </text>
+  <text x="40" y="62" font-size="12.5" fill="#5B6377">
+    Models em backend/models/ — o CRUD básico fica na própria classe
+  </text>
+  <g><rect x="560.0" y="70" width="220" height="116" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <path d="M560.0 116 V80 a10 10 0 0 1 10 -10 H770.0 a10 10 0 0 1 10 10 V116 Z" fill="#4A5266"/>
+  <text x="670.0" y="88" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="10.5" font-style="italic" fill="#FFFFFF" opacity="0.92">«abstract»</text>
+  <text x="670.0" y="107" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="15.5" font-weight="700" fill="#FFFFFF">db.Model</text>
+  <line x1="560.0" y1="132" x2="780.0" y2="132" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="574.0" y="153" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">(base declarativa do</text>
+  <text x="574.0" y="172" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377"> Flask-SQLAlchemy)</text>
+  </g>
+  <polygon points="670.0,190 659.0,207 681.0,207" fill="#FFFFFF" stroke="#4A5266" stroke-width="1.8"/>
+  <path d="M670.0 207 L670.0 212" fill="none" stroke="#4A5266" stroke-width="1.8" stroke-linejoin="round"/>
+  <g><rect x="40" y="250" width="340" height="344" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <path d="M40 296 V260 a10 10 0 0 1 10 -10 H370 a10 10 0 0 1 10 10 V296 Z" fill="#6B4BE8"/>
+  <text x="210.0" y="274" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="16.5" font-weight="700" fill="#FFFFFF">Arena</text>
+  <text x="210.0" y="289" text-anchor="middle" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="10.5" fill="#FFFFFF" opacity="0.9">tabela: arenas</text>
+  <text x="54" y="317" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">arena_id : Integer</text>
+  <text x="366" y="317" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#6B4BE8">PK</text>
+  <text x="54" y="336" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">nome : Text</text>
+  <text x="54" y="355" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">cnpj : Text</text>
+  <text x="54" y="374" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">endereco : Text</text>
+  <text x="54" y="393" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">cidade : Text</text>
+  <text x="54" y="412" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">dono_id : Integer</text>
+  <text x="366" y="412" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#6B4BE8">FK usuarios</text>
+  <text x="54" y="431" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">taxa_saas : Float</text>
+  <text x="54" y="450" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">dia_vencimento : Integer</text>
+  <text x="366" y="450" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#6B4BE8">default 5</text>
+  <line x1="40" y1="464" x2="380" y2="464" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="54" y="485" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ salvar()</text>
+  <text x="54" y="504" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ atualizar()</text>
+  <text x="54" y="523" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ deletar()</text>
+  <text x="54" y="542" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ listar_todos()</text>
+  <text x="54" y="561" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
+  <text x="54" y="580" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict()</text>
+  </g>
+  <g><rect x="500" y="250" width="340" height="287" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <path d="M500 296 V260 a10 10 0 0 1 10 -10 H830 a10 10 0 0 1 10 10 V296 Z" fill="#C77A14"/>
+  <text x="670.0" y="274" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="16.5" font-weight="700" fill="#FFFFFF">Quadra</text>
+  <text x="670.0" y="289" text-anchor="middle" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="10.5" fill="#FFFFFF" opacity="0.9">tabela: quadras</text>
+  <text x="514" y="317" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">quadra_id : Integer</text>
+  <text x="826" y="317" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#C77A14">PK</text>
+  <text x="514" y="336" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">arena_id : Integer</text>
+  <text x="826" y="336" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#C77A14">FK arenas</text>
+  <text x="514" y="355" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">nome : Text</text>
+  <text x="514" y="374" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">tipo_esporte : Text</text>
+  <text x="514" y="393" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">preco_hora : Float</text>
+  <line x1="500" y1="407" x2="840" y2="407" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="514" y="428" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ salvar()</text>
+  <text x="514" y="447" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ atualizar()</text>
+  <text x="514" y="466" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ deletar()</text>
+  <text x="514" y="485" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ listar_todos()</text>
+  <text x="514" y="504" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
+  <text x="514" y="523" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict()</text>
+  </g>
+  <g><rect x="960" y="250" width="340" height="325" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <path d="M960 296 V260 a10 10 0 0 1 10 -10 H1290 a10 10 0 0 1 10 10 V296 Z" fill="#12A683"/>
+  <text x="1130.0" y="274" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="16.5" font-weight="700" fill="#FFFFFF">Reserva</text>
+  <text x="1130.0" y="289" text-anchor="middle" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="10.5" fill="#FFFFFF" opacity="0.9">tabela: reservas</text>
+  <text x="974" y="317" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">reserva_id : Integer</text>
+  <text x="1286" y="317" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#12A683">PK</text>
+  <text x="974" y="336" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">quadra_id : Integer</text>
+  <text x="1286" y="336" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#12A683">FK quadras</text>
+  <text x="974" y="355" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">usuario_reserva_id : Integer</text>
+  <text x="1286" y="355" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#12A683">FK usuarios</text>
+  <text x="974" y="374" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">data_hora_inicio : Text</text>
+  <text x="1286" y="374" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#12A683">ISO</text>
+  <text x="974" y="393" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">data_hora_fim : Text</text>
+  <text x="1286" y="393" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#12A683">ISO</text>
+  <text x="974" y="412" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">valor_total : Float</text>
+  <text x="1286" y="412" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#12A683">calculado</text>
+  <text x="974" y="431" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">status : Text</text>
+  <text x="1286" y="431" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#12A683">pendente | confirmada</text>
+  <line x1="960" y1="445" x2="1300" y2="445" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="974" y="466" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ salvar(jogadores)</text>
+  <text x="974" y="485" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ atualizar()</text>
+  <text x="974" y="504" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ deletar()</text>
+  <text x="974" y="523" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ listar_todos()</text>
+  <text x="974" y="542" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
+  <text x="974" y="561" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict()</text>
+  </g>
+  <g><rect x="40" y="720" width="340" height="325" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <path d="M40 766 V730 a10 10 0 0 1 10 -10 H370 a10 10 0 0 1 10 10 V766 Z" fill="#E05A1E"/>
+  <text x="210.0" y="744" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="16.5" font-weight="700" fill="#FFFFFF">Usuario</text>
+  <text x="210.0" y="759" text-anchor="middle" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="10.5" fill="#FFFFFF" opacity="0.9">tabela: usuarios</text>
+  <text x="54" y="787" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">usuario_id : Integer</text>
+  <text x="366" y="787" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">PK</text>
+  <text x="54" y="806" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">nome : Text</text>
+  <text x="54" y="825" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">email : Text</text>
+  <text x="366" y="825" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">UNIQUE</text>
+  <text x="54" y="844" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">senha : Text</text>
+  <text x="54" y="863" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">telefone : Text</text>
+  <text x="54" y="882" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">tipo_usuario : Text</text>
+  <text x="366" y="882" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">atleta | dono | professor</text>
+  <text x="54" y="901" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">data_criacao : Text</text>
+  <line x1="40" y1="915" x2="380" y2="915" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="54" y="936" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ salvar()</text>
+  <text x="54" y="955" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ atualizar()</text>
+  <text x="54" y="974" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ deletar()</text>
+  <text x="54" y="993" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ listar_todos()</text>
+  <text x="54" y="1012" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
+  <text x="54" y="1031" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict(incluir_senha)</text>
+  </g>
+  <g><rect x="960" y="720" width="340" height="135" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <path d="M960 766 V730 a10 10 0 0 1 10 -10 H1290 a10 10 0 0 1 10 10 V766 Z" fill="#2B6CD4"/>
+  <text x="1130.0" y="738" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="10.5" font-style="italic" fill="#FFFFFF" opacity="0.92">«classe associativa»</text>
+  <text x="1130.0" y="757" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="15.5" font-weight="700" fill="#FFFFFF">ReservaJogador</text>
+  <text x="974" y="787" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">reserva_id : Integer</text>
+  <text x="1286" y="787" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#2B6CD4">PK, FK ON DELETE CASCADE</text>
+  <text x="974" y="806" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">usuario_id : Integer</text>
+  <text x="1286" y="806" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#2B6CD4">PK, FK usuarios</text>
+  <line x1="960" y1="820" x2="1300" y2="820" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="974" y="841" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict()</text>
+  </g>
+  <path d="M20 212 L1330 212" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M210.0 212 L210.0 250" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M1130.0 212 L1130.0 250" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M20 212 L20 882.5 L40 882.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M1330 212 L1330 787.5 L1300 787.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="670.0" y="236" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#4A5266">todas as Models herdam de db.Model</text>
+  <path d="M380 402 L500 402" fill="none" stroke="#6B4BE8" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="380,402 392,394 404,402 392,410" fill="#6B4BE8" stroke="#6B4BE8" stroke-width="1.8"/>
+  <text x="440.0" y="391" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#6B4BE8">possui</text>
+  <text x="410" y="421" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#6B4BE8">1</text>
+  <text x="492" y="421" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#6B4BE8">0..*</text>
+  <path d="M840 402 L960 402" fill="none" stroke="#C77A14" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="840,402 852,394 864,402 852,410" fill="#FFFFFF" stroke="#C77A14" stroke-width="1.8"/>
+  <text x="900.0" y="391" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#C77A14">agenda</text>
+  <text x="870" y="421" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#C77A14">1</text>
+  <text x="952" y="421" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#C77A14">0..*</text>
+  <path d="M140 720 L140 594" fill="none" stroke="#E05A1E" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="140,720 132,708 140,696 148,708" fill="#FFFFFF" stroke="#E05A1E" stroke-width="1.8"/>
+  <text x="151" y="661.0" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#E05A1E">é dono de</text>
+  <text x="130" y="688" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#E05A1E">1</text>
+  <text x="130" y="612" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#E05A1E">0..*</text>
+  <path d="M1200 575 L1200 720" fill="none" stroke="#12A683" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="1200,575 1192,587 1200,599 1208,587" fill="#12A683" stroke="#12A683" stroke-width="1.8"/>
+  <text x="1211" y="651.5" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#12A683">contém</text>
+  <text x="1190" y="607" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#12A683">1</text>
+  <text x="1190" y="710" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#12A683">0..*</text>
+  <path d="M380 786 L960 786" fill="none" stroke="#2B6CD4" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="380,786 392,778 404,786 392,794" fill="#FFFFFF" stroke="#2B6CD4" stroke-width="1.8"/>
+  <text x="670.0" y="775" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#2B6CD4">joga em   —   N:N entre Usuario e Reserva</text>
+  <text x="410" y="805" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#2B6CD4">1</text>
+  <text x="952" y="805" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#2B6CD4">0..*</text>
+  <path d="M290 720 L290 648 L1030 648 L1030 575" fill="none" stroke="#E05A1E" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="290,720 282,708 290,696 298,708" fill="#FFFFFF" stroke="#E05A1E" stroke-width="1.8"/>
+  <text x="660.0" y="638" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#E05A1E">é responsável por</text>
+  <text x="302" y="688" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#E05A1E">1</text>
+  <text x="1042" y="593" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#E05A1E">0..*</text>
+  <rect x="40" y="1090" width="1260" height="92" rx="12" fill="#F4F6FB" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="64" y="1116" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="800" fill="#1B2030">LEGENDA</text>
+  <path d="M64 1146 L118 1146" fill="none" stroke="#4A5266" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="135,1146 118,1135 118,1157" fill="#FFFFFF" stroke="#4A5266" stroke-width="1.8"/>
+  <text x="148" y="1150" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Herança (generalização)</text>
+  <path d="M370 1124 L430 1124" fill="none" stroke="#1B2030" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="370,1124 382,1116 394,1124 382,1132" fill="#1B2030" stroke="#1B2030" stroke-width="1.8"/>
+  <text x="442" y="1128" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Composição — a parte não existe sem o todo</text>
+  <path d="M370 1152 L430 1152" fill="none" stroke="#1B2030" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="370,1152 382,1144 394,1152 382,1160" fill="#FFFFFF" stroke="#1B2030" stroke-width="1.8"/>
+  <text x="442" y="1156" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Agregação — a parte existe por si só</text>
+  <text x="830" y="1128" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">PK · FK · UNIQUE — restrições da tabela no banco</text>
+  <text x="830" y="1156" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">1 · 0..* — multiplicidade da associação</text>
+</svg>
