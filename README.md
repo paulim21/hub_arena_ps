@@ -91,6 +91,7 @@ frontend/
     js/interface.js         ← esqueleto, barra de progresso e paleta do Ctrl+K
     img/icones.svg          ← os 43 ícones em traço (a fonte do sprite)
     img/favicon.svg         ← o monograma AH
+    img/logo.png            ← o logotipo (+ logo-escuro.png, para o tema escuro)
 docs/
     diagrama-classes.md     ← diagrama de classes do domínio (+ .svg)
 IDENTIDADE_VISUAL.md        ← o porquê das cores, com as tabelas de contraste

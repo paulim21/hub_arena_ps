@@ -107,18 +107,30 @@ header {
   flex-wrap: wrap;
 }
 
+/* O logotipo é a arte da marca, não texto: duas versões do mesmo
+   arquivo, uma por tema. O navy do "Arena" tem 1,3:1 no fundo escuro e
+   sumiria lá — por isso a variante clara existe. A troca é por display,
+   nos MESMOS três blocos de tema do tokens.css, para o botão de tema
+   vencer nos dois sentidos. As medidas vão em atributo width/height na
+   imagem, para a linha do cabeçalho não pular enquanto ela carrega. */
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: var(--e-2);
-  color: var(--tinta);
   text-decoration: none;
-  font-weight: 800;
-  font-size: var(--t-titulo);
-  letter-spacing: -.02em;
 }
-.logo .ico-marca { color: var(--marca); }
-.logo em { font-style: normal; color: var(--marca); }
+.logo-marca {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+.logo-escuro { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) .logo-claro { display: none; }
+  :root:not([data-tema="claro"]) .logo-escuro { display: block; }
+}
+:root[data-tema="escuro"] .logo-claro { display: none; }
+:root[data-tema="escuro"] .logo-escuro { display: block; }
 
 nav {
   display: flex;

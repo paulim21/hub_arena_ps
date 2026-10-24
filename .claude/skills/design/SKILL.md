@@ -395,6 +395,7 @@ Eles compartilham a estrutura e os números que importam, não os valores.
 | `frontend/js/base.js` | `api`, `<dialog>`, formatos, `ico`, `arco`, `melhorar` |
 | `frontend/js/interface.js` | esqueleto, barra de progresso e a paleta do Ctrl+K |
 | `frontend/img/icones.svg` | os 43 ícones em traço (a fonte) |
+| `frontend/img/logo.png` · `logo-escuro.png` | o logotipo da marca, uma versão por tema — o navy do "Arena" sumiria no fundo escuro |
 | `frontend/img/favicon.svg` | o monograma. É o **único** arquivo com cor literal fora do `tokens.css`, porque é servido solto, fora do CSS |
 | `.claude/skills/design/embutir-icones.py` | copia o sprite para dentro dos HTML |
 | `.claude/skills/design/verificar-identidade.py` | mede o contrato |
