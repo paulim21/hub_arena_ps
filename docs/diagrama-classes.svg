@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1380 1215"
-     width="1380" height="1215" font-family="Sora, 'Segoe UI', system-ui, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1380 1660"
+     width="1380" height="1660" font-family="Sora, 'Segoe UI', system-ui, sans-serif">
   <title>ArenaHub — Diagrama de classes do domínio (Models)</title>
   <defs>
     <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#1B2030" flood-opacity="0.13"/>
     </filter>
   </defs>
-  <rect width="1380" height="1215" fill="#FFFFFF"/>
+  <rect width="1380" height="1660" fill="#FFFFFF"/>
   <text x="40" y="40" font-size="22" font-weight="800" fill="#1B2030">
     ArenaHub · Diagrama de classes do domínio
   </text>
@@ -124,10 +124,40 @@
   <line x1="960" y1="820" x2="1300" y2="820" stroke="#C8CEDC" stroke-width="1.2"/>
   <text x="974" y="841" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict()</text>
   </g>
+  <g><rect x="40" y="1120" width="340" height="363" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <path d="M40 1166 V1130 a10 10 0 0 1 10 -10 H370 a10 10 0 0 1 10 10 V1166 Z" fill="#5B6B7A"/>
+  <text x="210.0" y="1144" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="16.5" font-weight="700" fill="#FFFFFF">Consentimento</text>
+  <text x="210.0" y="1159" text-anchor="middle" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="10.5" fill="#FFFFFF" opacity="0.9">tabela: consentimentos</text>
+  <text x="54" y="1187" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">consentimento_id : Integer</text>
+  <text x="366" y="1187" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#5B6B7A">PK</text>
+  <text x="54" y="1206" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">identificador : Text</text>
+  <text x="366" y="1206" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#5B6B7A">do navegador</text>
+  <text x="54" y="1225" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">versao_termos : Text</text>
+  <text x="54" y="1244" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">finalidades : Text</text>
+  <text x="366" y="1244" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#5B6B7A">';' separa</text>
+  <text x="54" y="1263" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">aceito_em : Text</text>
+  <text x="366" y="1263" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#5B6B7A">ISO</text>
+  <text x="54" y="1282" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">revogado_em : Text</text>
+  <text x="366" y="1282" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#5B6B7A">nulo = vigente</text>
+  <text x="54" y="1301" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">origem_ip : Text</text>
+  <text x="366" y="1301" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#5B6B7A">prova</text>
+  <text x="54" y="1320" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">agente : Text</text>
+  <text x="366" y="1320" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#5B6B7A">prova</text>
+  <line x1="40" y1="1334" x2="380" y2="1334" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="54" y="1355" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ salvar()</text>
+  <text x="54" y="1374" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ atualizar()</text>
+  <text x="54" y="1393" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ deletar()</text>
+  <text x="54" y="1412" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ listar_todos()</text>
+  <text x="54" y="1431" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
+  <text x="54" y="1450" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict()</text>
+  <text x="54" y="1469" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ agora()</text>
+  </g>
   <path d="M20 212 L1330 212" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <path d="M210.0 212 L210.0 250" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <path d="M1130.0 212 L1130.0 250" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
-  <path d="M20 212 L20 882.5 L40 882.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M20 212 L20 1301.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M20 882.5 L40 882.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M20 1301.5 L40 1301.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <path d="M1330 212 L1330 787.5 L1300 787.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <text x="670.0" y="236" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#4A5266">todas as Models herdam de db.Model</text>
   <path d="M380 402 L500 402" fill="none" stroke="#6B4BE8" stroke-width="1.8" stroke-linejoin="round"/>
@@ -160,17 +190,25 @@
   <text x="660.0" y="638" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#E05A1E">é responsável por</text>
   <text x="302" y="688" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#E05A1E">1</text>
   <text x="1042" y="593" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#E05A1E">0..*</text>
-  <rect x="40" y="1090" width="1260" height="92" rx="12" fill="#F4F6FB" stroke="#C8CEDC" stroke-width="1.2"/>
-  <text x="64" y="1116" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="800" fill="#1B2030">LEGENDA</text>
-  <path d="M64 1146 L118 1146" fill="none" stroke="#4A5266" stroke-width="1.8" stroke-linejoin="round"/>
-  <polygon points="135,1146 118,1135 118,1157" fill="#FFFFFF" stroke="#4A5266" stroke-width="1.8"/>
-  <text x="148" y="1150" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Herança (generalização)</text>
-  <path d="M370 1124 L430 1124" fill="none" stroke="#1B2030" stroke-width="1.8" stroke-linejoin="round"/>
-  <polygon points="370,1124 382,1116 394,1124 382,1132" fill="#1B2030" stroke="#1B2030" stroke-width="1.8"/>
-  <text x="442" y="1128" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Composição — a parte não existe sem o todo</text>
-  <path d="M370 1152 L430 1152" fill="none" stroke="#1B2030" stroke-width="1.8" stroke-linejoin="round"/>
-  <polygon points="370,1152 382,1144 394,1152 382,1160" fill="#FFFFFF" stroke="#1B2030" stroke-width="1.8"/>
-  <text x="442" y="1156" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Agregação — a parte existe por si só</text>
-  <text x="830" y="1128" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">PK · FK · UNIQUE — restrições da tabela no banco</text>
-  <text x="830" y="1156" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">1 · 0..* — multiplicidade da associação</text>
+  <rect x="540" y="1150" width="600" height="190" rx="12" fill="#F4F6FB" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="564" y="1180" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="800" fill="#1B2030">POR QUE ESTA CLASSE NÃO SE LIGA A NENHUMA OUTRA</text>
+  <text x="564" y="1208" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="500" fill="#5B6377">O Consentimento registra o aceite dos termos (LGPD, Art. 8º, § 1º:</text>
+  <text x="564" y="1227" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="500" fill="#5B6377">o controlador precisa poder comprová-lo).</text>
+  <text x="564" y="1265" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="500" fill="#5B6377">Ele guarda um identificador ALEATÓRIO do navegador, e não o</text>
+  <text x="564" y="1284" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="500" fill="#5B6377">usuario_id. Uma chave estrangeira para Usuario ligaria o aceite a</text>
+  <text x="564" y="1303" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="500" fill="#5B6377">uma pessoa identificada — o oposto da minimização que a lei pede,</text>
+  <text x="564" y="1322" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="500" fill="#5B6377">e desnecessário: o sistema não tem login.</text>
+  <rect x="40" y="1510" width="1260" height="92" rx="12" fill="#F4F6FB" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="64" y="1536" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="800" fill="#1B2030">LEGENDA</text>
+  <path d="M64 1566 L118 1566" fill="none" stroke="#4A5266" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="135,1566 118,1555 118,1577" fill="#FFFFFF" stroke="#4A5266" stroke-width="1.8"/>
+  <text x="148" y="1570" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Herança (generalização)</text>
+  <path d="M370 1544 L430 1544" fill="none" stroke="#1B2030" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="370,1544 382,1536 394,1544 382,1552" fill="#1B2030" stroke="#1B2030" stroke-width="1.8"/>
+  <text x="442" y="1548" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Composição — a parte não existe sem o todo</text>
+  <path d="M370 1572 L430 1572" fill="none" stroke="#1B2030" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="370,1572 382,1564 394,1572 382,1580" fill="#FFFFFF" stroke="#1B2030" stroke-width="1.8"/>
+  <text x="442" y="1576" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">Agregação — a parte existe por si só</text>
+  <text x="830" y="1548" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">PK · FK · UNIQUE — restrições da tabela no banco</text>
+  <text x="830" y="1576" text-anchor="start" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#5B6377">1 · 0..* — multiplicidade da associação</text>
 </svg>

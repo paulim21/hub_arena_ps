@@ -1,11 +1,13 @@
 """Services — Usuário (uma classe por caso de uso)."""
 from sqlalchemy.exc import IntegrityError
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from extensions import db
 from models.usuario import Usuario
 from repositories.usuario_repository import UsuarioRepository
 
 TIPOS_VALIDOS = ("atleta", "dono", "professor")
+TAMANHO_MINIMO_SENHA = 6
 
 
 class CriarUsuarioService:
@@ -17,9 +19,18 @@ class CriarUsuarioService:
             raise ValueError(f"Campos obrigatórios ausentes: {', '.join(faltando)}")
         if dados["tipo_usuario"] not in TIPOS_VALIDOS:
             raise ValueError(f"tipo_usuario deve ser um de: {', '.join(TIPOS_VALIDOS)}")
+        if len(dados["senha"]) < TAMANHO_MINIMO_SENHA:
+            raise ValueError(
+                f"A senha deve ter ao menos {TAMANHO_MINIMO_SENHA} caracteres."
+            )
         try:
+            # A senha NUNCA é gravada como foi digitada. O que vai para o
+            # banco é um resumo criptográfico com sal: quem ler a tabela não
+            # descobre a senha, e nem nós conseguimos. É o que a LGPD chama
+            # de medida de segurança (Art. 46) e o que a política promete.
             return Usuario(
-                nome=dados["nome"], email=dados["email"], senha=dados["senha"],
+                nome=dados["nome"], email=dados["email"],
+                senha=generate_password_hash(dados["senha"]),
                 telefone=dados["telefone"], tipo_usuario=dados["tipo_usuario"],
             ).salvar()
         except IntegrityError:
@@ -83,3 +94,17 @@ class DeletarUsuarioService:
             raise ValueError(
                 "Este usuário tem arenas ou reservas vinculadas. Exclua-as primeiro."
             )
+
+
+class ConferirSenhaService:
+    """Caso de uso: a senha informada confere com a guardada?
+
+    Existe para que o resumo criptográfico seja verificável sem nunca ser
+    revertido — é assim que se confere senha sem saber qual ela é.
+    """
+    @staticmethod
+    def executar(usuario_id, senha):
+        usuario = BuscarUsuarioService.executar(usuario_id)
+        if not senha:
+            raise ValueError("Informe a senha.")
+        return check_password_hash(usuario.senha, senha)

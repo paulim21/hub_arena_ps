@@ -41,6 +41,7 @@ def create_app():
     from models.quadra import Quadra
     from models.reserva import Reserva
     from models.reserva_jogador import ReservaJogador
+    from models.consentimento import Consentimento
 
     with app.app_context():
         # SQLite exige o PRAGMA em cada conexão para as FKs valerem

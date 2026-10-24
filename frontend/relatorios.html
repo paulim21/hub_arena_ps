@@ -239,12 +239,17 @@
     <!-- Carregam ao abrir a página -->
     <div class="painel-vidro" id="painel-ocupacao"></div>
     <div class="painel-vidro" id="painel-ranking"></div>
+    <div class="painel-vidro" id="painel-consentimentos"></div>
   </main>
 
-  <footer>ArenaHub · Flask + SQLite · Controller, Service, Model e Repository</footer>
+  <footer>
+    ArenaHub · Flask + SQLite · Controller, Service, Model e Repository ·
+    <a href="/termos">Termos e privacidade</a>
+  </footer>
 
   <script src="/js/base.js"></script>
   <script src="/js/interface.js"></script>
+  <script src="/js/lgpd.js"></script>
   <script>
     // Cada painel declara o próprio título e ícone — uma fonte só
     var PAINEIS = {
@@ -252,7 +257,8 @@
       disponiveis: { ico: 'i-busca', titulo: 'Quadras disponíveis' },
       agenda: { ico: 'i-agenda', titulo: 'Agenda da arena' },
       ocupacao: { ico: 'i-grafico', titulo: 'Ocupação das quadras' },
-      ranking: { ico: 'i-trofeu', titulo: 'Ranking de atletas' }
+      ranking: { ico: 'i-trofeu', titulo: 'Ranking de atletas' },
+      consentimentos: { ico: 'i-escudo', titulo: 'Consentimentos LGPD' }
     };
 
     function cabecalho(chave) {
@@ -429,6 +435,37 @@
       ));
     }
 
+    // Consentimentos LGPD → GET /api/consentimentos/relatorio
+    // A LGPD exige que o controlador COMPROVE o consentimento obtido
+    // (Art. 8º, § 1º). Este painel é essa prova, agregada por versão.
+    async function carregarConsentimentos() {
+      var painel = document.getElementById('painel-consentimentos');
+      var dados = await chamarApi('/api/consentimentos/relatorio', 'consentimentos');
+      if (!dados) return;
+      if (!dados.length) {
+        return vazio(painel, 'i-escudo', 'Nenhum consentimento registrado ainda.');
+      }
+      painel.insertAdjacentHTML('beforeend', tabela(
+        ['Versão dos termos', 'Aceites', 'Vigentes', 'Revogados', 'Primeiro aceite', 'Último aceite'],
+        dados.map(function (l) {
+          return '<tr>' +
+            celula('Versão dos termos', '<span class="celula-titulo">' +
+              HubUI.esc(l.versao_termos) + '</span>') +
+            celula('Aceites', l.total_aceites) +
+            celula('Vigentes', '<span class="selo confirmada">' +
+              HubUI.ico('i-ok') + l.vigentes + '</span>') +
+            celula('Revogados', l.revogados > 0
+              ? '<span class="selo cancelada">' + HubUI.ico('i-x') + l.revogados + '</span>'
+              : '<span class="celula-apoio">0</span>') +
+            celula('Primeiro aceite', '<span class="mono">' +
+              HubUI.dataHora(l.primeiro_aceite) + '</span>') +
+            celula('Último aceite', '<span class="mono">' +
+              HubUI.dataHora(l.ultimo_aceite) + '</span>') +
+          '</tr>';
+        }).join('')
+      ));
+    }
+
     // Select de arenas: GET /api/arenas
     async function montarSelectArenas() {
       var sel = document.getElementById('agenda-arena');
@@ -466,6 +503,7 @@
 
     carregarOcupacao();
     carregarRanking();
+    carregarConsentimentos();
     montarSelectArenas();
   </script>
 </body>

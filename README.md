@@ -34,6 +34,10 @@ Todas disponíveis de ponta a ponta
 18. **Ranking de atletas** (jogos e horas jogadas — procedure `sp_ranking_atletas`)
 19. **Busca de quadras disponíveis por período** (NOT EXISTS — procedure `sp_quadras_disponiveis`)
 20. **Agenda da arena por período** (procedure `sp_agenda_arena`)
+21. **Registrar consentimento LGPD** (modal bloqueante — `POST /api/consentimentos`; recusa consentimento genérico e versão desatualizada)
+22. **Verificar consentimento vigente** (procedure `sp_consentimento_vigente` — libera ou bloqueia o uso do sistema)
+23. **Revogar consentimento** (`POST /api/consentimentos/revogar` — tela `/termos`, Art. 8º, § 5º)
+24. **Relatório de consentimentos por versão** (procedure `sp_consentimentos_por_versao` — a prova agregada do Art. 8º, § 1º)
 
 ## Diagrama de classes
 
@@ -78,6 +82,7 @@ backend/
     services/               ← um Service (classe) por caso de uso
     models/                 ← Usuario, Arena, Quadra, Reserva, ReservaJogador (db.Model)
     repositories/           ← procedures.sql + procedure_runner + repositories
+    politica.py             ← a versão e as finalidades dos termos, num lugar só
     routes.py               ← mapa de rotas: URLs → métodos das Controllers
     extensions.py           ← objeto db (Flask-SQLAlchemy)
     app.py                  ← Application Factory
@@ -89,6 +94,8 @@ frontend/
     js/tema.js              ← tema e densidade, antes da primeira pintura
     js/base.js              ← fetch, ícones, <dialog>, menus e formatos
     js/interface.js         ← esqueleto, barra de progresso e paleta do Ctrl+K
+    js/lgpd.js              ← o aviso de aceite que bloqueia o uso
+    termos.html             ← a política de privacidade completa
     img/icones.svg          ← os 43 ícones em traço (a fonte do sprite)
     img/favicon.svg         ← o monograma AH
     img/logo.png            ← o logotipo (+ logo-escuro.png, para o tema escuro)
@@ -106,6 +113,36 @@ IDENTIDADE_VISUAL.md        ← o porquê das cores, com as tabelas de contraste
 > O **CALL fica encapsulado no Repository**, via
 > [`procedure_runner.py`](backend/repositories/procedure_runner.py) —
 > Controller e Service nunca executam SQL diretamente.
+
+## Privacidade e LGPD
+
+O sistema **não abre antes do aceite dos termos**: um aviso bloqueante
+([`frontend/js/lgpd.js`](frontend/js/lgpd.js)) segura toda chamada à API até
+que exista consentimento registrado. A página
+[`/termos`](frontend/termos.html) é a única isenta — exigir aceite para *ler* a
+política seria pedir consentimento no escuro.
+
+O que foi levado a sério, e por quê:
+
+- **O consentimento é comprovável** (Art. 8º, § 1º). Cada aceite vira uma linha
+  na tabela `consentimentos`, com a versão dos termos, data, IP e navegador.
+  Um sinalizador no `localStorage` não comprova nada.
+- **É pedido por finalidade** (Art. 8º, § 4º), não num bloco só: consentimento
+  genérico é nulo.
+- **A versão governa**: se a política mudar, a versão sobe e o aceite é pedido
+  de novo (Art. 8º, § 6º). A versão vive num lugar só,
+  [`backend/politica.py`](backend/politica.py), e o front-end a consulta.
+- **Revogar é possível, gratuito e não apaga o registro** (Art. 8º, § 5º): a
+  linha é marcada como revogada, porque ela é a prova — inclusive da revogação.
+- **Recusar é possível**, e a consequência está escrita na tela.
+- **Senhas não são guardadas**: vai para o banco um resumo criptográfico com
+  sal (scrypt), medida de segurança do Art. 46.
+- **Sem cookies, sem rastreamento**: o navegador guarda só um identificador
+  aleatório do consentimento e as preferências de aparência.
+
+> **Atenção:** o texto dos termos é um modelo para trabalho acadêmico, com
+> marcadores onde faltam os dados reais do controlador e do encarregado. Antes
+> de qualquer uso real, precisa de revisão jurídica.
 
 ## Identidade visual
 
@@ -164,6 +201,11 @@ python .claude/skills/design/embutir-icones.py
 | GET | `/api/relatorios/receita-arenas` | Receita por arena no período |
 | GET | `/api/relatorios/ocupacao-quadras` | Ocupação por quadra |
 | GET | `/api/relatorios/ranking-atletas` | Ranking de atletas |
+| GET | `/api/consentimentos/politica` | Versão e finalidades vigentes dos termos |
+| GET | `/api/consentimentos/vigente?identificador=` | Este navegador já aceitou? |
+| POST | `/api/consentimentos` | Registra o aceite (com versão, IP e navegador) |
+| POST | `/api/consentimentos/revogar` | Revoga o consentimento |
+| GET | `/api/consentimentos/relatorio` | Aceites, vigentes e revogados por versão |
 
 ## Telas do frontend
 
@@ -174,7 +216,8 @@ python .claude/skills/design/embutir-icones.py
 | `/arenas` | Tabela com dono e nº de quadras + cadastro + exclusão |
 | `/quadras` | Tabela com arena + filtro por arena + cadastro + exclusão |
 | `/reservas` | Agenda com anti-overbooking, valor automático, confirmar/cancelar |
-| `/relatorios` | Receita por arena, ocupação, ranking, quadras disponíveis e agenda |
+| `/relatorios` | Receita por arena, ocupação, ranking, quadras disponíveis, agenda e consentimentos LGPD |
+| `/termos` | Política de privacidade completa, com revogação do consentimento |
 
 ## Regras de negócio
 

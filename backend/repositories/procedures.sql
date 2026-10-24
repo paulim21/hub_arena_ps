@@ -179,3 +179,28 @@ WHERE q.arena_id = :arena_id
   AND r.data_hora_inicio >= :inicio
   AND r.data_hora_inicio <= :fim
 ORDER BY r.data_hora_inicio;
+
+-- PROCEDURE: sp_consentimento_vigente
+-- LGPD: o aceite ainda válido deste aparelho para a versão informada.
+-- Revogado não conta, e versão antiga não serve (Art. 8º, § 6º).
+-- Parâmetros: :identificador, :versao
+SELECT consentimento_id, identificador, versao_termos, finalidades, aceito_em
+FROM consentimentos
+WHERE identificador = :identificador
+  AND versao_termos = :versao
+  AND revogado_em IS NULL
+ORDER BY consentimento_id DESC
+LIMIT 1;
+
+-- PROCEDURE: sp_consentimentos_por_versao
+-- RELATÓRIO LGPD: aceites, vigentes e revogados por versão dos termos
+-- (GROUP BY + agregação condicional). Sem parâmetros.
+SELECT versao_termos,
+       COUNT(*)                                                   AS total_aceites,
+       SUM(CASE WHEN revogado_em IS NULL THEN 1 ELSE 0 END)       AS vigentes,
+       SUM(CASE WHEN revogado_em IS NOT NULL THEN 1 ELSE 0 END)   AS revogados,
+       MIN(aceito_em)                                             AS primeiro_aceite,
+       MAX(aceito_em)                                             AS ultimo_aceite
+FROM consentimentos
+GROUP BY versao_termos
+ORDER BY versao_termos DESC;

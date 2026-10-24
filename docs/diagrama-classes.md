@@ -93,11 +93,30 @@ classDiagram
         +to_dict()
     }
 
+    class Consentimento {
+        +Integer consentimento_id
+        +Text identificador
+        +Text versao_termos
+        +Text finalidades
+        +Text aceito_em
+        +Text revogado_em
+        +Text origem_ip
+        +Text agente
+        +salvar()
+        +atualizar()
+        +deletar()
+        +listar_todos()$
+        +buscar_por_id(id)$
+        +to_dict()
+        +agora()$
+    }
+
     dbModel <|-- Usuario
     dbModel <|-- Arena
     dbModel <|-- Quadra
     dbModel <|-- Reserva
     dbModel <|-- ReservaJogador
+    dbModel <|-- Consentimento
 
     Usuario "1" o-- "0..*" Arena : é dono de
     Arena   "1" *-- "0..*" Quadra : possui
@@ -108,6 +127,24 @@ classDiagram
 ```
 
 ---
+
+## O Consentimento não se liga a ninguém, e isso é de propósito
+
+`Consentimento` herda de `db.Model` como as outras, mas **não tem nenhuma
+associação** — nem com `Usuario`. Não é esquecimento.
+
+Ele registra o aceite dos termos porque a LGPD exige que o controlador
+**comprove** o consentimento que obteve (Art. 8º, § 1º). Para isso ele guarda
+um identificador **aleatório do navegador**, e não o `usuario_id`.
+
+Uma chave estrangeira para `Usuario` ligaria cada aceite a uma pessoa
+identificada — o oposto da minimização que a lei pede (Art. 6º, III) — e seria
+desnecessária, já que o sistema não tem login. O campo `versao_termos` é o que
+permite pedir novo aceite quando a política muda: consentimento dado para a
+versão 1.0 não vale para a 2.0 (Art. 8º, § 6º).
+
+`revogado_em` nulo significa vigente. Revogar **não apaga** a linha: o registro
+é a prova do que aconteceu, inclusive da própria revogação.
 
 ## Herança
 
@@ -176,4 +213,5 @@ Tela (frontend/)  →  Controller (classe por recurso)
 | `Arena` | `ArenaController` | `ArenaRepository` |
 | `Quadra` | `QuadraController` | `QuadraRepository` |
 | `Reserva`, `ReservaJogador` | `ReservaController` | `ReservaRepository` |
+| `Consentimento` | `ConsentimentoController` | `ConsentimentoRepository` |
 | *(agregações de todas)* | `RelatorioController` | `RelatorioRepository` |

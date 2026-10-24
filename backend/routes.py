@@ -11,6 +11,7 @@ from controllers.arena_controller import ArenaController
 from controllers.quadra_controller import QuadraController
 from controllers.reserva_controller import ReservaController
 from controllers.relatorio_controller import RelatorioController
+from controllers.consentimento_controller import ConsentimentoController
 
 # ---------- Usuários ----------
 usuario_bp = Blueprint("api_usuarios", __name__)
@@ -55,6 +56,14 @@ relatorio_bp.add_url_rule("/receita-arenas", view_func=RelatorioController.recei
 relatorio_bp.add_url_rule("/ocupacao-quadras", view_func=RelatorioController.ocupacao_quadras, methods=["GET"], endpoint="ocupacao_quadras")
 relatorio_bp.add_url_rule("/ranking-atletas", view_func=RelatorioController.ranking_atletas, methods=["GET"], endpoint="ranking_atletas")
 
+# ---------- Consentimento (LGPD) ----------
+consentimento_bp = Blueprint("api_consentimentos", __name__)
+consentimento_bp.add_url_rule("/politica", view_func=ConsentimentoController.politica, methods=["GET"], endpoint="politica")
+consentimento_bp.add_url_rule("/vigente", view_func=ConsentimentoController.verificar, methods=["GET"], endpoint="verificar")
+consentimento_bp.add_url_rule("/relatorio", view_func=ConsentimentoController.relatorio, methods=["GET"], endpoint="relatorio")
+consentimento_bp.add_url_rule("/revogar", view_func=ConsentimentoController.revogar, methods=["POST"], endpoint="revogar")
+consentimento_bp.add_url_rule("", view_func=ConsentimentoController.registrar, methods=["POST"], endpoint="registrar")
+
 # Páginas do front-end (apenas entrega dos arquivos estáticos, sem Jinja2)
 PAGINAS = {
     "/": "index.html",
@@ -63,6 +72,7 @@ PAGINAS = {
     "/quadras": "quadras.html",
     "/reservas": "reservas.html",
     "/relatorios": "relatorios.html",
+    "/termos": "termos.html",
 }
 
 
@@ -73,6 +83,7 @@ def registrar_rotas(app):
     app.register_blueprint(quadra_bp, url_prefix="/api/quadras")
     app.register_blueprint(reserva_bp, url_prefix="/api/reservas")
     app.register_blueprint(relatorio_bp, url_prefix="/api/relatorios")
+    app.register_blueprint(consentimento_bp, url_prefix="/api/consentimentos")
 
     for caminho, arquivo in PAGINAS.items():
         app.add_url_rule(
