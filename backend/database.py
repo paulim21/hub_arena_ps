@@ -15,6 +15,48 @@ NOME_BANCO = os.path.join(DIRETORIO, "hub_arena.db")
 ARQUIVO_PROCEDURES = os.path.join(DIRETORIO, "repositories", "procedures.sql")
 
 
+def migrar_colunas_novas():
+    """Dá a um banco já existente as colunas que a Model ganhou depois.
+
+    `db.create_all()` só cria tabela que não existe — ele NÃO altera tabela
+    que já está lá. Sem isto, quem já tinha `hub_arena.db` recebia um
+    "no such column: usuarios.cpf" na primeira consulta, e a única saída
+    seria apagar o banco (junto com os dados).
+
+    É de propósito que só adiciona coluna, nunca remove nem renomeia: as
+    duas outras operações perdem dado quando dão errado, e aí a migração
+    precisa de um plano, não de uma função que roda sozinha na subida.
+    """
+    conexao = sqlite3.connect(NOME_BANCO)
+    cursor = conexao.cursor()
+
+    # (tabela, coluna, tipo, criar índice único?)
+    NOVAS = [("usuarios", "cpf", "TEXT", True)]
+
+    for tabela, coluna, tipo, unico in NOVAS:
+        existe = cursor.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (tabela,)
+        ).fetchone()
+        if not existe:
+            continue
+        colunas = [l[1] for l in cursor.execute(f"PRAGMA table_info({tabela})")]
+        if coluna in colunas:
+            continue
+        # NOT NULL fica de fora: o SQLite recusa adicionar coluna obrigatória
+        # sem valor padrão, e inventar um CPF padrão seria pior que permitir
+        # nulo nas linhas antigas. Quem exige o campo é o Service.
+        cursor.execute(f"ALTER TABLE {tabela} ADD COLUMN {coluna} {tipo}")
+        if unico:
+            cursor.execute(
+                f"CREATE UNIQUE INDEX IF NOT EXISTS ix_{tabela}_{coluna}_unico "
+                f"ON {tabela} ({coluna})"
+            )
+        print(f"[banco] coluna {tabela}.{coluna} adicionada ao banco existente")
+
+    conexao.commit()
+    conexao.close()
+
+
 def registrar_procedures():
     """Lê `procedures.sql` e grava cada procedure na tabela `procedures`.
 

@@ -8,6 +8,10 @@ class Usuario(db.Model):
     usuario_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text, nullable=False, unique=True)
+    # Guardado com 11 dígitos, sem pontuação — a máscara é apresentação.
+    # Fica nullable no banco para que um banco antigo ganhe a coluna sem
+    # perder linha; quem exige o CPF é o Service, no cadastro.
+    cpf = db.Column(db.Text, unique=True)
     senha = db.Column(db.Text, nullable=False)
     telefone = db.Column(db.Text, nullable=False)
     tipo_usuario = db.Column(db.Text, nullable=False)  # 'atleta', 'dono', 'professor'
@@ -18,6 +22,7 @@ class Usuario(db.Model):
             "usuario_id": self.usuario_id,
             "nome": self.nome,
             "email": self.email,
+            "cpf": self.cpf,
             "telefone": self.telefone,
             "tipo_usuario": self.tipo_usuario,
             "data_criacao": self.data_criacao,

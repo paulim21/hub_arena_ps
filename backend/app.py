@@ -20,7 +20,7 @@ import os
 from flask import Flask
 from sqlalchemy import event
 
-from database import NOME_BANCO, registrar_procedures
+from database import NOME_BANCO, migrar_colunas_novas, registrar_procedures
 from extensions import db
 
 DIRETORIO = os.path.dirname(os.path.abspath(__file__))
@@ -50,6 +50,9 @@ def create_app():
             conexao_dbapi.execute("PRAGMA foreign_keys = ON")
 
         db.create_all()  # cria as tabelas das Models caso não existam
+
+    # create_all não altera tabela que já existe: as colunas novas entram aqui
+    migrar_colunas_novas()
 
     # Registra as procedures na tabela `procedures` do banco
     registrar_procedures()

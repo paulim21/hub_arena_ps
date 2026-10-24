@@ -229,6 +229,13 @@ python .claude/skills/design/embutir-icones.py
 - **Reserva com vários jogadores**: tabela N:N `reserva_jogadores`.
 - **Exclusões protegidas**: FKs impedem excluir registros com vínculos, com
   mensagem amigável na tela.
+- **CPF, CNPJ, telefone e e-mail têm forma conferida** em
+  [`backend/validadores.py`](backend/validadores.py): os **dígitos
+  verificadores** de CPF e CNPJ são calculados, o telefone exige DDD e o
+  e-mail é normalizado para minúsculas (senão `Ana@x.com` e `ana@x.com` viram
+  duas contas da mesma pessoa). O banco guarda **só os dígitos**; a máscara
+  `000.000.000-00` é aplicada ao digitar, pelo `data-mascara` do campo, e a
+  formatação para leitura acontece na tela.
 
 ## Como rodar
 

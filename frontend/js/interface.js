@@ -168,28 +168,19 @@
      a página FAZ (tema, densidade), e toda ação dali aciona um botão
      que já existe no cabeçalho — a paleta é caminho de teclado, nunca
      uma porta que só ela abre.
+
+     NÃO existe grupo "Recentes", e é decisão, não esquecimento. Com 6
+     destinos e 2 ações, a lista inteira cabe na tela: um grupo de
+     recentes repetia no topo itens visíveis dois centímetros abaixo —
+     "Reservas" duas vezes, "Usar tema claro" duas vezes — e ainda
+     empurrava o resto para fora, obrigando a rolar. Recência só se paga
+     quando a lista não cabe; aqui ela só confundia. A ordem é a do
+     cabeçalho, que é previsível e não muda debaixo do dedo.
      =================================================================== */
 
-  var CHAVE_RECENTES = 'arenahub:recentes';
   var paleta = null;
   var itens = [];
   var focado = -1;
-
-  function recentes() {
-    try {
-      return JSON.parse(janela.localStorage.getItem(CHAVE_RECENTES) || '[]');
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function lembrar(chave) {
-    try {
-      var lista = recentes().filter(function (c) { return c !== chave; });
-      lista.unshift(chave);
-      janela.localStorage.setItem(CHAVE_RECENTES, JSON.stringify(lista.slice(0, 3)));
-    } catch (e) { /* sem onde guardar: a paleta só perde a memória */ }
-  }
 
   /* Lê o cabeçalho da página. Nada é inventado aqui. */
   function recolher() {
@@ -197,7 +188,6 @@
 
     documento.querySelectorAll('header nav a').forEach(function (a) {
       lista.push({
-        chave: 'ir:' + a.getAttribute('href'),
         grupo: 'Ir para',
         nome: a.textContent.trim(),
         ico: a.dataset.ico || 'i-seta',
@@ -212,7 +202,6 @@
       if (!nome) return;
       var usa = b.querySelector('use');
       lista.push({
-        chave: 'fazer:' + (b.className || nome),
         grupo: 'Fazer',
         nome: nome,
         ico: usa ? usa.getAttribute('href').slice(1) : 'i-faisca',
@@ -276,16 +265,7 @@
       ? todos.filter(function (i) { return normalizar(i.nome).indexOf(normalizar(termo)) >= 0; })
       : todos;
 
-    // os três últimos escolhidos sobem, e só quando não há busca
     var grupos = [];
-    if (!termo) {
-      var ultimos = recentes()
-        .map(function (c) {
-          return todos.filter(function (i) { return i.chave === c; })[0];
-        })
-        .filter(Boolean);
-      if (ultimos.length) grupos.push({ nome: 'Recentes', itens: ultimos });
-    }
     ['Ir para', 'Fazer'].forEach(function (g) {
       var doGrupo = casados.filter(function (i) { return i.grupo === g; });
       if (doGrupo.length) grupos.push({ nome: g, itens: doGrupo });
@@ -336,7 +316,6 @@
   function escolher(i) {
     var item = itens[i];
     if (!item) return;
-    lembrar(item.chave);
     var ehAcao = item.grupo === 'Fazer';
     if (!ehAcao) paleta.close();
     item.acionar();

@@ -226,7 +226,14 @@
       </label>
       <label>
         <span class="rotulo">E-mail</span>
-        <input name="email" type="email" placeholder="ana@email.com" required>
+        <input name="email" type="email" placeholder="ana@email.com"
+               inputmode="email" autocomplete="email" spellcheck="false" required>
+      </label>
+      <label>
+        <span class="rotulo">CPF</span>
+        <input name="cpf" data-mascara="cpf" placeholder="000.000.000-00"
+               autocomplete="off" required>
+        <span class="ajuda">Os dígitos verificadores são conferidos.</span>
       </label>
       <label>
         <span class="rotulo">Senha</span>
@@ -234,7 +241,8 @@
       </label>
       <label>
         <span class="rotulo">Telefone</span>
-        <input name="telefone" placeholder="(31) 99999-0000" required>
+        <input name="telefone" data-mascara="telefone" placeholder="(31) 99999-0000"
+               autocomplete="tel" required>
       </label>
       <label>
         <span class="rotulo">Tipo de usuário</span>
@@ -277,13 +285,14 @@
       }
       lista.innerHTML =
         '<table class="tabela-responsiva">' +
-          '<thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th>' +
+          '<thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>CPF</th><th>Telefone</th>' +
           '<th>Tipo</th><th><span class="so-leitor">Ações</span></th></tr></thead>' +
           '<tbody>' + usuarios.map(function (u) {
             return '<tr>' +
               '<td data-rotulo="ID"><span class="id-pill">' + u.usuario_id + '</span></td>' +
               '<td data-rotulo="Nome"><span class="celula-titulo">' + HubUI.esc(u.nome) + '</span></td>' +
               '<td data-rotulo="E-mail">' + HubUI.esc(u.email) + '</td>' +
+              '<td data-rotulo="CPF" class="mono">' + HubUI.cpf(u.cpf) + '</td>' +
               '<td data-rotulo="Telefone" class="mono">' + HubUI.telefone(u.telefone) + '</td>' +
               '<td data-rotulo="Tipo"><span class="selo">' +
                 HubUI.ico(ICONE_TIPO[u.tipo_usuario] || 'i-usuario') + HubUI.esc(u.tipo_usuario) +

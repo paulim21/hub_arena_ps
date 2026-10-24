@@ -27,6 +27,7 @@ classDiagram
         +Integer usuario_id
         +Text nome
         +Text email
+        +Text cpf
         +Text senha
         +Text telefone
         +Text tipo_usuario
@@ -183,7 +184,14 @@ listagem de jogadores de cada reserva (`sp_jogadores_da_reserva`).
 
 ## Restrições que o diagrama reflete
 
-- `usuarios.email` é **UNIQUE** — o cadastro recusa e-mail repetido.
+- `usuarios.email` e `usuarios.cpf` são **UNIQUE** — o cadastro recusa
+  e-mail ou CPF repetido, e diz qual dos dois colidiu.
+- `usuarios.cpf` guarda **só os 11 dígitos**, sem pontuação, e os dígitos
+  verificadores são conferidos no Service antes de qualquer coisa tocar o
+  banco. O mesmo vale para `arenas.cnpj` (14 dígitos) e `usuarios.telefone`
+  (10 ou 11, com DDD). A pontuação é apresentação, e apresentação não se
+  persiste: gravar formatado obriga todo filtro e todo índice a adivinhar
+  qual das grafias veio.
 - `usuarios.tipo_usuario` aceita `atleta`, `dono` ou `professor`; só usuários
   do tipo `dono` podem ser responsáveis por uma arena (regra no Service).
 - `reservas.status` aceita `pendente` ou `confirmada`.

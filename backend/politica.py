@@ -12,7 +12,11 @@ mundo será convidado a aceitar de novo, que é o que a LGPD pede quando a
 finalidade muda (Art. 8º, § 6º).
 """
 
-VERSAO = "1.0"
+# 1.1 — o cadastro passou a pedir CPF. Dado pessoal novo muda o que é
+# coletado, e por isso a versão sobe: quem aceitou a 1.0 aceitou uma lista
+# que não tinha CPF, e consentimento não se estende por conta própria
+# (Art. 8º, § 6º). Todo mundo é convidado a aceitar de novo.
+VERSAO = "1.1"
 ATUALIZADO_EM = "2026-10-23"
 
 # As finalidades ficam separadas porque consentimento é POR FINALIDADE:
@@ -22,8 +26,9 @@ FINALIDADES = [
     {
         "chave": "operacao",
         "nome": "Operar a plataforma",
-        "detalhe": "Criar seu cadastro, agendar reservas, calcular o valor "
-                   "das partidas e manter o histórico da arena.",
+        "detalhe": "Criar seu cadastro (com nome, e-mail, CPF e telefone), "
+                   "agendar reservas, calcular o valor das partidas e manter "
+                   "o histórico da arena.",
         "base_legal": "Execução de contrato (Art. 7º, V)",
         "obrigatoria": True,
     },

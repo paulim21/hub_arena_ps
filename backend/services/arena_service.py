@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sqlalchemy.exc import IntegrityError
 
+import validadores
 from extensions import db
 from models.arena import Arena
 from models.usuario import Usuario
@@ -33,7 +34,8 @@ class CriarArenaService:
             raise ValueError("dono_id inválido: usuário não existe ou não é do tipo 'dono'.")
 
         return Arena(
-            nome=dados["nome"], cnpj=dados.get("cnpj"), endereco=dados["endereco"],
+            nome=dados["nome"], cnpj=validadores.normalizar_cnpj(dados.get("cnpj")),
+            endereco=dados["endereco"],
             cidade=dados["cidade"], dono_id=dados["dono_id"], taxa_saas=dados["taxa_saas"],
             dia_vencimento=_validar_dia_vencimento(dados.get("dia_vencimento", 5)),
         ).salvar()
@@ -69,7 +71,8 @@ class AtualizarArenaService:
     def executar(arena_id, dados):
         arena = BuscarArenaService.executar(arena_id)
         arena.nome = dados.get("nome", arena.nome)
-        arena.cnpj = dados.get("cnpj", arena.cnpj)
+        if "cnpj" in dados:
+            arena.cnpj = validadores.normalizar_cnpj(dados["cnpj"])
         arena.endereco = dados.get("endereco", arena.endereco)
         arena.cidade = dados.get("cidade", arena.cidade)
         arena.taxa_saas = dados.get("taxa_saas", arena.taxa_saas)

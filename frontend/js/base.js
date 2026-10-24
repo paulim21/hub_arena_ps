@@ -68,6 +68,69 @@ window.HubUI = (function () {
            '/' + n.slice(8, 12) + '-' + n.slice(12);
   }
 
+  function cpf(v) {
+    var n = String(v || '').replace(/\D/g, '');
+    if (n.length !== 11) return esc(v);
+    return n.slice(0, 3) + '.' + n.slice(3, 6) + '.' + n.slice(6, 9) + '-' + n.slice(9);
+  }
+
+  /* ========================= máscara ao digitar =========================
+     O servidor guarda só os dígitos; a pontuação é apresentação, e é aqui
+     que ela nasce. O campo declara qual forma quer:
+
+         <input name="cpf" data-mascara="cpf">
+
+     Um padrão por forma, e `0` é onde entra dígito. Assim a máscara
+     cresce junto com o que foi digitado — "1234" vira "123.4" — em vez de
+     só aparecer quando o campo está completo. */
+
+  var PADROES = {
+    cpf: '000.000.000-00',
+    cnpj: '00.000.000/0000-00',
+    telefone: '(00) 00000-0000',
+    telefoneCurto: '(00) 0000-0000'
+  };
+
+  function porPadrao(valor, padrao) {
+    var cabem = (padrao.match(/0/g) || []).length;
+    var digitos = String(valor || '').replace(/\D/g, '').slice(0, cabem);
+    var saida = '';
+    for (var p = 0, i = 0; p < padrao.length && i < digitos.length; p++) {
+      saida += padrao[p] === '0' ? digitos[i++] : padrao[p];
+    }
+    return saida;
+  }
+
+  function mascarar(valor, forma) {
+    if (forma === 'telefone') {
+      var n = String(valor || '').replace(/\D/g, '');
+      // Fixo tem 8 dígitos e celular tem 9: o padrão só troca quando o
+      // nono chega, para o campo não embaralhar no meio da digitação.
+      return porPadrao(n, n.length > 10 ? PADROES.telefone : PADROES.telefoneCurto);
+    }
+    return PADROES[forma] ? porPadrao(valor, PADROES[forma]) : String(valor || '');
+  }
+
+  function aplicarMascara(inp) {
+    var forma = inp.dataset.mascara;
+    if (!forma || !(PADROES[forma] || forma === 'telefone')) return;
+    if (!inp.getAttribute('inputmode')) inp.setAttribute('inputmode', 'numeric');
+
+    function reformatar() {
+      // A distância até o FIM é o que se preserva, não a posição absoluta:
+      // a máscara insere pontuação à esquerda do cursor, e medir do começo
+      // joga o cursor para trás a cada ponto inserido.
+      var daDireita = inp.value.length - (inp.selectionEnd || inp.value.length);
+      inp.value = mascarar(inp.value, forma);
+      var pos = Math.max(0, inp.value.length - daDireita);
+      try { inp.setSelectionRange(pos, pos); } catch (e) { /* campo sem seleção */ }
+    }
+
+    inp.addEventListener('input', reformatar);
+    inp.addEventListener('blur', reformatar);
+    if (inp.value) inp.value = mascarar(inp.value, forma);
+  }
+
   /* ========================= ícones =========================
      Traço, do sprite embutido no HTML. O <use href> externo não
      funciona no Chrome, por isso o sprite mora na própria página. */
@@ -635,6 +698,9 @@ window.HubUI = (function () {
     raiz.querySelectorAll('.multi-sel').forEach(function (ms) {
       if (!ms.dataset.melhorado) { ms.dataset.melhorado = '1'; melhorarMultiSelect(ms); }
     });
+    raiz.querySelectorAll('input[data-mascara]').forEach(function (inp) {
+      if (!inp.dataset.mascarado) { inp.dataset.mascarado = '1'; aplicarMascara(inp); }
+    });
     animarNumeros();
   }
 
@@ -682,7 +748,7 @@ window.HubUI = (function () {
 
   return {
     api: api, esc: esc, moeda: moeda, dataHora: dataHora,
-    telefone: telefone, cnpj: cnpj,
+    telefone: telefone, cnpj: cnpj, cpf: cpf, mascarar: mascarar,
     ico: ico, arco: arco,
     erroTopo: erroTopo, toast: toast, carregando: carregando,
     confirmar: confirmar, informar: informar,

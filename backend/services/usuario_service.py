@@ -2,6 +2,8 @@
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
+import validadores
+
 from extensions import db
 from models.usuario import Usuario
 from repositories.usuario_repository import UsuarioRepository
@@ -13,10 +15,17 @@ TAMANHO_MINIMO_SENHA = 6
 class CriarUsuarioService:
     @staticmethod
     def executar(dados):
-        obrigatorios = ("nome", "email", "senha", "telefone", "tipo_usuario")
+        obrigatorios = ("nome", "email", "cpf", "senha", "telefone", "tipo_usuario")
         faltando = [c for c in obrigatorios if not dados.get(c)]
         if faltando:
             raise ValueError(f"Campos obrigatórios ausentes: {', '.join(faltando)}")
+
+        # A forma do dado é conferida antes de qualquer coisa tocar o banco:
+        # CPF com dígito verificador errado é erro de digitação, não de regra
+        # de negócio, e o titular precisa saber disso na hora.
+        email = validadores.normalizar_email(dados["email"])
+        cpf = validadores.normalizar_cpf(dados["cpf"])
+        telefone = validadores.normalizar_telefone(dados["telefone"])
         if dados["tipo_usuario"] not in TIPOS_VALIDOS:
             raise ValueError(f"tipo_usuario deve ser um de: {', '.join(TIPOS_VALIDOS)}")
         if len(dados["senha"]) < TAMANHO_MINIMO_SENHA:
@@ -29,13 +38,17 @@ class CriarUsuarioService:
             # descobre a senha, e nem nós conseguimos. É o que a LGPD chama
             # de medida de segurança (Art. 46) e o que a política promete.
             return Usuario(
-                nome=dados["nome"], email=dados["email"],
+                nome=dados["nome"].strip(), email=email, cpf=cpf,
                 senha=generate_password_hash(dados["senha"]),
-                telefone=dados["telefone"], tipo_usuario=dados["tipo_usuario"],
+                telefone=telefone, tipo_usuario=dados["tipo_usuario"],
             ).salvar()
         except IntegrityError:
             db.session.rollback()
-            raise ValueError("Já existe um usuário com este e-mail.")
+            # São dois UNIQUE na tabela, e dizer "já existe" sem dizer qual
+            # faz a pessoa conferir o campo errado.
+            if Usuario.query.filter_by(email=email).first():
+                raise ValueError("Já existe um usuário com este e-mail.")
+            raise ValueError("Já existe um usuário com este CPF.")
 
 
 class ListarUsuariosService:
@@ -70,8 +83,12 @@ class AtualizarUsuarioService:
     def executar(usuario_id, dados):
         usuario = BuscarUsuarioService.executar(usuario_id)
         usuario.nome = dados.get("nome", usuario.nome)
-        usuario.email = dados.get("email", usuario.email)
-        usuario.telefone = dados.get("telefone", usuario.telefone)
+        if "email" in dados:
+            usuario.email = validadores.normalizar_email(dados["email"])
+        if "cpf" in dados:
+            usuario.cpf = validadores.normalizar_cpf(dados["cpf"])
+        if "telefone" in dados:
+            usuario.telefone = validadores.normalizar_telefone(dados["telefone"])
         usuario.tipo_usuario = dados.get("tipo_usuario", usuario.tipo_usuario)
         if usuario.tipo_usuario not in TIPOS_VALIDOS:
             db.session.rollback()
@@ -80,7 +97,7 @@ class AtualizarUsuarioService:
             return usuario.atualizar()
         except IntegrityError:
             db.session.rollback()
-            raise ValueError("Já existe um usuário com este e-mail.")
+            raise ValueError("Já existe outro usuário com este e-mail ou CPF.")
 
 
 class DeletarUsuarioService:

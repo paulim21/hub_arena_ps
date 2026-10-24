@@ -15,6 +15,9 @@ mostrando o resultado.
       ```js
       localStorage.removeItem('arenahub:consentimento')
       ```
+      *(Desde que a política subiu para a versão 1.1 — o cadastro passou a
+      pedir CPF —, um aceite antigo da 1.0 também não vale mais, então o
+      aviso tende a aparecer de qualquer jeito. Limpar é a garantia.)*
 - [ ] Banco **com alguns dados** (1 dono, 2 atletas, 1 arena, 2 quadras,
       1 reserva confirmada). Assim os relatórios não aparecem vazios, e ainda
       sobra o que cadastrar ao vivo.
@@ -24,8 +27,10 @@ mostrando o resultado.
   - `backend/models/reserva.py`
   - `backend/repositories/procedures.sql`
   - `backend/services/consentimento_service.py`
-- [ ] Dados que vai digitar já anotados (nome, e-mail, **senha com 6+
-      caracteres**, horários) para não travar na hora
+- [ ] Dados que vai digitar já anotados para não travar na hora: nome,
+      e-mail, **senha com 6+ caracteres**, **um CPF válido** (os dígitos
+      verificadores são conferidos — use um gerador, ou `529.982.247-25`) e
+      os horários da reserva
 - [ ] Zoom do navegador em 100–125%, gravação em 1080p
 
 **Dica:** grave em uma tomada só. Se errar, pause 2 segundos e refaça a frase —
@@ -76,9 +81,13 @@ sozinho, por cima de tudo.
 
 **Mostrar:** clicar em **Usuários**.
 
-1. **Cadastrar** *(0:55)* — preencher e enviar.
+1. **Cadastrar** *(0:55)* — preencher e enviar. **Digite o CPF devagar**, para
+   a máscara aparecer na gravação.
    > "A tela manda um POST em JSON; o Controller chama o Service, que valida e
-   > salva pela Model. A lista atualiza sem recarregar a página."
+   > salva pela Model. Repare no CPF: a máscara se monta enquanto eu digito, e
+   > o servidor confere os **dígitos verificadores** — um CPF com 11 números
+   > aleatórios é recusado. No banco vai só o número, sem pontuação; a
+   > formatação é da tela."
    >
    > *(opcional, se sobrar fôlego)* "E a senha não é guardada como foi
    > digitada: vai para o banco como resumo criptográfico."

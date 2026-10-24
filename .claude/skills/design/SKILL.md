@@ -198,11 +198,17 @@ no celular, com `data-rotulo` em cada `td`) · `.lista` + `.item`
 - `HubUI.abrirBusca()` — a paleta do **Ctrl+K**, montada **a cada abertura** a
   partir do próprio menu da página: ela nunca oferece um lugar que a página
   não oferece. Leva também o que a página **faz** (tema, densidade), em
-  grupos, com os três últimos escolhidos no topo e o trecho casado realçado —
-  e a busca ignora acento, então "relatorios" acha "Relatórios". Toda ação
-  dali **aciona um botão que já existe no cabeçalho**: a paleta é caminho de
-  teclado, nunca uma porta que só ela abre. É por isso que o item de tema se
-  renomeia sozinho depois do clique — ele relê o `aria-label` do botão.
+  grupos, com o trecho casado realçado — e a busca ignora acento, então
+  "relatorios" acha "Relatórios". Toda ação dali **aciona um botão que já
+  existe no cabeçalho**: a paleta é caminho de teclado, nunca uma porta que só
+  ela abre. É por isso que o item de tema se renomeia sozinho depois do
+  clique — ele relê o `aria-label` do botão.
+
+  **Não tem grupo "Recentes", e não deve ganhar um.** Ele existiu: com 6
+  destinos e 2 ações, repetia no topo itens visíveis logo abaixo — "Reservas"
+  duas vezes — e ainda empurrava o resto para fora da tela. Recência só se
+  paga quando a lista não cabe. Se um dia a paleta passar de umas 15 linhas,
+  aí vale reabrir a conversa.
 - `HubUI.toast(mensagem, tipo)` — o que deu certo some em 4s; **o que deu
   errado só some no clique**, porque erro que desaparece sozinho é erro que
   ninguém leu.

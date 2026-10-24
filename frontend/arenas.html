@@ -294,8 +294,9 @@
           '<label><span class="rotulo">Nome da arena</span>' +
             '<input name="nome" placeholder="Arena Beira-Mar" required></label>' +
           '<label><span class="rotulo">CNPJ</span>' +
-            '<input name="cnpj" placeholder="00.000.000/0001-00">' +
-            '<span class="ajuda">Opcional.</span></label>' +
+            '<input name="cnpj" data-mascara="cnpj" placeholder="00.000.000/0001-00" ' +
+              'autocomplete="off">' +
+            '<span class="ajuda">Opcional. Os dígitos verificadores são conferidos.</span></label>' +
           '<label><span class="rotulo">Endereço</span>' +
             '<input name="endereco" placeholder="Rua, número e bairro" required></label>' +
           '<label><span class="rotulo">Cidade</span>' +

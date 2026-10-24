@@ -91,7 +91,7 @@
   <text x="974" y="542" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
   <text x="974" y="561" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict()</text>
   </g>
-  <g><rect x="40" y="720" width="340" height="325" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
+  <g><rect x="40" y="720" width="340" height="344" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
   <path d="M40 766 V730 a10 10 0 0 1 10 -10 H370 a10 10 0 0 1 10 10 V766 Z" fill="#E05A1E"/>
   <text x="210.0" y="744" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="16.5" font-weight="700" fill="#FFFFFF">Usuario</text>
   <text x="210.0" y="759" text-anchor="middle" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="10.5" fill="#FFFFFF" opacity="0.9">tabela: usuarios</text>
@@ -100,18 +100,22 @@
   <text x="54" y="806" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">nome : Text</text>
   <text x="54" y="825" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">email : Text</text>
   <text x="366" y="825" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">UNIQUE</text>
-  <text x="54" y="844" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">senha : Text</text>
-  <text x="54" y="863" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">telefone : Text</text>
-  <text x="54" y="882" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">tipo_usuario : Text</text>
-  <text x="366" y="882" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">atleta | dono | professor</text>
-  <text x="54" y="901" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">data_criacao : Text</text>
-  <line x1="40" y1="915" x2="380" y2="915" stroke="#C8CEDC" stroke-width="1.2"/>
-  <text x="54" y="936" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ salvar()</text>
-  <text x="54" y="955" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ atualizar()</text>
-  <text x="54" y="974" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ deletar()</text>
-  <text x="54" y="993" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ listar_todos()</text>
-  <text x="54" y="1012" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
-  <text x="54" y="1031" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict(incluir_senha)</text>
+  <text x="54" y="844" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">cpf : Text</text>
+  <text x="366" y="844" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">UNIQUE, 11 dígitos</text>
+  <text x="54" y="863" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">senha : Text</text>
+  <text x="366" y="863" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">resumo scrypt</text>
+  <text x="54" y="882" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">telefone : Text</text>
+  <text x="366" y="882" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">só dígitos</text>
+  <text x="54" y="901" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">tipo_usuario : Text</text>
+  <text x="366" y="901" text-anchor="end" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#E05A1E">atleta | dono | professor</text>
+  <text x="54" y="920" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#1B2030">data_criacao : Text</text>
+  <line x1="40" y1="934" x2="380" y2="934" stroke="#C8CEDC" stroke-width="1.2"/>
+  <text x="54" y="955" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ salvar()</text>
+  <text x="54" y="974" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ atualizar()</text>
+  <text x="54" y="993" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ deletar()</text>
+  <text x="54" y="1012" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ listar_todos()</text>
+  <text x="54" y="1031" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ buscar_por_id(id)</text>
+  <text x="54" y="1050" font-family="'JetBrains Mono', 'Consolas', monospace" font-size="11.5" fill="#5B6377">+ to_dict(incluir_senha)</text>
   </g>
   <g><rect x="960" y="720" width="340" height="135" rx="10" fill="#FFFFFF" stroke="#C8CEDC" stroke-width="1.5" filter="url(#sombra)"/>
   <path d="M960 766 V730 a10 10 0 0 1 10 -10 H1290 a10 10 0 0 1 10 10 V766 Z" fill="#2B6CD4"/>
@@ -156,7 +160,7 @@
   <path d="M210.0 212 L210.0 250" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <path d="M1130.0 212 L1130.0 250" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <path d="M20 212 L20 1301.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
-  <path d="M20 882.5 L40 882.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M20 892.0 L40 892.0" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <path d="M20 1301.5 L40 1301.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <path d="M1330 212 L1330 787.5 L1300 787.5" fill="none" stroke="#4A5266" stroke-width="1.5" stroke-linejoin="round"/>
   <text x="670.0" y="236" text-anchor="middle" font-family="Sora, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#4A5266">todas as Models herdam de db.Model</text>
