@@ -1,0 +1,15 @@
+# O git deste ambiente roda com core.autocrlf=true, e sem esta lista ele
+# "conserta" as quebras de linha DENTRO de arquivo binario. Foi o que
+# aconteceu com o guia em PDF: ele voltou de um clone com 296 bytes a mais
+# e o indice interno quebrado. PNG e JPG escaparam porque tem byte nulo
+# logo no comeco e o git os reconhece sozinho; o PDF comeca em ASCII.
+
+* text=auto
+
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.jfif binary
+*.ico  binary
+*.db   binary
