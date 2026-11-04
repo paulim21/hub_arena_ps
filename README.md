@@ -47,6 +47,7 @@ O diagrama de classes do domínio está na pasta [`docs/`](docs):
 |---------|---------|
 | [`docs/diagrama-classes.md`](docs/diagrama-classes.md) | Diagrama + explicação da **herança**, **composição**, **agregação** e da relação **N:N**, com a tabela de FKs correspondente no banco |
 | [`docs/diagrama-classes.svg`](docs/diagrama-classes.svg) | Mesma versão em imagem (para slides e para o vídeo) |
+| [`docs/guia-backend.pdf`](docs/guia-backend.pdf) | **Guia do backend** (12 páginas): o caminho de uma requisição, camada por camada, as 18 procedures, a tabela das 24 funcionalidades e as perguntas prováveis da banca |
 
 Ele representa as cinco Models de [`backend/models/`](backend/models) —
 `Usuario`, `Arena`, `Quadra`, `Reserva` e `ReservaJogador` — todas herdando de
