@@ -8,7 +8,7 @@
 
   Este arquivo é a FONTE. A cópia que o navegador usa é a embutida em
   cada HTML (o <use href="arquivo.svg#id"> externo não funciona no
-  Chrome), gerada daqui por skills/design/embutir-icones.py.
+  Chrome), gerada daqui por docs/design/embutir-icones.py.
 -->
 
 <!-- ===== Esportes de areia ===== -->

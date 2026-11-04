@@ -102,7 +102,7 @@ frontend/
 docs/
     diagrama-classes.md     ← diagrama de classes do domínio (+ .svg)
 IDENTIDADE_VISUAL.md        ← o porquê das cores, com as tabelas de contraste
-.claude/skills/design/      ← a skill de design + o verificador da identidade
+docs/design/      ← a skill de design + o verificador da identidade
 ```
 
 > **Sobre as procedures no SQLite:** o SQLite é um banco embarcado e não possui
@@ -152,7 +152,7 @@ O front-end tem um sistema de design documentado e **verificado por máquina**:
   tabelas de contraste (WCAG 2.1), que são **contrato**.
 - [`frontend/css/tokens.css`](frontend/css/tokens.css) — todos os valores. Fora
   dele não existe cor, tamanho, espaço, raio, borda ou duração literal.
-- [`.claude/skills/design/SKILL.md`](.claude/skills/design/SKILL.md) — como
+- [`docs/design/SKILL.md`](docs/design/SKILL.md) — como
   trabalhar nele: o que já existe, o que não fazer, e as armadilhas conhecidas.
 
 A marca vem da logo: **navy escreve, a areia é chão**, sobre papel creme. Tema
@@ -172,13 +172,13 @@ o peso do traço da marca e não herda cor — no lugar dele vão os 43 ícones 
 Para conferir que nada saiu do contrato (224 verificações):
 
 ```bash
-python .claude/skills/design/verificar-identidade.py
+python docs/design/verificar-identidade.py
 ```
 
 E, depois de mexer no sprite de ícones:
 
 ```bash
-python .claude/skills/design/embutir-icones.py
+python docs/design/embutir-icones.py
 ```
 
 ## Rotas da API

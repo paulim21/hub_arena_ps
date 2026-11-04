@@ -1,12 +1,12 @@
 # Identidade visual do ArenaHub
 
 Este documento é o **porquê**. O **como** mora em
-[`.claude/skills/design/SKILL.md`](skills/design/SKILL.md), e os valores em
+[`docs/design/SKILL.md`](docs/design/SKILL.md), e os valores em
 [`frontend/css/tokens.css`](frontend/css/tokens.css). Quando este documento e a
 skill discordarem, **este manda** — e então a skill é corrigida.
 
 As tabelas de contraste abaixo são **contrato**: o
-[`verificar-identidade.py`](.claude/skills/design/verificar-identidade.py) remede cada
+[`verificar-identidade.py`](docs/design/verificar-identidade.py) remede cada
 par pela fórmula da WCAG 2.1 e recusa qualquer número que tenha se afastado da
 cor.
 
@@ -192,7 +192,7 @@ Falta um ícone? Desenhe no mesmo peso — nunca emoji, nunca ícone cheio.
 ## 7. Antes de dizer que está pronto
 
 ```bash
-python .claude/skills/design/verificar-identidade.py
+python docs/design/verificar-identidade.py
 ```
 
 Ele mede o contraste de cada par das tabelas acima, o contraste anotado em cada

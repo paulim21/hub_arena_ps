@@ -22,7 +22,7 @@ Nove verificações, na ordem em que custam caro quando falham:
 9. nenhum `var(--x)` aponta para token que não existe, e nenhum estilo é
    escrito por JavaScript (a CSP bloqueia, e falha calada).
 
-Uso:  python .claude/skills/design/verificar-identidade.py
+Uso:  python docs/design/verificar-identidade.py
 Sai com 1 se qualquer verificação falhar.
 """
 import os
@@ -34,7 +34,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "..", "..", ".."))
+                                    "..", ".."))
 CSS = os.path.join(RAIZ, "frontend", "css")
 JS = os.path.join(RAIZ, "frontend", "js")
 TOKENS = os.path.join(CSS, "tokens.css")

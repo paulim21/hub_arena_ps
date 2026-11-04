@@ -239,7 +239,7 @@ o `painel.css`. Se for construído, entra aqui **e** no
 `HubUI.ico('i-nome')`. A **fonte** é `frontend/img/icones.svg`; a cópia que o
 navegador usa é a embutida em cada HTML, porque `<use href="arquivo.svg#id">`
 externo não funciona no Chrome. Mexeu no sprite? Rode
-`python .claude/skills/design/embutir-icones.py`, que copia a fonte para
+`python docs/design/embutir-icones.py`, que copia a fonte para
 dentro dos seis HTML, entre `<!-- sprite:inicio -->` e `<!-- sprite:fim -->`.
 
 `i-futevolei` `i-beach-tennis` `i-volei` `i-frescobol` `i-esporte` `i-arena`
@@ -403,15 +403,15 @@ Eles compartilham a estrutura e os números que importam, não os valores.
 | `frontend/img/icones.svg` | os 43 ícones em traço (a fonte) |
 | `frontend/img/logo.png` · `logo-escuro.png` | o logotipo da marca, uma versão por tema — o navy do "Arena" sumiria no fundo escuro |
 | `frontend/img/favicon.svg` | o monograma. É o **único** arquivo com cor literal fora do `tokens.css`, porque é servido solto, fora do CSS |
-| `.claude/skills/design/embutir-icones.py` | copia o sprite para dentro dos HTML |
-| `.claude/skills/design/verificar-identidade.py` | mede o contrato |
+| `docs/design/embutir-icones.py` | copia o sprite para dentro dos HTML |
+| `docs/design/verificar-identidade.py` | mede o contrato |
 
 ---
 
 ## 8. Antes de dizer que está pronto
 
 ```bash
-python .claude/skills/design/verificar-identidade.py
+python docs/design/verificar-identidade.py
 ```
 
 224 verificações, e todas passam hoje: o contraste de cada par das tabelas, remedido — inclusive os

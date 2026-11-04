@@ -9,7 +9,7 @@ script copia dali para dentro de cada HTML, entre os marcadores:
 
 Rode depois de mexer no sprite:
 
-    python .claude/skills/design/embutir-icones.py
+    python docs/design/embutir-icones.py
 
 Sai com 1 se algum HTML não tiver os marcadores.
 """
@@ -21,7 +21,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "..", "..", ".."))
+                                    "..", ".."))
 FRONT = os.path.join(RAIZ, "frontend")
 FONTE = os.path.join(FRONT, "img", "icones.svg")
 
