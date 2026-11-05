@@ -93,8 +93,10 @@ sozinho, por cima de tudo.
    > digitada: vai para o banco como resumo criptográfico."
 2. **Filtrar por tipo** *(1:15)* — clicar nas pílulas **Atleta** / **Dono**.
    > "O filtro por tipo é uma procedure, chamada pelo Repository."
-3. **Buscar** *(1:25)* — digitar parte de um nome no campo de busca.
-   > "A busca por nome ou e-mail também é procedure, com LIKE."
+3. **Buscar** *(1:25)* — ir em **Busca** no menu e digitar o nome de uma arena.
+   > "A busca tem tela propria, e procura em tres lugares de uma vez: usuarios,
+   > arenas e quadras. Sao tres procedures com LIKE, coordenadas por um Service
+   > so. O termo vai para a URL, entao o resultado pode ser compartilhado."
 4. **Excluir com vínculo** *(1:33)* — tentar excluir um **dono que tem arena**.
    > "Excluindo um dono que tem arena, o banco bloqueia pela chave
    > estrangeira, e a API devolve uma mensagem que dá para entender."

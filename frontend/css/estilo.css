@@ -264,7 +264,7 @@ button.sucesso { color: var(--sucesso); border-color: var(--sucesso); }
   font-size: var(--t-rotulo);
 }
 
-.botao-tema, .botao-densidade, .botao-busca {
+.botao-tema, .botao-densidade, .botao-paleta {
   min-height: var(--altura-controle);
   width: var(--altura-controle);
   padding: 0;
@@ -1141,3 +1141,21 @@ tbody tr:hover td { background: var(--marca-traco); }
   .definicoes { grid-template-columns: 1fr; gap: var(--e-1); }
   .definicoes dd { margin-bottom: var(--e-3); }
 }
+
+/* ---------------- a tela de busca ---------------- */
+
+/* Quantos resultados cada grupo trouxe, no próprio título do painel:
+   sem isso é preciso contar linha a linha para saber se achou um ou
+   dezoito. Fica à direita, destacado do texto pelo traço do selo. */
+.painel-vidro > h2 .contagem {
+  margin-left: auto;
+  padding: var(--e-1) var(--e-3);
+  border: var(--b) solid var(--linha-forte);
+  border-radius: var(--r-selo);
+  color: var(--tinta-fraca);
+  font-family: var(--fonte-mono);
+  font-size: var(--t-rotulo);
+  font-weight: 400;
+}
+
+.atalho-busca { margin: 0; }

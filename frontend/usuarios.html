@@ -173,13 +173,14 @@
       </a>
       <nav>
         <a href="/" data-ico="i-grafico">Visão geral</a>
+        <a href="/busca" data-ico="i-busca">Busca</a>
         <a href="/usuarios" data-ico="i-usuario" class="ativo" aria-current="page">Usuários</a>
         <a href="/arenas" data-ico="i-arena">Arenas</a>
         <a href="/quadras" data-ico="i-quadra">Quadras</a>
         <a href="/reservas" data-ico="i-agenda">Reservas</a>
         <a href="/relatorios" data-ico="i-registro">Relatórios</a>
         <span class="sessao-nav">
-          <button type="button" class="botao-busca"></button>
+          <button type="button" class="botao-paleta"></button>
           <button type="button" class="botao-tema"></button>
           <button type="button" class="botao-densidade"></button>
         </span>
@@ -201,18 +202,11 @@
       <a href="/usuarios?tipo=professor" data-tipo="professor">Professor</a>
     </div>
 
-    <!-- Busca textual: GET /api/usuarios/busca?q= (procedure sp_busca_usuarios) -->
-    <form class="painel" id="form-busca">
-      <h2 id="t-busca">Buscar usuário</h2>
-      <label>
-        <span class="rotulo">Nome ou e-mail</span>
-        <input id="busca-termo" placeholder="ana, ou @email.com">
-      </label>
-      <label>
-        <span class="invisivel rotulo">buscar</span>
-        <button type="submit">Buscar</button>
-      </label>
-    </form>
+    <p class="ajuda atalho-busca">
+      Procurando alguém?
+      <a href="/busca">A busca ficou em uma tela só</a>, e procura também em
+      arenas e quadras.
+    </p>
 
     <div class="painel-vidro" id="lista"></div>
 
@@ -339,20 +333,6 @@
         HubUI.erroTopo(e.message);
       }
     }
-
-    // Busca textual (LIKE, via procedure)
-    document.getElementById('form-busca').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var termo = document.getElementById('busca-termo').value.trim();
-      if (!termo) { carregarLista(); return; }
-      HubUI.esperando('lista', 'tabela', 2);
-      try {
-        var usuarios = await HubUI.api('/api/usuarios/busca?q=' + encodeURIComponent(termo));
-        renderizarLista(usuarios, 'Nenhum usuário encontrado para "' + termo + '".');
-      } catch (erro) {
-        HubUI.erroTopo(erro.message);
-      }
-    });
 
     // Cadastro: POST /api/usuarios
     document.getElementById('form-usuario').addEventListener('submit', async function (e) {

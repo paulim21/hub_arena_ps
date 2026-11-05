@@ -1,6 +1,6 @@
 """Confere o contrato da identidade visual: o que é medido e o que é proibido.
 
-Irmão dos `verificar_*.py` do backend, mas mora na skill porque não verifica
+Fica junto dos padrões de interface, e não do backend, porque não verifica
 funcionalidade: verifica **disciplina de identidade**. Cada promessa escrita no
 `IDENTIDADE_VISUAL.md` que pode ser medida por máquina é medida aqui, para que
 a documentação não vire ficção na primeira cor trocada.

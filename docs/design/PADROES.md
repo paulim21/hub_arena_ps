@@ -1,14 +1,18 @@
----
-name: design
-description: A identidade visual do ArenaHub como regra de trabalho — tokens, componentes que já existem, e as armadilhas que já custaram correção. Use SEMPRE que a tarefa tocar em aparência ou interface: mexer em frontend/css/*.css, em frontend/*.html, no HTML gerado por frontend/js/*.js, nos ícones de frontend/img/, escolher ou trocar cor, tamanho de texto, espaçamento, borda, raio, sombra ou animação, criar tela, bloco, botão, campo, selo, tabela, lista, modal, aba, menu suspenso ou estado vazio, ajustar tema claro/escuro, foco, contraste, acessibilidade, responsivo/celular, carregamento, esqueleto, aviso flutuante ou spinner. Também quando a pergunta for "que cor uso aqui", "por que isso está assim" ou "isso está no padrão".
----
+# Padrões de interface do ArenaHub
 
-# A identidade do ArenaHub como regra de trabalho
+Este é o **como** da identidade visual: o que já existe e pode ser reaproveitado,
+o que não se deve fazer, e as armadilhas que já custaram correção.
 
-O **porquê** de cada decisão mora no [`IDENTIDADE_VISUAL.md`](../../../IDENTIDADE_VISUAL.md)
-(raiz do projeto). Este arquivo é o **como**: o que fazer, o que não fazer, e o
-que já deu errado. Quando os dois discordarem, o documento manda — e então
-conserte este.
+Consulte-o sempre que o trabalho tocar em aparência: mexer no CSS, no HTML, no
+HTML gerado por JavaScript ou nos ícones; escolher cor, tamanho de texto,
+espaçamento, borda, raio, sombra ou animação; criar tela, bloco, botão, campo,
+selo, tabela, lista, modal, menu suspenso ou estado vazio; ajustar tema, foco,
+contraste ou comportamento no celular. Também quando a dúvida for "que cor uso
+aqui" ou "isso está no padrão".
+
+O **porquê** de cada decisão mora no [`IDENTIDADE_VISUAL.md`](../../IDENTIDADE_VISUAL.md),
+na raiz do projeto. Quando os dois discordarem, aquele documento manda — e
+então conserte este.
 
 **A ordem de trabalho é sempre a mesma:**
 

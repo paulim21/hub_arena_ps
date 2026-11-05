@@ -16,7 +16,7 @@ Todas disponíveis de ponta a ponta
 
 1. **Cadastrar usuário** (tela `/usuarios` → `POST /api/usuarios`)
 2. **Listar usuários com filtro por tipo** (atleta/dono/professor — procedure `sp_usuarios_por_tipo`)
-3. **Buscar usuários por nome ou e-mail** (LIKE — procedure `sp_busca_usuarios`)
+3. **Buscar usuários por nome ou e-mail** (LIKE — procedure `sp_busca_usuarios`, usada pela tela `/busca`)
 4. **Excluir usuário** (com bloqueio por vínculos via FK — `DELETE /api/usuarios/<id>`)
 5. **Cadastrar arena** (com validação de dono do tipo 'dono' — `POST /api/arenas`)
 6. **Listar arenas com dono e contagem de quadras** (JOIN — procedure `sp_arenas_com_dono`)
@@ -38,6 +38,7 @@ Todas disponíveis de ponta a ponta
 22. **Verificar consentimento vigente** (procedure `sp_consentimento_vigente` — libera ou bloqueia o uso do sistema)
 23. **Revogar consentimento** (`POST /api/consentimentos/revogar` — tela `/termos`, Art. 8º, § 5º)
 24. **Relatório de consentimentos por versão** (procedure `sp_consentimentos_por_versao` — a prova agregada do Art. 8º, § 1º)
+25. **Busca global** (tela `/busca` — um termo, três procedures: `sp_busca_usuarios`, `sp_busca_arenas` e `sp_busca_quadras`; o resultado vai para a URL e pode ser compartilhado)
 
 ## Diagrama de classes
 
@@ -47,7 +48,7 @@ O diagrama de classes do domínio está na pasta [`docs/`](docs):
 |---------|---------|
 | [`docs/diagrama-classes.md`](docs/diagrama-classes.md) | Diagrama + explicação da **herança**, **composição**, **agregação** e da relação **N:N**, com a tabela de FKs correspondente no banco |
 | [`docs/diagrama-classes.svg`](docs/diagrama-classes.svg) | Mesma versão em imagem (para slides e para o vídeo) |
-| [`docs/guia-backend.pdf`](docs/guia-backend.pdf) | **Guia do backend** (12 páginas): o caminho de uma requisição, camada por camada, as 18 procedures, a tabela das 24 funcionalidades e as perguntas prováveis da banca |
+| [`docs/guia-sistema.pdf`](docs/guia-sistema.pdf) | **Guia do sistema** (15 páginas): o caminho de uma requisição, backend camada por camada, o banco, o frontend, as 20 procedures, a tabela das 25 funcionalidades e as perguntas prováveis da banca |
 
 Ele representa as cinco Models de [`backend/models/`](backend/models) —
 `Usuario`, `Arena`, `Quadra`, `Reserva` e `ReservaJogador` — todas herdando de
@@ -102,8 +103,10 @@ frontend/
     img/logo.png            ← o logotipo (+ logo-escuro.png, para o tema escuro)
 docs/
     diagrama-classes.md     ← diagrama de classes do domínio (+ .svg)
+    guia-sistema.pdf        ← o guia completo, para a apresentação
+    design/PADROES.md       ← os padrões de interface
+    design/verificar-identidade.py  ← mede o contrato das cores
 IDENTIDADE_VISUAL.md        ← o porquê das cores, com as tabelas de contraste
-docs/design/      ← a skill de design + o verificador da identidade
 ```
 
 > **Sobre as procedures no SQLite:** o SQLite é um banco embarcado e não possui
@@ -153,7 +156,7 @@ O front-end tem um sistema de design documentado e **verificado por máquina**:
   tabelas de contraste (WCAG 2.1), que são **contrato**.
 - [`frontend/css/tokens.css`](frontend/css/tokens.css) — todos os valores. Fora
   dele não existe cor, tamanho, espaço, raio, borda ou duração literal.
-- [`docs/design/SKILL.md`](docs/design/SKILL.md) — como
+- [`docs/design/PADROES.md`](docs/design/PADROES.md) — como
   trabalhar nele: o que já existe, o que não fazer, e as armadilhas conhecidas.
 
 A marca vem da logo: **navy escreve, a areia é chão**, sobre papel creme. Tema
@@ -207,13 +210,15 @@ python docs/design/embutir-icones.py
 | POST | `/api/consentimentos` | Registra o aceite (com versão, IP e navegador) |
 | POST | `/api/consentimentos/revogar` | Revoga o consentimento |
 | GET | `/api/consentimentos/relatorio` | Aceites, vigentes e revogados por versão |
+| GET | `/api/busca?q=` | Busca global em usuários, arenas e quadras |
 
 ## Telas do frontend
 
 | Página | O que faz |
 |--------|-----------|
 | `/` | Visão geral: contadores animados, receita total e atividade recente |
-| `/usuarios` | Tabela + cadastro + filtro por tipo + **busca por nome/e-mail** + exclusão |
+| `/busca` | **Busca global**: um termo procurado em usuários, arenas e quadras ao mesmo tempo |
+| `/usuarios` | Tabela + cadastro + filtro por tipo + exclusão |
 | `/arenas` | Tabela com dono e nº de quadras + cadastro + exclusão |
 | `/quadras` | Tabela com arena + filtro por arena + cadastro + exclusão |
 | `/reservas` | Agenda com anti-overbooking, valor automático, confirmar/cancelar |
@@ -237,6 +242,25 @@ python docs/design/embutir-icones.py
   duas contas da mesma pessoa). O banco guarda **só os dígitos**; a máscara
   `000.000.000-00` é aplicada ao digitar, pelo `data-mascara` do campo, e a
   formatação para leitura acontece na tela.
+
+## Conferindo que tudo funciona
+
+Duas verificações, as duas sem subir servidor e sem tocar o banco de verdade:
+
+```bash
+python backend/verificar_api.py
+```
+
+Percorre a API de ponta a ponta num banco descartável — 77 verificações, das
+regras de negócio (anti-overbooking, valor calculado no servidor) às de
+privacidade (o CPF não aparece na busca, a senha não fica em texto puro).
+
+```bash
+python docs/design/verificar-identidade.py
+```
+
+Mede o contrato visual: 224 verificações de contraste, escala, grade,
+cor literal fora do `tokens.css`, emoji e a contagem de ícones.
 
 ## Como rodar
 

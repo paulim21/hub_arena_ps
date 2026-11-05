@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Gera docs/guia-backend.pdf — o guia do backend para a apresentação.
+"""Gera docs/guia-sistema.pdf — o guia do sistema para a apresentação.
 
 Não é dependência da aplicação: o ArenaHub roda sem isto. Para refazer o
 PDF depois de mexer no backend:
 
     pip install reportlab
-    python docs/gerar-guia-backend.py
+    python docs/gerar-guia-sistema.py
 
 Os números do documento (quantos Services, quantas procedures) são
 CONTADOS do código, não digitados: um guia que promete 18 procedures e
@@ -26,7 +26,8 @@ from reportlab.platypus import (BaseDocTemplate, Frame, KeepTogether, NextPageTe
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 BACK = os.path.join(RAIZ, "backend")
-SAIDA = os.path.join(RAIZ, "docs", "guia-backend.pdf")
+FRONT = os.path.join(RAIZ, "frontend")
+SAIDA = os.path.join(RAIZ, "docs", "guia-sistema.pdf")
 
 NAVY = colors.HexColor("#1B2A4A")
 AREIA = colors.HexColor("#EFD6B0")
@@ -80,9 +81,15 @@ def contar():
     procedures = re.findall(r"^-- PROCEDURE: (\S+)", sql, re.M)
     rotas = len(re.findall(r"add_url_rule", ler(BACK, "routes.py")))
 
+    telas = sorted(a for a in os.listdir(FRONT) if a.endswith(".html"))
+    scripts = sorted(a for a in os.listdir(os.path.join(FRONT, "js"))
+                     if a.endswith(".js"))
+    icones = len(re.findall(r'id="i-[a-z0-9-]+"',
+                            ler(FRONT, "img", "icones.svg")))
+
     return {"servicos": sorted(servicos), "controllers": controllers,
             "modelos": modelos, "repos": repos, "procedures": procedures,
-            "rotas": rotas}
+            "rotas": rotas, "telas": telas, "scripts": scripts, "icones": icones}
 
 
 DADOS = contar()
@@ -210,10 +217,10 @@ def construir():
     # ---------------- capa ----------------
     h.append(Spacer(1, 45 * mm))
     h.append(P("ArenaHub", "titulo"))
-    h.append(P("Guia do backend", "subtitulo"))
+    h.append(P("Guia do sistema", "subtitulo"))
     h.append(Spacer(1, 4 * mm))
-    h.append(P("O que cada camada faz, por que ela existe<br/>"
-               "e por onde passa cada uma das 24 funcionalidades.", "subtitulo"))
+    h.append(P("Backend, frontend e banco: o que cada peca faz, por que ela<br/>"
+               "existe, e por onde passa cada uma das 25 funcionalidades.", "subtitulo"))
     h.append(Spacer(1, 14 * mm))
 
     numeros = [
@@ -222,7 +229,7 @@ def construir():
         ("%d" % len(DADOS["servicos"]), "Services"),
         ("%d" % len(DADOS["repos"]), "Repositories"),
         ("%d" % len(DADOS["procedures"]), "Procedures"),
-        ("%d" % DADOS["rotas"], "Rotas"),
+        ("%d" % len(DADOS["telas"]), "Telas"),
     ]
     cels = [[Paragraph("<font size='17' color='#1B2A4A'><b>%s</b></font><br/>"
                        "<font size='7.5' color='#5C564C'>%s</font>" % (n, r),
@@ -433,9 +440,51 @@ def construir():
                       uso.get(p, "")] for p in DADOS["procedures"]],
                     [52 * mm, 118 * mm]))
 
-    # ---------------- 7. as 24 funcionalidades ----------------
+    # ---------------- 7. o banco ----------------
     h.append(PageBreak())
-    h.append(P("7. As 24 funcionalidades, de ponta a ponta", "h1"))
+    h.append(P("7. O banco de dados", "h1"))
+    h.append(P("SQLite, num arquivo unico: <font face='Courier'>backend/hub_arena.db</font>. "
+               "Ele e criado sozinho na primeira execucao e nao vai para o repositorio — "
+               "esta no .gitignore, porque banco com dado de gente dentro nao se versiona."))
+    h.append(tabela(["Tabela", "Colunas", "Chaves"],
+                    [["usuarios", "usuario_id, nome, email, cpf, senha, telefone, "
+                                  "tipo_usuario, data_criacao",
+                      "PK usuario_id; UNIQUE em email e cpf"],
+                     ["arenas", "arena_id, nome, cnpj, endereco, cidade, dono_id, "
+                                "taxa_saas, dia_vencimento",
+                      "PK arena_id; FK dono_id -> usuarios"],
+                     ["quadras", "quadra_id, arena_id, nome, tipo_esporte, preco_hora",
+                      "PK quadra_id; FK arena_id -> arenas"],
+                     ["reservas", "reserva_id, quadra_id, usuario_reserva_id, "
+                                  "data_hora_inicio, data_hora_fim, valor_total, status",
+                      "PK reserva_id; FK para quadras e usuarios"],
+                     ["reserva_jogadores", "reserva_id, usuario_id",
+                      "PK composta; FK para reservas (ON DELETE CASCADE) e usuarios"],
+                     ["consentimentos", "consentimento_id, identificador, versao_termos, "
+                                        "finalidades, aceito_em, revogado_em, origem_ip, agente",
+                      "PK consentimento_id; sem FK, de proposito"],
+                     ["procedures", "nome, sql",
+                      "PK nome. Guarda as %d procedures do sistema"
+                      % len(DADOS["procedures"])]],
+                    [32 * mm, 78 * mm, 60 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(caixa(
+        "A chave estrangeira do SQLite so vale se for ligada",
+        "O SQLite ignora FK por padrao, e so respeita se o PRAGMA foreign_keys estiver ON "
+        "<b>em cada conexao</b>. O app.py liga isso num evento de conexao do SQLAlchemy. E por "
+        "causa dele que excluir um dono com arena, uma arena com quadras ou uma quadra com "
+        "reservas e recusado pelo banco — e o Service traduz a recusa numa frase legivel.", NAVY))
+    h.append(Spacer(1, 4 * mm))
+    h.append(P("Por que as datas sao TEXT e nao DATETIME", "h2"))
+    h.append(P("O SQLite nao tem tipo de data: ele guarda texto, numero ou blob. As datas "
+               "ficam em texto no formato ISO (2026-12-05T19:00) porque esse formato "
+               "<b>ordena cronologicamente quando comparado como texto</b>. E isso que faz o "
+               "BETWEEN dos relatorios e a comparacao do anti-overbooking funcionarem sem "
+               "conversao."))
+
+    # ---------------- 8. as 25 funcionalidades ----------------
+    h.append(PageBreak())
+    h.append(P("8. As 25 funcionalidades, de ponta a ponta", "h1"))
     h.append(P("Cada linha e um caminho completo: tela, rota, Controller, Service e, quando "
                "ha consulta complexa, a procedure que o Repository executa."))
     func = [
@@ -479,6 +528,8 @@ def construir():
          "RevogarConsentimentoService", "-"),
         ("24", "Relatorio de consentimentos", "GET /api/consentimentos/relatorio",
          "RelatorioConsentimentosService", "sp_consentimentos_por_versao"),
+        ("25", "Busca global", "GET /api/busca", "BuscaGlobalService",
+         "sp_busca_usuarios + sp_busca_arenas + sp_busca_quadras"),
     ]
     h.append(tabela(["#", "Funcionalidade", "Rota", "Service", "Procedure"],
                     [[n, f,
@@ -488,9 +539,91 @@ def construir():
                      for n, f, r, s, p in func],
                     [8 * mm, 38 * mm, 42 * mm, 46 * mm, 36 * mm]))
 
-    # ---------------- 8. LGPD ----------------
+    # ---------------- 9. o frontend ----------------
     h.append(PageBreak())
-    h.append(P("8. O consentimento LGPD no backend", "h1"))
+    h.append(P("9. O frontend", "h1"))
+    h.append(P("HTML, CSS e JavaScript puro — sem framework e sem Jinja2. O servidor entrega "
+               "arquivos estaticos, e cada tela busca os proprios dados chamando a API por "
+               "fetch. Nenhuma pagina e montada no servidor."))
+    h.append(P("As %d telas" % len(DADOS["telas"]), "h2"))
+    telas = {
+        "index.html": ("/", "Visao geral: contadores animados, receita e atividade recente"),
+        "busca.html": ("/busca", "Busca global: um termo em usuarios, arenas e quadras"),
+        "usuarios.html": ("/usuarios", "Lista, filtro por tipo, cadastro e exclusao"),
+        "arenas.html": ("/arenas", "Lista com dono e numero de quadras, cadastro e exclusao"),
+        "quadras.html": ("/quadras", "Lista com filtro por arena, cadastro e exclusao"),
+        "reservas.html": ("/reservas", "Agenda, criacao com anti-overbooking, confirmar e cancelar"),
+        "relatorios.html": ("/relatorios", "Receita, ocupacao, ranking, disponibilidade, agenda e consentimentos"),
+        "termos.html": ("/termos", "Politica de privacidade completa, com revogacao do consentimento"),
+    }
+    h.append(tabela(["Arquivo", "Rota", "O que faz"],
+                    [[Paragraph("<font face='Courier' size='7.5'>%s</font>" % t, E["cel"]),
+                      Paragraph("<font face='Courier' size='7.5'>%s</font>"
+                                % telas.get(t, ("?", ""))[0], E["cel"]),
+                      telas.get(t, ("", "-"))[1]]
+                     for t in DADOS["telas"]],
+                    [34 * mm, 26 * mm, 110 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(P("Os %d arquivos de JavaScript, e a ordem em que carregam"
+               % len(DADOS["scripts"]), "h2"))
+    h.append(P("A ordem importa, e nao e detalhe: cada um envolve o anterior."))
+    h.append(tabela(["Arquivo", "Quando carrega", "Do que responde"],
+                    [["tema.js", "No <head>, SEM defer",
+                      "Escreve tema e densidade no HTML antes da primeira pintura. Com defer, "
+                      "a tela pisca clara antes de escurecer."],
+                     ["base.js", "Antes do script da pagina",
+                      "HubUI.api (o fetch), os icones, os <dialog>, os menus suspensos, o "
+                      "seletor de data, as mascaras de CPF/CNPJ/telefone e os formatos."],
+                     ["interface.js", "Depois do base.js",
+                      "Envolve o HubUI.api para acender a barra de progresso. Traz o esqueleto "
+                      "de carregamento e a paleta do Ctrl+K."],
+                     ["lgpd.js", "Por ultimo",
+                      "Envolve o HubUI.api de novo, por fora, para SEGURAR toda chamada ate "
+                      "existir consentimento. Por fora da barra, ela nao acende enquanto o "
+                      "aviso esta na tela: nao ha nada carregando, ha alguem lendo."]],
+                    [26 * mm, 36 * mm, 108 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(caixa(
+        "O frontend nao decide nada que valha dinheiro",
+        "Ele nao calcula valor de reserva, nao decide se um horario esta livre e nao valida "
+        "CPF sozinho. Tudo isso o servidor refaz. O que a tela faz e cuidar da experiencia: "
+        "mascara enquanto se digita, esqueleto no lugar do vazio, erro que espera ser lido."))
+
+    # ---------------- o sistema de design ----------------
+    h.append(PageBreak())
+    h.append(P("9.1 O sistema de design", "h1"))
+    h.append(P("A aparencia tambem tem regra escrita, e ela e verificada por maquina."))
+    h.append(tabela(["Arquivo", "Para que serve"],
+                    [["frontend/css/tokens.css",
+                      "TODOS os valores: cor, tamanho de texto, espacamento, raio, borda e "
+                      "duracao. Fora dele nao existe valor literal."],
+                     ["frontend/css/estilo.css",
+                      "So componentes. Nenhuma cor escrita a mao."],
+                     ["IDENTIDADE_VISUAL.md",
+                      "O porque de cada decisao, com as tabelas de contraste medidas pela "
+                      "formula da WCAG 2.1. Os numeros sao contrato."],
+                     ["docs/design/PADROES.md",
+                      "O como: o que ja existe, o que nao fazer, e as armadilhas que ja "
+                      "custaram correcao."],
+                     ["docs/design/verificar-identidade.py",
+                      "224 verificacoes: contraste de cada par, distancia de matiz entre "
+                      "sinal e marca, cor literal fora do tokens.css, escala de texto, grade "
+                      "de 4px, gradiente, emoji e a contagem de icones."]],
+                    [52 * mm, 118 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(P("Duas decisoes que aparecem em toda tela", "h2"))
+    h.append(P("<b>Nenhum emoji na interface.</b> Emoji e desenhado pela fonte do sistema: "
+               "muda de forma entre aparelhos, nao herda cor e nao aceita o peso do traco da "
+               "marca. No lugar vao %d icones em SVG, desenhados no mesmo peso."
+               % DADOS["icones"]))
+    h.append(P("<b>Navy escreve, areia e chao.</b> A cor da marca vem da logo. O azul escreve "
+               "(link, aba ativa, acao principal) e a areia e fundo (faixa, item escolhido). "
+               "Trocar os papeis quebra o contraste: a areia tem 1,25:1 contra o papel, e "
+               "sumiria como texto."))
+
+    # ---------------- 10. LGPD ----------------
+    h.append(PageBreak())
+    h.append(P("10. O consentimento LGPD", "h1"))
     h.append(P("O sistema nao abre antes do aceite: o frontend segura toda chamada a API ate "
                "existir consentimento. Mas a parte que importa para a defesa esta no backend."))
     h.append(tabela(["O que a lei pede", "Onde isso esta no codigo"],
@@ -516,7 +649,7 @@ def construir():
 
     # ---------------- 9. validacao e seguranca ----------------
     h.append(PageBreak())
-    h.append(P("9. Validacao e seguranca", "h1"))
+    h.append(P("11. Validacao e seguranca", "h1"))
     h.append(P("O arquivo <font face='Courier'>validadores.py</font> conhece a forma dos dados "
                "que tem forma. Ele fica fora dos Services de proposito: nao e caso de uso, e a "
                "forma do dado, e ela e a mesma para quem cadastra e para quem atualiza."))
@@ -546,7 +679,7 @@ def construir():
 
     # ---------------- 10. rodar e demonstrar ----------------
     h.append(PageBreak())
-    h.append(P("10. Como rodar e o que mostrar", "h1"))
+    h.append(P("12. Como rodar e o que mostrar", "h1"))
     h.append(P("Subir o projeto", "h2"))
     h.append(Paragraph(
         "python -m venv venv<br/>"
@@ -580,7 +713,7 @@ def construir():
 
     # ---------------- 11. perguntas ----------------
     h.append(PageBreak())
-    h.append(P("11. Perguntas provaveis, e o que responder", "h1"))
+    h.append(P("13. Perguntas provaveis, e o que responder", "h1"))
     perguntas = [
         ("Por que o Repository nao tem os metodos de CRUD?",
          "Porque o CRUD simples ja esta na Model, como a arquitetura da disciplina pede. "
@@ -608,6 +741,19 @@ def construir():
         ("E se o usuario mandar o valor da reserva pela API?",
          "E ignorado. O CriarReservaService nem le esse campo: ele calcula horas vezes o preco "
          "da quadra que esta no banco."),
+        ("Por que a busca tem uma tela so para ela?",
+         "Porque buscar e cadastrar sao intencoes diferentes, e dividiam a mesma pagina. "
+         "Separadas, a busca pode procurar em tudo — usuarios, arenas e quadras — em vez de "
+         "ficar presa ao recurso daquela tela. O BuscaGlobalService coordena as tres "
+         "procedures e devolve uma resposta so."),
+        ("Por que as datas sao texto no banco?",
+         "O SQLite nao tem tipo de data. Guardadas em ISO, elas ordenam cronologicamente "
+         "mesmo comparadas como texto, e e isso que faz o anti-overbooking e o BETWEEN dos "
+         "relatorios funcionarem sem conversao."),
+        ("O frontend nao deveria validar o CPF para poupar o servidor?",
+         "Ele ate ajuda com a mascara, mas validacao de verdade so vale no servidor: qualquer "
+         "pessoa pode chamar a API direto, sem passar pela tela. Validar nos dois lugares e "
+         "bom para a experiencia; validar so na tela e nao validar."),
     ]
     for q, r in perguntas:
         h.append(KeepTogether([P("<b>%s</b>" % q, "h2"), P(r)]))
@@ -623,7 +769,7 @@ def rodape(canvas, doc):
     canvas.setFont("Helvetica", 7.5)
     canvas.setFillColor(FRACA)
     if doc.page > 1:
-        canvas.drawString(20 * mm, 12 * mm, "ArenaHub - Guia do backend")
+        canvas.drawString(20 * mm, 12 * mm, "ArenaHub - Guia do sistema")
         canvas.drawRightString(190 * mm, 12 * mm, "%d" % doc.page)
         canvas.setStrokeColor(LINHA)
         canvas.setLineWidth(0.4)
@@ -635,7 +781,7 @@ def gerar():
     doc = BaseDocTemplate(SAIDA, pagesize=A4,
                           leftMargin=20 * mm, rightMargin=20 * mm,
                           topMargin=18 * mm, bottomMargin=20 * mm,
-                          title="ArenaHub - Guia do backend",
+                          title="ArenaHub - Guia do sistema",
                           author="ArenaHub")
     quadro = Frame(doc.leftMargin, doc.bottomMargin,
                    doc.width, doc.height, id="corpo")

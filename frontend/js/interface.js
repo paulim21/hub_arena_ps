@@ -197,7 +197,7 @@
     });
 
     documento.querySelectorAll('header .sessao-nav button').forEach(function (b) {
-      if (b.classList.contains('botao-busca')) return;  // seria uma porta para si mesma
+      if (b.classList.contains('botao-paleta')) return;  // seria uma porta para si mesma
       var nome = b.getAttribute('aria-label');
       if (!nome) return;
       var usa = b.querySelector('use');
@@ -232,9 +232,9 @@
     paleta.className = 'modal paleta';
     paleta.innerHTML =
       '<div class="paleta-campo">' +
-        HubUI.ico('i-busca') +
+        HubUI.ico('i-faisca') +
         '<input type="search" class="paleta-entrada" autocomplete="off" ' +
-          'placeholder="Buscar uma tela ou uma ação…" aria-label="Buscar">' +
+          'placeholder="Ir para uma tela ou executar uma ação…" aria-label="Ir para">' +
         '<kbd>Esc</kbd>' +
       '</div>' +
       '<div class="paleta-lista" role="listbox"></div>';
@@ -340,11 +340,15 @@
   });
 
   function ligarBotaoBusca() {
-    var btn = documento.querySelector('.botao-busca');
+    var btn = documento.querySelector('.botao-paleta');
     if (!btn) return;
-    btn.innerHTML = HubUI.ico('i-busca');
-    btn.setAttribute('aria-label', 'Buscar (Ctrl+K)');
-    btn.setAttribute('title', 'Buscar (Ctrl+K)');
+    // Raio, e nao lupa: a lupa agora e a busca de dados, em /busca.
+    // Dois simbolos iguais com destinos diferentes na mesma barra e o
+    // tipo de detalhe que faz a pessoa clicar no lugar errado duas vezes
+    // e desistir do atalho.
+    btn.innerHTML = HubUI.ico('i-faisca');
+    btn.setAttribute('aria-label', 'Ir para (Ctrl+K)');
+    btn.setAttribute('title', 'Ir para (Ctrl+K)');
     btn.addEventListener('click', abrirBusca);
   }
 

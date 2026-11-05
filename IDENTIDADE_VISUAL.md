@@ -1,9 +1,9 @@
 # Identidade visual do ArenaHub
 
 Este documento é o **porquê**. O **como** mora em
-[`docs/design/SKILL.md`](docs/design/SKILL.md), e os valores em
-[`frontend/css/tokens.css`](frontend/css/tokens.css). Quando este documento e a
-skill discordarem, **este manda** — e então a skill é corrigida.
+[`docs/design/PADROES.md`](docs/design/PADROES.md), e os valores em
+[`frontend/css/tokens.css`](frontend/css/tokens.css). Quando este documento e o
+guia discordarem, **este manda** — e então o guia é corrigido.
 
 As tabelas de contraste abaixo são **contrato**: o
 [`verificar-identidade.py`](docs/design/verificar-identidade.py) remede cada

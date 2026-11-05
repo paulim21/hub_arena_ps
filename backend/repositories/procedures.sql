@@ -204,3 +204,28 @@ SELECT versao_termos,
 FROM consentimentos
 GROUP BY versao_termos
 ORDER BY versao_termos DESC;
+
+-- PROCEDURE: sp_busca_arenas
+-- Busca textual de arenas por nome, cidade ou endereço (LIKE + JOIN com o
+-- dono + contagem de quadras). Parâmetros: :termo
+SELECT a.arena_id, a.nome, a.cidade, a.endereco, a.cnpj,
+       u.nome AS nome_dono,
+       (SELECT COUNT(*) FROM quadras q WHERE q.arena_id = a.arena_id) AS total_quadras
+FROM arenas a
+JOIN usuarios u ON u.usuario_id = a.dono_id
+WHERE a.nome     LIKE '%' || :termo || '%'
+   OR a.cidade   LIKE '%' || :termo || '%'
+   OR a.endereco LIKE '%' || :termo || '%'
+ORDER BY a.nome;
+
+-- PROCEDURE: sp_busca_quadras
+-- Busca textual de quadras pelo nome da quadra, pelo esporte ou pelo nome
+-- da arena a que pertencem (LIKE + JOIN). Parâmetros: :termo
+SELECT q.quadra_id, q.nome, q.tipo_esporte, q.preco_hora,
+       a.arena_id, a.nome AS nome_arena, a.cidade
+FROM quadras q
+JOIN arenas a ON a.arena_id = q.arena_id
+WHERE q.nome         LIKE '%' || :termo || '%'
+   OR q.tipo_esporte LIKE '%' || :termo || '%'
+   OR a.nome         LIKE '%' || :termo || '%'
+ORDER BY a.nome, q.nome;

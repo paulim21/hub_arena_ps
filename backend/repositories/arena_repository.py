@@ -8,6 +8,11 @@ class ArenaRepository:
         return executar_procedure("sp_arenas_por_cidade", {"cidade": cidade})
 
     @staticmethod
+    def buscar_por_termo(termo):
+        """Busca textual por nome, cidade ou endereço (procedure LIKE)."""
+        return executar_procedure("sp_busca_arenas", {"termo": termo})
+
+    @staticmethod
     def listar_com_dono():
         return executar_procedure("sp_arenas_com_dono")
 
