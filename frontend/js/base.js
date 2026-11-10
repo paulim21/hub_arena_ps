@@ -714,11 +714,10 @@ window.HubUI = (function () {
     if (e.key === 'Escape') { fecharDd(abertoDd); fecharDtp(abertoDtp); fecharMs(abertoMs); }
   });
 
-  /* ========================= cabeçalho: tema e densidade ========================= */
+  /* ========================= cabeçalho: o tema ========================= */
 
   function ligarPreferencias() {
     var btnTema = document.querySelector('.botao-tema');
-    var btnDens = document.querySelector('.botao-densidade');
 
     function pintarTema() {
       if (!btnTema || !window.HubTema) return;
@@ -727,17 +726,13 @@ window.HubUI = (function () {
       btnTema.setAttribute('aria-label', escuro ? 'Usar tema claro' : 'Usar tema escuro');
       btnTema.setAttribute('title', btnTema.getAttribute('aria-label'));
     }
-    function pintarDens() {
-      if (!btnDens || !window.HubTema) return;
-      var denso = window.HubTema.densidadeAtual() === 'compacto';
-      btnDens.innerHTML = ico(denso ? 'i-arejado' : 'i-denso');
-      btnDens.setAttribute('aria-label', denso ? 'Usar espaçamento arejado' : 'Usar espaçamento compacto');
-      btnDens.setAttribute('title', btnDens.getAttribute('aria-label'));
+    if (btnTema) {
+      btnTema.addEventListener('click', function () {
+        window.HubTema.alternar();
+        pintarTema();
+      });
     }
-
-    if (btnTema) btnTema.addEventListener('click', function () { window.HubTema.alternar(); pintarTema(); });
-    if (btnDens) btnDens.addEventListener('click', function () { window.HubTema.alternarDensidade(); pintarDens(); });
-    pintarTema(); pintarDens();
+    pintarTema();
   }
 
   if (document.readyState === 'loading') {

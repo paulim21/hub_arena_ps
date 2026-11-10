@@ -166,11 +166,9 @@ aos 720ms, porque ali o movimento é a informação. Quem pede
 **some**, em vez de congelar, porque um disco parado comunica menos que nenhum
 disco.
 
-**Densidade** é dimensão de primeira classe, com dois modos que **trocam**
-valores da grade (`--altura-controle` 40/32px, `--pad-celula` 12/8px e 16/12px)
-em vez de multiplicá-los: `.75` sobre a grade de 4px produziria 9px e 30px,
-medidas que não existem aqui. No celular a densidade não existe — lá o mínimo é
-a área de toque de 44px.
+**Altura e respiro** também saem da grade: `--altura-controle` tem 40px e a
+célula da tabela respira 12px em cima e 16px nos lados. No celular o mínimo
+passa a ser a área de toque de 44px.
 
 ---
 

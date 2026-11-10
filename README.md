@@ -93,9 +93,9 @@ frontend/
     index.html, usuarios.html, arenas.html, quadras.html, reservas.html, relatorios.html
     css/tokens.css          ← TODOS os valores da identidade (cor, texto, espaço)
     css/estilo.css          ← só componentes, nenhuma cor literal
-    js/tema.js              ← tema e densidade, antes da primeira pintura
+    js/tema.js              ← o tema, antes da primeira pintura
     js/base.js              ← fetch, ícones, <dialog>, menus e formatos
-    js/interface.js         ← esqueleto, barra de progresso e paleta do Ctrl+K
+    js/interface.js         ← esqueleto de carregamento e barra de progresso
     js/lgpd.js              ← o aviso de aceite que bloqueia o uso
     termos.html             ← a política de privacidade completa
     img/icones.svg          ← os 43 ícones em traço (a fonte do sprite)
@@ -160,20 +160,19 @@ O front-end tem um sistema de design documentado e **verificado por máquina**:
   trabalhar nele: o que já existe, o que não fazer, e as armadilhas conhecidas.
 
 A marca vem da logo: **navy escreve, a areia é chão**, sobre papel creme. Tema
-claro e escuro medidos separadamente, densidade confortável/compacta, foco
-visível de duas cores e 44px de área de toque no celular.
+claro e escuro medidos separadamente, foco visível de duas cores e 44px de
+área de toque no celular.
 
 A tela nunca fica em branco esperando o servidor: cada painel mostra um
 **esqueleto** com a estrutura do que vem, e uma barra de progresso acende no
-topo depois de 120ms. **Ctrl+K** abre uma paleta de navegação montada a partir
-do próprio menu da página.
+topo depois de 120ms.
 
 **Nenhum emoji na interface.** Emoji muda de forma entre aparelhos, não aceita
 o peso do traço da marca e não herda cor — no lugar dele vão os 43 ícones de
 [`frontend/img/icones.svg`](frontend/img/icones.svg), em `viewBox 24` e
 `stroke-width 1.8`.
 
-Para conferir que nada saiu do contrato (224 verificações):
+Para conferir que nada saiu do contrato (as verificações):
 
 ```bash
 python docs/design/verificar-identidade.py
@@ -251,16 +250,18 @@ Duas verificações, as duas sem subir servidor e sem tocar o banco de verdade:
 python backend/verificar_api.py
 ```
 
-Percorre a API de ponta a ponta num banco descartável — 77 verificações, das
-regras de negócio (anti-overbooking, valor calculado no servidor) às de
-privacidade (o CPF não aparece na busca, a senha não fica em texto puro).
+Percorre a API de ponta a ponta num banco descartável, das regras de negócio
+(anti-overbooking, valor calculado no servidor) às de privacidade (o CPF não
+aparece na busca, a senha não fica em texto puro). Ele imprime o total ao
+terminar.
 
 ```bash
 python docs/design/verificar-identidade.py
 ```
 
-Mede o contrato visual: 224 verificações de contraste, escala, grade,
-cor literal fora do `tokens.css`, emoji e a contagem de ícones.
+Mede o contrato visual: contraste de cada par, escala de texto, grade de
+4px, cor literal fora do `tokens.css`, emoji e a contagem de ícones. Ele
+imprime quantas verificações fez ao terminar.
 
 ## Como rodar
 

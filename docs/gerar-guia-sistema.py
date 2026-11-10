@@ -569,14 +569,14 @@ def construir():
     h.append(P("A ordem importa, e nao e detalhe: cada um envolve o anterior."))
     h.append(tabela(["Arquivo", "Quando carrega", "Do que responde"],
                     [["tema.js", "No <head>, SEM defer",
-                      "Escreve tema e densidade no HTML antes da primeira pintura. Com defer, "
-                      "a tela pisca clara antes de escurecer."],
+                      "Escreve o tema no HTML antes da primeira pintura. Com defer, a tela "
+                      "piscaria clara antes de escurecer, na cara de quem ja esta lendo."],
                      ["base.js", "Antes do script da pagina",
                       "HubUI.api (o fetch), os icones, os <dialog>, os menus suspensos, o "
                       "seletor de data, as mascaras de CPF/CNPJ/telefone e os formatos."],
                      ["interface.js", "Depois do base.js",
-                      "Envolve o HubUI.api para acender a barra de progresso. Traz o esqueleto "
-                      "de carregamento e a paleta do Ctrl+K."],
+                      "Envolve o HubUI.api para acender a barra de progresso, e traz o "
+                      "esqueleto de carregamento."],
                      ["lgpd.js", "Por ultimo",
                       "Envolve o HubUI.api de novo, por fora, para SEGURAR toda chamada ate "
                       "existir consentimento. Por fora da barra, ela nao acende enquanto o "
@@ -606,9 +606,10 @@ def construir():
                       "O como: o que ja existe, o que nao fazer, e as armadilhas que ja "
                       "custaram correcao."],
                      ["docs/design/verificar-identidade.py",
-                      "224 verificacoes: contraste de cada par, distancia de matiz entre "
-                      "sinal e marca, cor literal fora do tokens.css, escala de texto, grade "
-                      "de 4px, gradiente, emoji e a contagem de icones."]],
+                      "Mede o contrato: contraste de cada par, distancia de matiz entre sinal "
+                      "e marca, cor literal fora do tokens.css, escala de texto, grade de "
+                      "4px, gradiente, emoji e a contagem de icones. Imprime quantas "
+                      "verificacoes fez ao terminar."]],
                     [52 * mm, 118 * mm]))
     h.append(Spacer(1, 4 * mm))
     h.append(P("Duas decisoes que aparecem em toda tela", "h2"))

@@ -117,24 +117,14 @@
   --mov-fecha: var(--d-rapido) var(--c-sai);
   --mov-modal: var(--d-calmo) var(--c-mola);
 
-  /* ---------- Densidade: dimensão de primeira classe ----------
-     Não é multiplicador: .75 sobre a grade de 4px produziria 9px e
-     30px, medidas que não existem aqui. Os dois modos TROCAM valores. */
-  --densidade: 1;
+  /* ---------- Altura dos controles e respiro da tabela ----------
+     Saem da grade de 4px como todo o resto: 40px é dez passos, e a
+     célula respira 12px em cima e 16px nos lados. */
   --altura-controle: 40px;
   --altura-linha-tabela: 52px;
   --pad-celula-y: var(--e-3);
   --pad-celula-x: var(--e-4);
 }
-
-:root[data-densidade="compacto"] {
-  --densidade: .75;
-  --altura-controle: 32px;
-  --altura-linha-tabela: 40px;
-  --pad-celula-y: var(--e-2);
-  --pad-celula-x: var(--e-3);
-}
-
 /* =====================================================================
    2. O aparelho decide — protegido para o botão poder vencer
    ===================================================================== */

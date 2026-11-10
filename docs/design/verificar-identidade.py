@@ -44,6 +44,7 @@ DOCUMENTO = os.path.join(RAIZ, "IDENTIDADE_VISUAL.md")
 TOLERANCIA = 0.02
 
 falhas = []
+feitas = 0
 
 
 def titulo(texto):
@@ -53,6 +54,8 @@ def titulo(texto):
 
 
 def conferir(nome, condicao, detalhe=""):
+    global feitas
+    feitas += 1
     if condicao:
         print(f"  ok   {nome}")
     else:
@@ -388,9 +391,9 @@ for arquivo in sorted(os.listdir(JS)):
 # ===================================================================
 titulo("8. ESCALA DE TEXTO E GRADE DE ESPAÇAMENTO")
 
-# Os tokens de densidade entram aqui como espacamento legitimo PORQUE a
-# verificacao logo abaixo confere que eles proprios saem da grade, nos
-# dois modos. Liberar o nome sem conferir o valor seria abrir um buraco.
+# Os tokens --pad-celula entram aqui como espacamento legitimo PORQUE a
+# verificacao logo abaixo confere que eles proprios saem da grade.
+# Liberar o nome sem conferir o valor seria abrir um buraco.
 UNIDADE = (r"var\(--e-[1-9]\)|var\(--pad-celula-[xy]\)|calc\([^;]*\)|"
            r"max\([^;]*\)|min\([^;]*\)|clamp\([^;]*\)|env\([^;]*\)|0")
 ESPACO_OK = re.compile(
@@ -417,23 +420,27 @@ for arquivo in outros_css:
     conferir(f"{arquivo}: todo espaçamento sai da grade de 4px",
              not fora_da_grade, "; ".join(sorted(set(fora_da_grade))[:5]))
 
-# A densidade troca valores da grade em vez de multiplica-los: e isso que
-# permite que ela exista sem inventar medida. Conferido nos DOIS modos —
-# um compacto que saia da grade estraga a grade inteira de quem o escolher.
-for rotulo_d, seletor in (("confortável", ":root"),
-                          ("compacto", ':root[data-densidade="compacto"]')):
-    corpo_d = bloco(seletor)
-    densidade = dict(re.findall(r"--([a-z0-9-]+):\s*([^;]+);",
-                                re.sub(r"/\*.*?\*/", "", corpo_d, flags=re.S)))
-    for nome in ("pad-celula-y", "pad-celula-x"):
-        valor = (densidade.get(nome) or "").strip()
-        conferir(f"[{rotulo_d}] --{nome} sai da grade de 4px",
-                 bool(re.fullmatch(r"var\(--e-[1-9]\)", valor)), f"vale {valor!r}")
-    altura = (densidade.get("altura-controle") or "").strip()
-    casa = re.fullmatch(r"(\d+)px", altura)
-    conferir(f"[{rotulo_d}] --altura-controle é múltiplo de 4px",
-             bool(casa) and int(casa.group(1)) % 4 == 0, f"vale {altura!r}")
+# A altura dos controles e o respiro da célula também saem da grade de 4px.
+# Já existiu um modo compacto, com um segundo conjunto desses valores; ele
+# foi removido junto com o botão que o ligava, porque medida que ninguém
+# alcança é medida que ninguém conserta quando quebra.
+corpo_medidas = bloco(":root")
+medidas = dict(re.findall(r"--([a-z0-9-]+):\s*([^;]+);",
+                            re.sub(r"/\*.*?\*/", "", corpo_medidas, flags=re.S)))
+for nome in ("pad-celula-y", "pad-celula-x"):
+    valor = (medidas.get(nome) or "").strip()
+    conferir(f"--{nome} sai da grade de 4px",
+             bool(re.fullmatch(r"var\(--e-[1-9]\)", valor)), f"vale {valor!r}")
+altura = (medidas.get("altura-controle") or "").strip()
+casa = re.fullmatch(r"(\d+)px", altura)
+conferir("--altura-controle é múltiplo de 4px",
+         bool(casa) and int(casa.group(1)) % 4 == 0, f"vale {altura!r}")
 
+# A borda é --b (1,5px), nunca 1px: é o peso do traço do monograma. Esta
+# verificação vivia DENTRO de um laço e, por isso, só olhava o
+# último arquivo da lista. Agora olha todos.
+for arquivo in outros_css:
+    sem_comentario = re.sub(r"/\*.*?\*/", "", ler(os.path.join(CSS, arquivo)), flags=re.S)
     conferir(f"{arquivo}: a borda é --b (1,5px), nunca 1px",
              not re.search(r"border(-[a-z]+)?:\s*(1px|[^;}]*\s1px\s)", sem_comentario),
              "achei border de 1px")
@@ -543,8 +550,9 @@ for pasta, _subs, arquivos in os.walk(FRONT):
                  ", ".join(faltando))
 
 # ===================================================================
-titulo("A IDENTIDADE VISUAL ESTÁ ÍNTEGRA" if not falhas
-       else f"{len(falhas)} VERIFICAÇÃO(ÕES) DE IDENTIDADE FALHARAM")
+titulo(f"A IDENTIDADE VISUAL ESTÁ ÍNTEGRA — {feitas} verificações"
+       if not falhas
+       else f"{len(falhas)} de {feitas} VERIFICAÇÕES DE IDENTIDADE FALHARAM")
 if falhas:
     for nome in falhas:
         print(f"  - {nome}")

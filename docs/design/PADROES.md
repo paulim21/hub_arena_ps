@@ -124,9 +124,8 @@ porque ali o movimento é a informação. Os quatro nomes antigos (`--mov-cor`,
 `--mov-abre`, `--mov-fecha`, `--mov-modal`) continuam, montados a partir
 destes.
 
-**Densidade** é dimensão de primeira classe: `--densidade` (1, ou .75 em
-`[data-densidade="compacto"]`), `--altura-controle`, `--altura-linha-tabela`,
-`--pad-celula`.
+**Altura e respiro** saem da mesma grade: `--altura-controle` (40px),
+`--altura-linha-tabela`, `--pad-celula-y` e `--pad-celula-x`.
 
 ---
 
@@ -199,20 +198,7 @@ no celular, com `data-rotulo` em cada `td`) · `.lista` + `.item`
   120ms de atraso para resposta rápida não virar lampejo. Ela conta as
   chamadas em voo, porque a página dispara várias em paralelo e a barra tem
   que esperar a última. O estado vai em `data-estado`, nunca em style.
-- `HubUI.abrirBusca()` — a paleta do **Ctrl+K**, montada **a cada abertura** a
-  partir do próprio menu da página: ela nunca oferece um lugar que a página
-  não oferece. Leva também o que a página **faz** (tema, densidade), em
-  grupos, com o trecho casado realçado — e a busca ignora acento, então
-  "relatorios" acha "Relatórios". Toda ação dali **aciona um botão que já
-  existe no cabeçalho**: a paleta é caminho de teclado, nunca uma porta que só
-  ela abre. É por isso que o item de tema se renomeia sozinho depois do
-  clique — ele relê o `aria-label` do botão.
 
-  **Não tem grupo "Recentes", e não deve ganhar um.** Ele existiu: com 6
-  destinos e 2 ações, repetia no topo itens visíveis logo abaixo — "Reservas"
-  duas vezes — e ainda empurrava o resto para fora da tela. Recência só se
-  paga quando a lista não cabe. Se um dia a paleta passar de umas 15 linhas,
-  aí vale reabrir a conversa.
 - `HubUI.toast(mensagem, tipo)` — o que deu certo some em 4s; **o que deu
   errado só some no clique**, porque erro que desaparece sozinho é erro que
   ninguém leu.
@@ -227,12 +213,11 @@ De `frontend/js/base.js`: `api`, `esc`, `moeda`, `dataHora`, `telefone`,
 **Não existe `alert()` neste projeto** — use `HubUI.informar`/`confirmar`,
 que são `<dialog>` com véu no `::backdrop`.
 
-De `frontend/js/tema.js`: `HubTema.atual`, `alternar`, `densidadeAtual`,
-`alternarDensidade`.
+De `frontend/js/tema.js`: `HubTema.atual` e `HubTema.alternar`.
 
-De `frontend/js/interface.js`: `esqueleto`, `esperando`, `abrirBusca`. Ele
-carrega **depois** do `base.js` e **antes** do script da página, porque
-envolve o `HubUI.api` para acender a barra.
+De `frontend/js/interface.js`: `esqueleto` e `esperando`. Ele carrega
+**depois** do `base.js` e **antes** do script da página, porque envolve o
+`HubUI.api` para acender a barra.
 
 **Ainda NÃO existe** — e o documento não promete o que não foi construído:
 o `painel.css`. Se for construído, entra aqui **e** no
@@ -268,8 +253,7 @@ tela, as duas ficam em traço — é o que acontece em relatórios (cinco painé
 mesmo peso) e na aba de marcar horário (marcar e fechar são pedidos igualmente
 legítimos).
 
-Era o contrário, e o avesso mordeu três vezes: item da busca do Ctrl+K, item da
-paleta de destinos e palpite de e-mail no cadastro — sempre um botão nascendo
+Era o contrário, e o avesso mordeu mais de uma vez — sempre um botão nascendo
 cheio e esticado onde cabia uma linha de lista.
 
 **Não recrie o que a inversão apagou.** `.secundario` não existe mais: ela
@@ -349,9 +333,8 @@ Abaixo de 720px, `button`, `.botao-menor`, `a.botao-link`, `.dd-gatilho`,
 
 ### `tema.js` no `<head>` **sem `defer`**
 Ele escreve no `<html>` tudo que precisa existir **antes da primeira pintura**:
-o tema e a densidade. O nome é histórico. Com `defer`, a tela pisca branca
-antes de escurecer e a tabela nasce larga e encolhe na cara de quem já está
-lendo. Qualquer escolha nova que mude o layout entra aqui, não no `base.js`.
+o tema. Com `defer`, a tela piscaria branca antes de escurecer, na cara de
+quem já está lendo. Qualquer escolha nova que mude o layout entra aqui, não no `base.js`.
 
 ### `overflow-x: hidden` quebra `position: sticky`
 `hidden` faz do elemento um **contêiner de rolagem**, e contêiner de rolagem
@@ -361,16 +344,6 @@ tempo e nunca tinha grudado: rolando a política de privacidade, ele ficava em
 corta igual sem criar contêiner. Se você precisar esconder estouro em volta de
 algo grudento, é `clip`.
 
-### Densidade: dois modos, e eles TROCAM valores da grade
-`--altura-controle` (40/32px) e `--pad-celula-y|x` (12/8px, 16/12px) mudam em
-`:root[data-densidade="compacto"]`. Densidade **não** é multiplicador: `.75`
-sobre a grade de 4px produz 9px e 30px, medidas que não existem aqui. O
-verificador confere os dois modos.
-
-Quem escreve o atributo é o `tema.js`, antes da primeira pintura. No celular a
-densidade não existe — lá o mínimo é a área de toque de 44px —, e o botão some
-por `.sessao-nav .botao-densidade`, com o seletor completo pelo motivo da
-armadilha logo acima.
 
 ### `prefers-reduced-motion: reduce`
 Quem pediu menos movimento recebe menos movimento — e o arco girando **some**
@@ -401,9 +374,9 @@ Eles compartilham a estrutura e os números que importam, não os valores.
 | `IDENTIDADE_VISUAL.md` | o porquê de cada decisão, e as tabelas de contraste |
 | `frontend/css/tokens.css` | todos os valores, com o contraste no comentário |
 | `frontend/css/estilo.css` | só componentes — **nenhuma cor literal** |
-| `frontend/js/tema.js` | tema e densidade, no `<head>` sem `defer` |
+| `frontend/js/tema.js` | o tema, no `<head>` sem `defer` |
 | `frontend/js/base.js` | `api`, `<dialog>`, formatos, `ico`, `arco`, `melhorar` |
-| `frontend/js/interface.js` | esqueleto, barra de progresso e a paleta do Ctrl+K |
+| `frontend/js/interface.js` | esqueleto de carregamento e barra de progresso |
 | `frontend/img/icones.svg` | os 43 ícones em traço (a fonte) |
 | `frontend/img/logo.png` · `logo-escuro.png` | o logotipo da marca, uma versão por tema — o navy do "Arena" sumiria no fundo escuro |
 | `frontend/img/favicon.svg` | o monograma. É o **único** arquivo com cor literal fora do `tokens.css`, porque é servido solto, fora do CSS |
@@ -418,7 +391,7 @@ Eles compartilham a estrutura e os números que importam, não os valores.
 python docs/design/verificar-identidade.py
 ```
 
-224 verificações, e todas passam hoje: o contraste de cada par das tabelas, remedido — inclusive os
+O que ele mede: o contraste de cada par das tabelas, remedido — inclusive os
 véus translúcidos, **compostos sobre cada superfície antes de medir**, que é a
 cor que o olho vê; o contraste
 anotado em cada comentário do `tokens.css`; os três pares que são **proibidos**

@@ -264,7 +264,7 @@ button.sucesso { color: var(--sucesso); border-color: var(--sucesso); }
   font-size: var(--t-rotulo);
 }
 
-.botao-tema, .botao-densidade, .botao-paleta {
+.botao-tema {
   min-height: var(--altura-controle);
   width: var(--altura-controle);
   padding: 0;
@@ -850,7 +850,6 @@ tbody tr:hover td { background: var(--marca-traco); }
   input, select, textarea { min-height: 44px; }
 
   form.painel { grid-template-columns: 1fr; }
-  .sessao-nav .botao-densidade { display: none; }
 
   /* a tabela vira lista, com o rótulo em cada célula */
   .tabela-responsiva thead { display: none; }
@@ -978,168 +977,6 @@ tbody tr:hover td { background: var(--marca-traco); }
   width: 100%;
   opacity: 0;
   transition: width var(--d-rapido) var(--c-entra), opacity var(--d-medio) var(--c-sai);
-}
-
-/* ---------------- a paleta do Ctrl+K ---------------- */
-
-.paleta {
-  max-width: 560px;
-  width: calc(100% - var(--e-6));
-  padding: 0;
-  overflow: hidden;
-}
-.paleta-campo {
-  display: flex;
-  align-items: center;
-  gap: var(--e-3);
-  padding: var(--e-4) var(--e-5);
-  border-bottom: var(--b) solid var(--linha);
-  color: var(--tinta-fraca);
-}
-.paleta-entrada {
-  flex: 1;
-  min-height: auto;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--tinta);
-  font-size: var(--t-corpo);
-}
-.paleta-entrada:focus-visible { outline: 0; box-shadow: none; }
-.paleta-entrada::-webkit-search-cancel-button { display: none; }
-.paleta-campo kbd {
-  padding: var(--e-1) var(--e-2);
-  border: var(--b) solid var(--linha-forte);
-  border-radius: var(--r-interno);
-  color: var(--tinta-fraca);
-  font-family: var(--fonte-mono);
-  font-size: var(--t-rotulo);
-}
-
-.paleta-lista { max-height: 50vh; overflow-y: auto; padding: var(--e-2); }
-.paleta-grupo { display: grid; gap: var(--e-1); padding: var(--e-2) 0; }
-.paleta-grupo > .rotulo { padding: 0 var(--e-3); }
-
-.paleta-item {
-  display: flex;
-  align-items: center;
-  /* a base do button centraliza o conteúdo; item de lista alinha à
-     esquerda, senão o nome dança conforme o tamanho da palavra */
-  justify-content: flex-start;
-  gap: var(--e-3);
-  width: 100%;
-  justify-self: stretch;
-  min-height: var(--altura-controle);
-  padding: 0 var(--e-3);
-  border: 0;
-  border-radius: var(--r-interno);
-  background: transparent;
-  color: var(--tinta);
-  font-size: var(--t-apoio);
-  font-weight: 400;
-  text-align: left;
-}
-.paleta-item .ico { color: var(--tinta-fraca); }
-.paleta-item.focado { background: var(--marca-traco); }
-.paleta-item.focado .ico { color: var(--marca); }
-.paleta-item mark {
-  background: var(--marca-fundo);
-  color: var(--tinta);
-  border-radius: var(--r-interno);
-}
-.paleta-aqui {
-  margin-left: auto;
-  padding: 0 var(--e-2);
-  border: var(--b) solid var(--linha);
-  border-radius: var(--r-selo);
-  color: var(--tinta-fraca);
-  font-size: var(--t-rotulo);
-}
-.paleta .vazio { padding: var(--e-6) var(--e-5); }
-
-@media (max-width: 720px) {
-  .paleta-item { min-height: 44px; }
-  .paleta-campo kbd { display: none; }
-}
-
-/* =====================================================================
-   Consentimento LGPD (frontend/js/lgpd.js e frontend/termos.html)
-   ===================================================================== */
-
-/* O aviso de aceite é A sobreposição da tela: ninguém chega a ver outra
-   enquanto ele estiver aberto, porque nada carrega antes do aceite. */
-.modal-lgpd { max-width: 560px; }
-
-.lgpd-finalidades {
-  display: grid;
-  gap: var(--e-3);
-  margin: var(--e-4) 0;
-  padding: 0;
-  list-style: none;
-}
-.lgpd-finalidades li {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--e-3);
-  align-items: start;
-  padding: var(--e-3);
-  border: var(--b) solid var(--linha);
-  border-radius: var(--r-interno);
-}
-.lgpd-finalidades .ico { color: var(--sucesso); }
-.lgpd-finalidades li > div { display: grid; gap: var(--e-1); justify-items: start; }
-.lgpd-finalidades strong { font-size: var(--t-apoio); }
-/* O selo nasce em caixa de título, que serve para "Confirmada" e erra em
-   citação legal: "Execução De Contrato". Aqui o texto é uma frase. */
-.lgpd-finalidades .selo, .prosa .selo, td .selo.base-legal { text-transform: none; }
-
-/* O rótulo é grid neste sistema, então a caixa e o texto são duas
-   colunas — e a caixa não pode esticar para a altura do parágrafo. */
-.caixa-aceite { align-items: start; }
-.caixa-aceite input { margin-top: var(--e-1); }
-.caixa-aceite span { font-size: var(--t-apoio); }
-
-/* texto corrido dentro de um painel que, por padrão, é só tabela */
-.prosa {
-  display: grid;
-  gap: var(--e-3);
-  padding: 0 var(--e-5) var(--e-5);
-  font-size: var(--t-apoio);
-  max-width: 76ch;
-}
-.prosa p { color: var(--tinta-fraca); }
-.prosa strong { color: var(--tinta); }
-
-.lista-direitos {
-  display: grid;
-  gap: var(--e-2);
-  margin: 0;
-  padding-left: var(--e-5);
-  color: var(--tinta-fraca);
-}
-
-.definicoes {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--e-2) var(--e-4);
-  margin: 0;
-  align-items: baseline;
-}
-.definicoes dt {
-  font-size: var(--t-rotulo);
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--tinta-fraca);
-}
-.definicoes dd { margin: 0; color: var(--tinta); }
-
-#bloco-consentimento { display: grid; gap: var(--e-4); }
-#bloco-consentimento .prosa { padding: 0; }
-
-@media (max-width: 720px) {
-  .definicoes { grid-template-columns: 1fr; gap: var(--e-1); }
-  .definicoes dd { margin-bottom: var(--e-3); }
 }
 
 /* ---------------- a tela de busca ---------------- */

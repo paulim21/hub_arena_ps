@@ -1,11 +1,9 @@
 /* =====================================================================
    tema.js — vai no <head> SEM defer, de propósito.
 
-   Ele escreve no <html> tudo que precisa existir ANTES da primeira
-   pintura: o tema e a densidade. Com defer, a tela pisca clara antes de
-   escurecer e a tabela nasce larga e encolhe na cara de quem já está
-   lendo. Qualquer escolha nova que mude o layout entra aqui, não no
-   base.js.
+   Ele escreve no <html> o tema ANTES da primeira pintura. Com defer, a
+   tela piscaria clara antes de escurecer, na cara de quem já está lendo.
+   Qualquer escolha nova que mude o layout entra aqui, não no base.js.
 
    O aparelho decide por padrão (prefers-color-scheme); o atributo só
    aparece quando a pessoa escolheu — e aí vence nos dois sentidos.
@@ -15,7 +13,6 @@
 
   var RAIZ = documento.documentElement;
   var CHAVE_TEMA = 'arenahub:tema';
-  var CHAVE_DENSIDADE = 'arenahub:densidade';
 
   function lembrado(chave) {
     try {
@@ -37,14 +34,8 @@
     else RAIZ.removeAttribute('data-tema');
   }
 
-  function aplicarDensidade(densidade) {
-    if (densidade === 'compacto') RAIZ.setAttribute('data-densidade', 'compacto');
-    else RAIZ.removeAttribute('data-densidade');
-  }
-
   /* ---- antes da primeira pintura ---- */
   aplicarTema(lembrado(CHAVE_TEMA));
-  aplicarDensidade(lembrado(CHAVE_DENSIDADE));
 
   function temaAtual() {
     var escolhido = RAIZ.getAttribute('data-tema');
@@ -60,15 +51,6 @@
       aplicarTema(novo);
       guardar(CHAVE_TEMA, novo);
       return novo;
-    },
-    densidadeAtual: function () {
-      return RAIZ.getAttribute('data-densidade') === 'compacto' ? 'compacto' : 'arejado';
-    },
-    alternarDensidade: function () {
-      var novo = RAIZ.getAttribute('data-densidade') === 'compacto' ? '' : 'compacto';
-      aplicarDensidade(novo);
-      guardar(CHAVE_DENSIDADE, novo);
-      return novo || 'arejado';
     }
   };
 })(window, document);
