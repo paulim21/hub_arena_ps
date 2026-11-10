@@ -516,7 +516,15 @@ window.HubUI = (function () {
       var el = document.createElement('div');
       el.className = 'dtp-item' + (ativo ? ' selecionado' : '');
       el.textContent = texto;
-      el.addEventListener('click', aoClicar);
+      el.addEventListener('click', function (e) {
+        // O clique para AQUI, como já parava na célula de dia. Sem isto
+        // ele chega ao documento depois que renderTempo() recriou a
+        // coluna: o nó clicado já não existe, o teste de "clicou fora"
+        // dá positivo e o seletor fecha — escolher a hora fechava o
+        // painel antes de dar para escolher o minuto.
+        e.stopPropagation();
+        aoClicar();
+      });
       col.appendChild(el);
     }
 
@@ -638,6 +646,10 @@ window.HubUI = (function () {
       el.innerHTML = '<span class="ms-caixa">' + ico('i-ok') + '</span><span></span>';
       el.lastChild.textContent = nome;
       el.addEventListener('click', function (e) {
+        // preventDefault cancela a ativação que um <label> ancestral
+        // faria sobre o seu primeiro controle; stopPropagation sozinho
+        // não cobre isso, porque a ativação é ação PADRÃO, não bolha.
+        e.preventDefault();
         e.stopPropagation();
         cb.checked = !cb.checked;
         el.classList.toggle('marcado', cb.checked);
@@ -706,6 +718,12 @@ window.HubUI = (function () {
 
   /* fecha o que estiver aberto ao clicar fora, ou no Esc */
   document.addEventListener('click', function (e) {
+    /* Um nó que saiu do documento durante este mesmo clique não é um
+       clique fora: é um painel que se redesenhou por causa do clique, e
+       levou junto o elemento clicado. Testar `contains` nele devolve
+       falso e fecharia o que a pessoa acabou de usar. */
+    if (!e.target.isConnected) return;
+
     if (abertoDd && !abertoDd.contains(e.target)) fecharDd(abertoDd);
     if (abertoDtp && !abertoDtp.contains(e.target)) fecharDtp(abertoDtp);
     if (abertoMs && !abertoMs.contains(e.target)) fecharMs(abertoMs);

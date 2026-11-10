@@ -324,14 +324,14 @@
                   HubUI.esc(q.nome_arena) + ' (' + HubUI.moeda(q.preco_hora) + '/h)</option>';
               }).join('') +
             '</select></label>' +
-          '<label><span class="rotulo">Quem vai jogar</span>' +
+          '<div class="campo"><span class="rotulo">Quem vai jogar</span>' +
             '<div class="multi-sel" data-placeholder="Selecione os jogadores…">' +
               usuarios.map(function (u) {
                 return '<label class="multi-sel-item">' +
                   '<input type="checkbox" name="jogadores" value="' + u.usuario_id + '">' +
                   '<span>' + HubUI.esc(u.nome) + '</span></label>';
               }).join('') +
-            '</div></label>' +
+            '</div></div>' +
           '<label><span class="rotulo">Início</span>' +
             '<input name="data_hora_inicio" type="datetime-local" required></label>' +
           '<label><span class="rotulo">Fim</span>' +

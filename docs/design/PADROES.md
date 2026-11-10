@@ -300,6 +300,35 @@ Dois detalhes que não se adivinham:
   por isso "Quem vai jogar" era o único rótulo do sistema em minúsculas. É
   `.rotulo`, como todos os outros.
 
+### Redesenhar durante o clique quebra o teste de "clicou fora"
+
+O fechamento ao clicar fora compara `e.target` com o painel aberto. Se o
+handler do item **recriar** a lista antes de o evento chegar ao documento, o nó
+clicado já não está no documento: `contains` devolve falso, e o painel fecha
+justamente porque foi usado.
+
+Foi o que acontecia no seletor de data: escolher a hora rodava `renderTempo()`,
+que refaz as duas colunas — e o painel fechava antes de dar para escolher o
+minuto. A célula de dia não sofria porque o handler dela já chamava
+`stopPropagation()`.
+
+Hoje há duas defesas: o item de hora e minuto também para o clique, e o
+listener do documento ignora alvo com `isConnected === false`. Um nó que saiu
+do documento durante o próprio clique não é um clique fora.
+
+### Multi-select dentro de `<label>` fecha sozinho
+
+Clicar em qualquer lugar de um `<label>` faz o navegador **reenviar o clique
+ao primeiro controle dele**. Com o `.multi-sel` embrulhado num rótulo, esse
+controle era o `.ms-gatilho` — então marcar uma opção abria e fechava o painel
+alternadamente. Os chips apareciam certos, o que escondeu o defeito por um
+tempo.
+
+Um multi-select não é **um** controle, então não leva `<label>`: use
+`.campo`, que tem o mesmo desenho. E `stopPropagation()` sozinho não resolve,
+porque a reativação é **ação padrão**, não propagação — precisa de
+`preventDefault()`.
+
 ### `display: inline` não funciona em `<button>`
 O navegador blocifica controle de formulário de qualquer jeito, e a propriedade
 é ignorada **em silêncio**: a regra parece não ter sido aplicada, mas foi.

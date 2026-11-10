@@ -437,8 +437,12 @@ form.painel > .linha-cheia { grid-column: 1 / -1; }
   gap: var(--e-4);
 }
 
-/* o label é GRID — todo botão dentro dele precisa de justify-self */
-label {
+/* o label é GRID — todo botão dentro dele precisa de justify-self.
+   `.campo` é o mesmo desenho para o que NÃO é um controle só: um
+   multi-select dentro de <label> faz o navegador reenviar o clique ao
+   primeiro controle do rótulo, que ali é o botão que abre o painel — e
+   o painel fechava a cada opção marcada. */
+label, .campo {
   display: grid;
   gap: var(--e-2);
   align-content: start;
