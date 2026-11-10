@@ -1,6 +1,6 @@
 """Runner de procedures — o "CALL" da camada Repository.
 
-As procedures ficam gravadas na tabela `procedures` do banco
+As procedures ficam gravadas na procedure do banco
 (registradas na subida do servidor a partir de `procedures.sql`).
 Este módulo busca o SQL pelo nome e o executa com os parâmetros
 nomeados (:nome) via SQLAlchemy, devolvendo dicts prontos para o Service.

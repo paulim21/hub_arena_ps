@@ -1,4 +1,4 @@
-"""Controller — Busca (classe ligada ao recurso /api/busca).
+"""Controller de Busca (classe ligada ao recurso /api/busca).
 
 Recebe a requisição, chama o Service e devolve a resposta. As rotas que
 apontam para esta classe ficam em `routes.py`.

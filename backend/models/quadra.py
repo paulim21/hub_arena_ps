@@ -1,4 +1,4 @@
-"""Model — Quadra: entidade do domínio + CRUD básico (herda de db.Model)."""
+"""Model — Quadra: entidade do domínio + CRUD básico do db model."""
 from extensions import db
 
 

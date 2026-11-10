@@ -44,7 +44,7 @@ class Consentimento(db.Model):
     def agora():
         return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
-    # ---------- CRUD básico (na própria Model) ----------
+    # ---------- CRUD básico  ----------
 
     def salvar(self):
         db.session.add(self)

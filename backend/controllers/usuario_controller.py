@@ -1,8 +1,8 @@
 """Controller — Usuário (classe ligada ao recurso /api/usuarios).
 
 Recebe a requisição HTTP, interpreta os dados, chama o Service
-correspondente e devolve a resposta da API. Sem regra de negócio aqui.
-As rotas que apontam para esta classe ficam em `routes.py`.
+correspondente e devolve a resposta da API.
+As rotas que madam essa classe estaem rotes.
 """
 from flask import jsonify, request
 

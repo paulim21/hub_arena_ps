@@ -1,4 +1,4 @@
-"""Model — Reserva: entidade do domínio + CRUD básico (herda de db.Model)."""
+"""Model — Reserva: entidade do domínio + CRUD básico do model db"""
 from extensions import db
 from models.reserva_jogador import ReservaJogador
 

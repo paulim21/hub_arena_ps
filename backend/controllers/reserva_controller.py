@@ -1,6 +1,6 @@
 """Controller — Reserva (classe ligada ao recurso /api/reservas).
 
-As rotas que apontam para esta classe ficam em `routes.py`.
+As rotas que mandam para essa classe ta em route.
 """
 from flask import jsonify, request
 

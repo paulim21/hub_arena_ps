@@ -1,6 +1,6 @@
 """Controller — Quadra (classe ligada ao recurso /api/quadras).
 
-As rotas que apontam para esta classe ficam em `routes.py`.
+As rotas que mandam para as routes.
 """
 from flask import jsonify, request
 

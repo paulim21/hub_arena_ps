@@ -1,9 +1,9 @@
 """Controller — Consentimento LGPD (classe ligada ao recurso /api/consentimentos).
 
 Recebe a requisição, interpreta os dados, chama o Service e devolve a
-resposta. O IP e o navegador são lidos AQUI, da requisição, e passados ao
+resposta. O IP e o navegador são lidos da requisição, e passados ao
 Service: ler `request` dentro do Service amarraria a regra de negócio ao
-Flask. As rotas ficam em `routes.py`.
+Flask.
 """
 from flask import jsonify, request
 
