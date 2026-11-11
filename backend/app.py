@@ -1,19 +1,6 @@
 """
 ARENAHUB — API REST + Front-end estático
-Flask + SQLAlchemy + SQLite (sem Jinja2 / render_template)
-
-Arquitetura em camadas (padrão do material da disciplina):
-
-    Tela (frontend/ — HTML + JS puro, fetch nas rotas /api/...)
-       │
-       ▼
-    Controller (classes em controllers/)  →  recebe as requisições HTTP
-    Service (uma classe por caso de uso)  →  regras de negócio e validações
-    Model (herda de db.Model)             →  entidades do domínio + CRUD básico
-    Repository                            →  consultas complexas via PROCEDURES
-       │
-       ▼
-    SQLite (hub_arena.db — dados + tabela `procedures`)
+Flask + SQLAlchemy + SQLite 
 """
 import os
 
