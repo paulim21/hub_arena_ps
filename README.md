@@ -48,7 +48,7 @@ O diagrama de classes do domínio está na pasta [`docs/`](docs):
 |---------|---------|
 | [`docs/diagrama-classes.md`](docs/diagrama-classes.md) | Diagrama + explicação da **herança**, **composição**, **agregação** e da relação **N:N**, com a tabela de FKs correspondente no banco |
 | [`docs/diagrama-classes.svg`](docs/diagrama-classes.svg) | Mesma versão em imagem (para slides e para o vídeo) |
-| [`docs/guia-sistema.pdf`](docs/guia-sistema.pdf) | **Guia do sistema** (15 páginas): o caminho de uma requisição, backend camada por camada, o banco, o frontend, as 20 procedures, a tabela das 25 funcionalidades e as perguntas prováveis da banca |
+| [`docs/guia-sistema.pdf`](docs/guia-sistema.pdf) | **Guia do sistema**: o caminho de uma requisição, backend camada por camada, como o SQLAlchemy funciona, o banco e as procedures, a tabela das 25 funcionalidades, o que não é CRUD, de onde vem cada botão, o que o backend faz depois de cada clique, a LGPD e as perguntas prováveis da banca |
 
 Ele representa as cinco Models de [`backend/models/`](backend/models) —
 `Usuario`, `Arena`, `Quadra`, `Reserva` e `ReservaJogador` — todas herdando de

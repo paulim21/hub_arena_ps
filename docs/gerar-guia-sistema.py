@@ -129,6 +129,23 @@ def P(txt, estilo="p"):
     return Paragraph(txt, E[estilo])
 
 
+# As seções se numeram sozinhas. Numerar à mão obriga a renumerar todas
+# as seguintes a cada seção inserida no meio — e basta esquecer uma para
+# o sumário mental de quem lê deixar de bater com o documento.
+_contador = [0]
+
+
+def H1(titulo):
+    _contador[0] += 1
+    return P("%d. %s" % (_contador[0], titulo), "h1")
+
+
+def H1sub(titulo):
+    """Subseção da seção corrente: 9.1, 9.2…"""
+    H1sub.n = getattr(H1sub, "n", 0) + 1
+    return P("%d.%d %s" % (_contador[0], H1sub.n, titulo), "h1")
+
+
 def tabela(cabecalho, linhas, larguras, destaque_col0=True):
     dados = [[Paragraph(c, E["cabtab"]) for c in cabecalho]]
     for ln in linhas:
@@ -250,7 +267,7 @@ def construir():
 
     # ---------------- 1. o caminho ----------------
     h.append(PageBreak())
-    h.append(P("1. O caminho de uma requisicao", "h1"))
+    h.append(H1("O caminho de uma requisicao"))
     h.append(P("Toda funcionalidade do sistema faz o mesmo percurso. O exemplo abaixo e o de "
                "criar uma reserva, que e o mais completo: ele passa por todas as camadas e "
                "ainda consulta uma procedure no meio do caminho."))
@@ -273,7 +290,7 @@ def construir():
 
     # ---------------- 2. mapa de arquivos ----------------
     h.append(PageBreak())
-    h.append(P("2. Mapa do backend, arquivo por arquivo", "h1"))
+    h.append(H1("Mapa do backend, arquivo por arquivo"))
     arquivos = [
         ("app.py", "Application Factory: cria a aplicacao, liga o SQLAlchemy, ativa as "
                    "chaves estrangeiras do SQLite, cria as tabelas e registra as rotas."),
@@ -301,7 +318,7 @@ def construir():
 
     # ---------------- 3. models ----------------
     h.append(PageBreak())
-    h.append(P("3. Models: as entidades do dominio", "h1"))
+    h.append(H1("Models: as entidades do dominio"))
     h.append(P("Herdam de <font face='Courier'>db.Model</font>, e e essa heranca que mapeia "
                "cada classe a uma tabela. O CRUD basico fica na propria Model, como pede a "
                "arquitetura da disciplina: <font face='Courier'>salvar()</font>, "
@@ -318,7 +335,7 @@ def construir():
         "ReservaJogador": "Classe associativa que resolve o N:N entre Reserva e Usuario. "
                           "Chave primaria composta, e ON DELETE CASCADE.",
         "Consentimento": "O aceite dos termos, com versao, data, IP e navegador. Nao tem FK "
-                         "para Usuario de proposito (ver secao 8).",
+                         "para Usuario de proposito (ver a secao do consentimento LGPD).",
     }
     h.append(tabela(["Model", "Tabela", "Colunas", "O que representa"],
                     [[n, Paragraph("<font face='Courier' size='7.5'>%s</font>" % t, E["cel"]),
@@ -333,9 +350,98 @@ def construir():
         "Quadra para Reserva, Usuario para Reserva e Usuario para ReservaJogador. "
         "O diagrama completo esta em docs/diagrama-classes.svg."))
 
+    # ---------------- sqlalchemy ----------------
+    h.append(PageBreak())
+    h.append(H1("Como o SQLAlchemy funciona aqui"))
+    h.append(P("SQLAlchemy e o ORM do projeto: a camada que faz uma classe Python virar uma "
+               "tabela e um objeto virar uma linha. Flask-SQLAlchemy nao e outro ORM, e so a "
+               "cola que liga esse ORM ao ciclo de vida da aplicacao Flask."))
+    h.append(P("As tres pecas", "h2"))
+    h.append(tabela(["Peca", "No projeto", "Do que responde"],
+                    [["Engine", "criado em app.py",
+                      "Quem de fato fala com o SQLite: abre a conexao, manda o SQL, traz o "
+                      "resultado. Nasce uma vez, a partir de SQLALCHEMY_DATABASE_URI."],
+                     ["Session", "db.session",
+                      "O rascunho da transacao. Guarda tudo o que foi criado, alterado ou "
+                      "apagado e so escreve no banco quando vem o commit."],
+                     ["Model", "models/*.py",
+                      "A classe mapeada. Cada db.Column e uma coluna, e e a heranca de "
+                      "db.Model que registra o mapeamento."]],
+                    [26 * mm, 34 * mm, 110 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(P("De classe para tabela", "h2"))
+    h.append(P("Nao existe SQL de criacao escrito a mao em nenhum lugar do projeto. O que "
+               "existe e a classe; o CREATE TABLE e consequencia dela."))
+    h.append(P("class Usuario(db.Model):<br/>"
+               "&nbsp;&nbsp;&nbsp;&nbsp;__tablename__ = 'usuarios'<br/>"
+               "&nbsp;&nbsp;&nbsp;&nbsp;usuario_id = db.Column(db.Integer, primary_key=True)<br/>"
+               "&nbsp;&nbsp;&nbsp;&nbsp;email = db.Column(db.String(120), unique=True, nullable=False)<br/>"
+               "<br/>"
+               "-- o que o SQLAlchemy gera<br/>"
+               "CREATE TABLE usuarios (<br/>"
+               "&nbsp;&nbsp;&nbsp;&nbsp;usuario_id INTEGER NOT NULL PRIMARY KEY,<br/>"
+               "&nbsp;&nbsp;&nbsp;&nbsp;email VARCHAR(120) NOT NULL UNIQUE<br/>"
+               ");", "cod"))
+    h.append(Spacer(1, 3 * mm))
+    h.append(caixa(
+        "create_all CRIA tabela que falta, mas nunca ALTERA tabela que existe",
+        "Isso virou erro de verdade no projeto. Ao acrescentar a coluna cpf em Usuario, o "
+        "create_all viu que a tabela usuarios ja existia e nao fez nada: a tela passou a "
+        "responder <font face='Courier'>no such column: usuarios.cpf</font>. A correcao foi "
+        "<font face='Courier'>migrar_colunas_novas()</font>, em database.py: ele le o "
+        "PRAGMA table_info de cada tabela e emite ALTER TABLE ADD COLUMN para o que faltar. "
+        "ORM nao dispensa migracao.", NAVY))
+    h.append(Spacer(1, 4 * mm))
+    h.append(P("add, flush, commit e rollback: quatro momentos diferentes", "h2"))
+    h.append(tabela(["Chamada", "O que acontece no banco", "Onde o projeto usa"],
+                    [["add", "Nada ainda. O objeto fica pendurado na Session, e a chave "
+                             "primaria continua None.",
+                      "Dentro de salvar(), em toda Model."],
+                     ["flush", "Manda o INSERT e NAO fecha a transacao. O banco devolve o id "
+                               "autoincremento.",
+                      "Reserva.salvar(): precisa do reserva_id para inserir os jogadores."],
+                     ["commit", "Confirma tudo de uma vez. Se qualquer parte falhar, nada fica.",
+                      "Fim de salvar(), atualizar() e deletar()."],
+                     ["rollback", "Desfaz a transacao inteira e limpa a Session.",
+                      "Obrigatorio depois de IntegrityError: sem ele a Session fica suja e a "
+                      "proxima chamada falha sem motivo aparente."]],
+                    [22 * mm, 74 * mm, 74 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(caixa(
+        "Por que atualizar() e so um commit()",
+        "A Session vigia os objetos que ela carregou. No momento em que o Service escreve "
+        "<font face='Courier'>arena.nome = 'Novo nome'</font>, o objeto ja fica marcado como "
+        "sujo. Quando o commit chega, o SQLAlchemy compara o estado atual com o que leu do "
+        "banco e escreve o UPDATE apenas das colunas que mudaram. Por isso atualizar() nao "
+        "tem corpo nenhum: nao ha UPDATE para escrever a mao, e nao ha coluna para esquecer."))
+    h.append(Spacer(1, 4 * mm))
+    h.append(P("<b>O mapa de identidade.</b> Dentro da mesma Session, pedir o mesmo registro "
+               "duas vezes devolve o MESMO objeto em memoria, nao duas copias. E por isso que "
+               "AtualizarArenaService pode chamar BuscarArenaService sem medo: a segunda busca "
+               "nao custa outra consulta, e nao existe risco de duas versoes do mesmo registro "
+               "discordando dentro da mesma requisicao."))
+    h.append(P("<b>relationship e a armadilha do N+1.</b> O relationship entrega "
+               "<font face='Courier'>arena.quadras</font> sem escrever JOIN. Comodo, e caro: "
+               "um laco por 50 arenas pedindo .quadras faz 51 consultas. E exatamente por isso "
+               "que a listagem com dono e contagem de quadras nao e um laco em Python, e sim "
+               "uma procedure com JOIN e COUNT na camada Repository."))
+    h.append(P("<b>Onde o projeto sai do ORM de proposito.</b> Relatorio, busca e "
+               "disponibilidade sao SQL escrito em repositories/procedures.sql e executado com "
+               "<font face='Courier'>db.session.execute(text(...))</font>. O ORM e bom para "
+               "uma entidade por vez; um GROUP BY sobre tres tabelas e mais claro em SQL. Essa "
+               "escolha e justamente a fronteira entre Model e Repository."))
+    h.append(Spacer(1, 2 * mm))
+    h.append(caixa(
+        "O SQLite ignora chave estrangeira se ninguem pedir",
+        "Por compatibilidade historica, o SQLite so respeita FK quando a conexao executa "
+        "<font face='Courier'>PRAGMA foreign_keys = ON</font> &#8212; e o pragma vale por "
+        "conexao, nao por banco. O app.py escuta o evento connect do Engine e roda o pragma em "
+        "toda conexao nova. Sem isso, o ON DELETE CASCADE dos jogadores nao aconteceria e as "
+        "exclusoes bloqueadas passariam direto: as regras de integridade seriam enfeite."))
+
     # ---------------- 4. controllers ----------------
     h.append(PageBreak())
-    h.append(P("4. Controllers: a fronteira com o HTTP", "h1"))
+    h.append(H1("Controllers: a fronteira com o HTTP"))
     h.append(P("Sao classes, uma por recurso. Fazem tres coisas e nada mais: leem o que veio "
                "na requisicao, chamam o Service correspondente e traduzem o resultado (ou a "
                "excecao) em resposta HTTP com o status certo."))
@@ -366,7 +472,7 @@ def construir():
 
     # ---------------- 5. services ----------------
     h.append(PageBreak())
-    h.append(P("5. Services: um por caso de uso", "h1"))
+    h.append(H1("Services: um por caso de uso"))
     h.append(P("Cada classe responde por <b>uma acao</b> do sistema e expoe um unico metodo "
                "<font face='Courier'>executar()</font>. E aqui que mora toda a regra de "
                "negocio, e e por isso que sao %d classes e nao seis."
@@ -401,7 +507,7 @@ def construir():
 
     # ---------------- 6. repository e procedures ----------------
     h.append(PageBreak())
-    h.append(P("6. Repository e as procedures", "h1"))
+    h.append(H1("Repository e as procedures"))
     h.append(P("O Repository nao repete CRUD simples: isso ja esta na Model. Ele existe para "
                "<b>consulta complexa</b> — JOIN, GROUP BY, NOT EXISTS, ranking, relatorio — e "
                "e o unico lugar do sistema que executa SQL."))
@@ -442,7 +548,7 @@ def construir():
 
     # ---------------- 7. o banco ----------------
     h.append(PageBreak())
-    h.append(P("7. O banco de dados", "h1"))
+    h.append(H1("O banco de dados"))
     h.append(P("SQLite, num arquivo unico: <font face='Courier'>backend/hub_arena.db</font>. "
                "Ele e criado sozinho na primeira execucao e nao vai para o repositorio — "
                "esta no .gitignore, porque banco com dado de gente dentro nao se versiona."))
@@ -484,7 +590,7 @@ def construir():
 
     # ---------------- 8. as 25 funcionalidades ----------------
     h.append(PageBreak())
-    h.append(P("8. As 25 funcionalidades, de ponta a ponta", "h1"))
+    h.append(H1("As 25 funcionalidades, de ponta a ponta"))
     h.append(P("Cada linha e um caminho completo: tela, rota, Controller, Service e, quando "
                "ha consulta complexa, a procedure que o Repository executa."))
     func = [
@@ -539,9 +645,73 @@ def construir():
                      for n, f, r, s, p in func],
                     [8 * mm, 38 * mm, 42 * mm, 46 * mm, 36 * mm]))
 
+    # ---------------- o que nao e crud ----------------
+    h.append(PageBreak())
+    h.append(H1("O que nao e CRUD"))
+    h.append(P("A disciplina pede CRUD, e ele esta la. Mas vale dizer na apresentacao que a "
+               "maior parte do sistema nao e CRUD: de 25 funcionalidades, 15 nao se resumem a "
+               "inserir, ler, atualizar ou apagar uma linha."))
+    h.append(tabela(["Grupo", "Quantas", "Quais", "Por que estao nesse grupo"],
+                    [["Nao e CRUD", "15", "3, 6, 11, 12, 15 a 25",
+                      "Agregacao, juncao, busca em tres tabelas, calculo ou decisao. A "
+                      "resposta nao e uma linha de tabela."],
+                     ["CRUD puro", "8", "1, 4, 5, 7, 8, 10, 13, 14",
+                      "Uma operacao sobre uma entidade so: inserir, atualizar status ou apagar."],
+                     ["Leitura com filtro", "2", "2, 9",
+                      "A mesma leitura, mudando o WHERE."]],
+                    [34 * mm, 16 * mm, 40 * mm, 80 * mm]))
+    h.append(Spacer(1, 5 * mm))
+    h.append(P("As 15, e o que cada uma faz que CRUD nao faz", "h2"))
+    nao_crud = [
+        ("3", "Buscar usuario por nome ou e-mail",
+         "LIKE em duas colunas ao mesmo tempo, com o termo normalizado antes."),
+        ("6", "Arenas com dono e contagem",
+         "JOIN com usuarios mais COUNT de quadras: a linha devolvida nao existe em tabela alguma."),
+        ("11", "Criar reserva",
+         "Pergunta a uma procedure se ha sobreposicao de horario, calcula horas x preco e grava "
+         "duas tabelas na mesma transacao."),
+        ("12", "Reservas detalhadas",
+         "JOIN triplo (reserva, quadra, arena) e os nomes dos jogadores agregados em um campo."),
+        ("15", "Resumo do painel",
+         "COUNT e SUM de tabelas diferentes reunidos em uma resposta so."),
+        ("16", "Receita por arena",
+         "SUM agrupado por arena, contando apenas reserva confirmada."),
+        ("17", "Ocupacao das quadras",
+         "Horas reservadas sobre horas disponiveis: um percentual que nao esta guardado em "
+         "nenhum lugar."),
+        ("18", "Ranking de atletas",
+         "COUNT por jogador na tabela associativa, com ORDER BY decrescente."),
+        ("19", "Quadras disponiveis",
+         "NOT EXISTS: devolve o que NAO esta na outra tabela naquele periodo. O contrario de "
+         "uma leitura."),
+        ("20", "Agenda da arena",
+         "Recorte por periodo com ordenacao cronologica, validando as datas ISO antes."),
+        ("21", "Registrar consentimento",
+         "Recusa aceite parcial e aceite de versao que nao e a vigente."),
+        ("22", "Consentimento vigente",
+         "Decide se vale: confere a versao e se existe revogacao depois do aceite."),
+        ("23", "Revogar consentimento",
+         "Marca a data de revogacao e NAO apaga o registro, porque ele e a prova."),
+        ("24", "Relatorio de consentimentos",
+         "Agrupa por versao dos termos e conta aceitos e revogados de cada uma."),
+        ("25", "Busca global",
+         "Um termo, tres repositorios, tres procedures e uma resposta unificada."),
+    ]
+    h.append(tabela(["#", "Funcionalidade", "O que faz que CRUD nao faz"],
+                    [[n, f, t] for n, f, t in nao_crud],
+                    [8 * mm, 44 * mm, 118 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(caixa(
+        "E os 8 de CRUD puro tambem tem regra",
+        "CRUD aqui e o formato da operacao, nao a ausencia de regra. Cadastrar usuario confere "
+        "digito verificador de CPF e guarda a senha como resumo scrypt. Excluir arena apanha o "
+        "erro de integridade do banco e devolve uma frase que diz o que apagar primeiro. "
+        "Confirmar reserva so aceita status que esta na lista de validos. Nenhuma dessas "
+        "decisoes esta na Controller nem na Model: todas estao no Service."))
+
     # ---------------- 9. o frontend ----------------
     h.append(PageBreak())
-    h.append(P("9. O frontend", "h1"))
+    h.append(H1("O frontend"))
     h.append(P("HTML, CSS e JavaScript puro — sem framework e sem Jinja2. O servidor entrega "
                "arquivos estaticos, e cada tela busca os proprios dados chamando a API por "
                "fetch. Nenhuma pagina e montada no servidor."))
@@ -591,7 +761,7 @@ def construir():
 
     # ---------------- o sistema de design ----------------
     h.append(PageBreak())
-    h.append(P("9.1 O sistema de design", "h1"))
+    h.append(H1sub("O sistema de design"))
     h.append(P("A aparencia tambem tem regra escrita, e ela e verificada por maquina."))
     h.append(tabela(["Arquivo", "Para que serve"],
                     [["frontend/css/tokens.css",
@@ -622,9 +792,132 @@ def construir():
                "Trocar os papeis quebra o contraste: a areia tem 1,25:1 contra o papel, e "
                "sumiria como texto."))
 
+    # ---------------- os botoes ----------------
+    h.append(PageBreak())
+    h.append(H1("Os botoes: de onde vem cada um"))
+    h.append(P("Nenhum botao do sistema e uma tag solta com onclick escrito no HTML. Eles vem "
+               "de quatro lugares, e saber de qual deles encurta muito a procura no codigo."))
+    h.append(tabela(["Origem", "Exemplos", "Onde esta", "Como o clique e ligado"],
+                    [["Escrito no HTML da tela", "Cadastrar, Buscar, Novo",
+                      "frontend/&lt;tela&gt;.html",
+                      "O script da propria tela faz addEventListener no carregamento."],
+                     ["Gerado pelo JS ao desenhar a lista",
+                      "Confirmar, Cancelar, Excluir de cada linha",
+                      "frontend/js/&lt;tela&gt;.js",
+                      "Nascem junto com a linha e carregam o id no dataset; um listener no "
+                      "container atende todos."],
+                     ["Construido pelo base.js",
+                      "Menu suspenso, seletor de data, multi-selecao, dialogos de confirmar e "
+                      "avisar, botao de tema",
+                      "frontend/js/base.js",
+                      "O base.js varre a tela procurando classes (.dd, .dtp, .multi-sel) e "
+                      "substitui o controle nativo pelo proprio."],
+                     ["Do aviso de LGPD", "Aceito os termos, Ler os termos, Revogar",
+                      "frontend/js/lgpd.js e termos.html",
+                      "O lgpd.js monta o dialogo na primeira visita e liga os botoes antes de "
+                      "liberar qualquer chamada."]],
+                    [34 * mm, 42 * mm, 38 * mm, 56 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(caixa(
+        "A regra visual: um preenchido por tela",
+        "Todo botao e de traco por padrao &#8212; contorno e texto em navy, fundo transparente. "
+        "Apenas UM por tela recebe a classe principal, preenchido de navy: a acao pela qual "
+        "aquela tela existe (Cadastrar em usuarios, Reservar em reservas). Dois preenchidos na "
+        "mesma tela ja e erro de hierarquia, porque nenhum dos dois ganha o olho de quem "
+        "chega. Acao destrutiva nunca e preenchida: Excluir e traco com o vermelho de sinal."))
+    h.append(Spacer(1, 4 * mm))
+    h.append(P("O que acontece do lado da tela, em ordem", "h2"))
+    h.append(tabela(["Passo", "Quem", "O que faz"],
+                    [["1", "o listener da tela",
+                      "Le os campos, monta o objeto e chama HubUI.api(metodo, rota, corpo)."],
+                     ["2", "lgpd.js",
+                      "Envolve o HubUI.api por FORA. Sem consentimento vigente, a chamada nem "
+                      "sai: ela fica esperando o aceite."],
+                     ["3", "interface.js",
+                      "Envolve o HubUI.api por dentro e acende a barra de progresso no topo "
+                      "&#8212; depois de 120 ms, para que clique rapido nao pisque a tela."],
+                     ["4", "HubUI.api",
+                      "Faz o fetch, le o JSON e levanta erro com a mensagem do servidor quando "
+                      "o status nao e de sucesso."],
+                     ["5", "o listener de novo",
+                      "Deu certo: redesenha a lista e mostra um toast. Deu erro: escreve a "
+                      "mensagem do servidor no topo do formulario, legivel, sem alert()."]],
+                    [14 * mm, 34 * mm, 122 * mm]))
+
+    # ---------------- o backend depois do clique ----------------
+    h.append(PageBreak())
+    h.append(H1("O backend depois do clique"))
+    h.append(P("Do outro lado, todo clique percorre os mesmos seis passos. O que muda de uma "
+               "funcionalidade para outra e o Service; a estrutura nao muda nunca."))
+    h.append(tabela(["Passo", "Quem", "O que faz"],
+                    [["1", "routes.py",
+                      "Casa URL mais metodo HTTP com um metodo de Controller, via add_url_rule. "
+                      "Nenhuma logica mora aqui."],
+                     ["2", "Controller",
+                      "Le request.get_json() ou os parametros da query e chama o Service. Nao "
+                      "decide nada."],
+                     ["3", "Service",
+                      "Toda a regra: valida, confere o que precisa existir, consulta, calcula "
+                      "e decide. Levanta excecao quando a regra nao fecha."],
+                     ["4", "Model ou Repository",
+                      "Model persiste uma entidade pelo ORM; Repository executa procedure "
+                      "quando a consulta e complexa."],
+                     ["5", "SQLite",
+                      "A transacao e confirmada inteira &#8212; ou desfeita inteira."],
+                     ["6", "Controller",
+                      "Transforma o retorno em JSON com o status HTTP certo. A tabela de "
+                      "excecao para status esta na secao das Controllers."]],
+                    [14 * mm, 38 * mm, 118 * mm]))
+    h.append(Spacer(1, 5 * mm))
+    h.append(P("Botao por botao, o que o backend faz", "h2"))
+    cliques = [
+        ("Cadastrar usuario", "POST /api/usuarios",
+         "CriarUsuarioService normaliza CPF, telefone e e-mail, confere os digitos "
+         "verificadores, gera o resumo scrypt da senha e tenta inserir. Se o UNIQUE colidir, "
+         "ele descobre se foi o e-mail ou o CPF e devolve a frase certa, nao um erro generico."),
+        ("Reservar horario", "POST /api/reservas",
+         "CriarReservaService tira jogadores repetidos, confere se a quadra e cada jogador "
+         "existem, le as datas ISO, pergunta a sp_conflito_reserva se ha sobreposicao, calcula "
+         "horas x preco_hora, grava a reserva com flush() para obter o id e insere os "
+         "jogadores &#8212; tudo em um commit() so."),
+        ("Confirmar", "PUT /api/reservas/&lt;id&gt;",
+         "AtualizarStatusReservaService aceita apenas pendente ou confirmada. Ele muda o "
+         "atributo do objeto; quem escreve o UPDATE e o commit, comparando o que mudou."),
+        ("Cancelar", "DELETE /api/reservas/&lt;id&gt;",
+         "DeletarReservaService apaga a reserva. Os jogadores vao com ela por ON DELETE "
+         "CASCADE, sem nenhuma linha de Python para isso."),
+        ("Excluir arena, quadra ou usuario", "DELETE /api/...",
+         "O Service tenta apagar, o SQLite recusa por chave estrangeira, ele faz rollback() e "
+         "levanta uma mensagem dizendo o que apagar primeiro. Vira 409, nao 500: nao foi falha "
+         "do sistema, foi a regra funcionando."),
+        ("Buscar", "GET /api/busca?termo=",
+         "BuscaGlobalService exige 2 caracteres, chama tres procedures (usuarios, arenas e "
+         "quadras) e devolve as tres listas juntas. CPF nao e pesquisavel de proposito."),
+        ("Abrir um relatorio", "GET /api/relatorios/...",
+         "O Service valida os parametros e o Repository executa a procedure. A conta e feita "
+         "pelo SQLite, nao em Python: e menos dado atravessando a rede e menos lugar para "
+         "errar."),
+        ("Aceito os termos", "POST /api/consentimentos",
+         "RegistrarConsentimentoService confere se a versao enviada e a vigente, recusa aceite "
+         "parcial e grava versao, data, IP e navegador &#8212; a prova que a lei pede."),
+    ]
+    h.append(tabela(["Botao", "Rota", "O que o backend faz, na ordem"],
+                    [[b, Paragraph("<font face='Courier' size='6.5'>%s</font>" % r, E["cel"]), t]
+                     for b, r, t in cliques],
+                    [30 * mm, 36 * mm, 104 * mm]))
+    h.append(Spacer(1, 4 * mm))
+    h.append(caixa(
+        "O que o aviso de LGPD NAO faz &#8212; e vale dizer antes de perguntarem",
+        "O bloqueio vive no navegador: ele segura as telas, nao a API. Quem chamar "
+        "/api/usuarios por fora, com curl ou Postman, e atendido sem passar pelo aceite. Para "
+        "um trabalho de disciplina isso e o esperado, porque o sistema nao tem login. Num "
+        "sistema em producao a verificacao teria de ficar no servidor, amarrada a uma sessao "
+        "autenticada. Dizer isso na apresentacao vale mais do que torcer para ninguem "
+        "perguntar.", NAVY))
+
     # ---------------- 10. LGPD ----------------
     h.append(PageBreak())
-    h.append(P("10. O consentimento LGPD", "h1"))
+    h.append(H1("O consentimento LGPD"))
     h.append(P("O sistema nao abre antes do aceite: o frontend segura toda chamada a API ate "
                "existir consentimento. Mas a parte que importa para a defesa esta no backend."))
     h.append(tabela(["O que a lei pede", "Onde isso esta no codigo"],
@@ -650,7 +943,7 @@ def construir():
 
     # ---------------- 9. validacao e seguranca ----------------
     h.append(PageBreak())
-    h.append(P("11. Validacao e seguranca", "h1"))
+    h.append(H1("Validacao e seguranca"))
     h.append(P("O arquivo <font face='Courier'>validadores.py</font> conhece a forma dos dados "
                "que tem forma. Ele fica fora dos Services de proposito: nao e caso de uso, e a "
                "forma do dado, e ela e a mesma para quem cadastra e para quem atualiza."))
@@ -680,7 +973,7 @@ def construir():
 
     # ---------------- 10. rodar e demonstrar ----------------
     h.append(PageBreak())
-    h.append(P("12. Como rodar e o que mostrar", "h1"))
+    h.append(H1("Como rodar e o que mostrar"))
     h.append(P("Subir o projeto", "h2"))
     h.append(Paragraph(
         "python -m venv venv<br/>"
@@ -714,7 +1007,7 @@ def construir():
 
     # ---------------- 11. perguntas ----------------
     h.append(PageBreak())
-    h.append(P("13. Perguntas provaveis, e o que responder", "h1"))
+    h.append(H1("Perguntas provaveis, e o que responder"))
     perguntas = [
         ("Por que o Repository nao tem os metodos de CRUD?",
          "Porque o CRUD simples ja esta na Model, como a arquitetura da disciplina pede. "
